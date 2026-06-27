@@ -855,13 +855,13 @@ async function doDist(){
   if(!srcId){sal('dist-alert','Please select a source tank first.',true);return}
   if(!flId||vol<=0){sal('dist-alert','Please select equipment and volume.',true);return}
   // Smart volume warning - check today's total fills for this machine
+  let txWarning='';
   const flForCap=S.fleet.find(x=>x.id===flId||x.fleetNo===flId);
   if(flForCap&&flForCap.tankCap&&flForCap.tankCap>0){
     const today=new Date().toDateString();
     const filledToday=S.transactions.filter(t=>t.type==='distribute'&&(t.fleetId===flId||t.to===flForCap.fleetNo)&&new Date(t.date).toDateString()===today).reduce((a,x)=>a+x.volume,0);
     const totalToday=filledToday+vol;
     if(vol>flForCap.tankCap){
-      // Single fill exceeds tank - warning only
       const proceed=confirm(`⚠️ Warning: Volume ${vol} L exceeds tank capacity of ${flForCap.tankCap} L for ${flForCap.fleetNo}.
 
 Already filled today: ${filledToday} L
@@ -869,8 +869,8 @@ This fill: ${vol} L
 
 Do you want to proceed anyway?`);
       if(!proceed)return;
+      txWarning=`EXCESS FILL: ${vol}L exceeds tank capacity of ${flForCap.tankCap}L`;
     } else if(totalToday>flForCap.tankCap){
-      // Today's total exceeds tank capacity - smart warning
       const proceed=confirm(`⚠️ Warning: Total fills today for ${flForCap.fleetNo} will exceed tank capacity.
 
 Tank capacity: ${flForCap.tankCap} L
@@ -880,6 +880,7 @@ Total today: ${totalToday} L
 
 Do you want to proceed anyway?`);
       if(!proceed)return;
+      txWarning=`DAILY EXCESS: Total today ${totalToday}L exceeds tank capacity of ${flForCap.tankCap}L (prev: ${filledToday}L)`;
     }
   }
 if(!proj){sal('dist-alert','Please select a project.',true);return}const fl=S.fleet.find(x=>x.id===flId||x.fleetNo===flId),last=glf(flId);if(last&&last.meter&&parseFloat(meter)<=parseFloat(last.meter)){sal('dist-alert','Meter must be > '+last.meter+'.',true);return}const src=gT(srcId);if((src?.current||0)<vol){sal('dist-alert','Insufficient. Available: '+(src?.current||0).toLocaleString()+' L',true);return}const drv=S.drivers.find(x=>x.id===drvId);uT(srcId,-vol);const tx={id:uid(),type:'distribute',date:document.getElementById('d-date').value,volume:vol,from:srcKind==='tank'?'Tank '+(src?.nb||''):src?.fleetNb,to:fl?.fleetNo,fleetId:flId,fleetNo:fl?.fleetNo,meter:meter?parseFloat(meter):null,meterType:fl?.meterType||'hourmeter',project:proj,driverId:drvId,driverName:drv?.name||'',notes:document.getElementById('d-notes').value,userId:S.currentUser.id,userName:S.currentUser.name};S.transactions.push(tx);await wTx(tx,{srcId,srcKind});sal('dist-alert','Distribution: '+vol.toLocaleString()+' L to '+(fl?.fleetNo||''));['d-vol','d-meter','d-notes'].forEach(x=>document.getElementById(x).value='');document.getElementById('d-fleet').value='';document.getElementById('d-proj').value='';document.getElementById('d-drv').value='';document.getElementById('mi-card').classList.remove('show');document.getElementById('lf-card').classList.remove('show')}
