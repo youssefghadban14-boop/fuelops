@@ -496,7 +496,11 @@ function filteredTanks(){const f=S.locationFilter;if(f==='all')return aT();retur
 function filteredStorage(){const f=document.getElementById('rpt-loc-filter')?.value||'all';return f==='all'?S.storage:S.storage.filter(x=>x.location===f)}
 function filteredTankers(){const f=document.getElementById('rpt-loc-filter')?.value||'all';return f==='all'?S.tankers:S.tankers.filter(x=>x.location===f)}
 
-function setSrcId(v){document.getElementById('d-src-id').value=v}
+function setSrcId(v){
+  document.getElementById('d-src-id').value=v;
+  const t=aT().find(x=>x.id===v);
+  if(t)document.getElementById('d-src-k').value=t._k||'tank';
+}
 
 // ── GENERIC EDIT HELPERS ──────────────────────────────────────────────────────
 function setModal(titleId,btnId,title,btnTxt){
@@ -806,7 +810,12 @@ const srcNmEl=document.getElementById('d-src-nm');
 if(myTanks.length>1){
   const opts=myTanks.map(t=>`<option value="${t.id}">[${t._k==='tank'?'Tank':'Tanker'}] ${t.nb||t.fleetNb} - ${t.location||''}</option>`).join('');
   srcNmEl.innerHTML=`<select onchange="setSrcId(this.value)" style="padding:6px 10px;border-radius:6px;border:1px solid #c5c5c0;font-size:13px;font-weight:600;width:100%">${opts}</select>`;
-  document.getElementById('d-src-id').value=myTanks[0].id;
+  // Set the ID immediately from first option
+  const firstId=myTanks[0].id;
+  document.getElementById('d-src-id').value=firstId;
+  document.getElementById('d-src-k').value=myTanks[0]._k||'tank';
+  // Also set it when dropdown changes
+  setTimeout(()=>{const sel=srcNmEl.querySelector('select');if(sel){sel.value=firstId;setSrcId(firstId)}},10);
 }else{
   srcNmEl.textContent=src?(sk==='tank'?'Tank '+(src?.nb||''):((src?.fleetNb||'')+' - '+(src?.plateNb||''))):'-- Not assigned';
   document.getElementById('d-src-id').value=src?.id||'';
@@ -831,7 +840,20 @@ function onFleetSel(){const flId=document.getElementById('d-fleet').value,mc=doc
 
 async function doRecv(){const suppId=document.getElementById('r-sup').value,destId=document.getElementById('r-dest').value,vol=parseFloat(document.getElementById('r-vol').value)||0;if(!suppId||!destId||vol<=0){sal('recv-alert','Please fill in supplier, destination, and volume.',true);return}const sp=S.suppliers.find(x=>x.id===suppId),dest=S.storage.find(x=>x.id===destId);uT(destId,vol);const tx={id:uid(),type:'receive',date:document.getElementById('r-date').value,volume:vol,supplierId:suppId,from:sp?.name,to:dest?.nb,destId,ref:document.getElementById('r-ticket').value,price:parseFloat(document.getElementById('r-price').value)||0,notes:document.getElementById('r-notes').value,userId:S.currentUser.id,userName:S.currentUser.name};S.transactions.push(tx);await wTx(tx,{destId});sal('recv-alert','Receipt: '+vol.toLocaleString()+' L from '+(sp?.name||''));['r-vol','r-ticket','r-notes','r-price'].forEach(x=>document.getElementById(x).value='')}
 async function doTrans(){const fromId=document.getElementById('t-from').value,toId=document.getElementById('t-to').value,vol=parseFloat(document.getElementById('t-vol').value)||0;if(!fromId||!toId||vol<=0){sal('trans-alert','Please fill in all fields.',true);return}const from=S.storage.find(x=>x.id===fromId);if((from?.current||0)<vol){sal('trans-alert','Insufficient. Available: '+(from?.current||0).toLocaleString()+' L',true);return}const to=S.tankers.find(x=>x.id===toId);uT(fromId,-vol);uT(toId,vol);const tx={id:uid(),type:'transfer',date:document.getElementById('t-date').value,volume:vol,from:'Tank '+(from?.nb||''),to:to?.fleetNb,destId:toId,notes:document.getElementById('t-notes').value,userId:S.currentUser.id,userName:S.currentUser.name};S.transactions.push(tx);await wTx(tx,{fromId,destId:toId,destKind:'tanker'});sal('trans-alert','Transfer: '+vol.toLocaleString()+' L');['t-vol','t-notes'].forEach(x=>document.getElementById(x).value='')}
-async function doDist(){const srcId=document.getElementById('d-src-id').value,srcKind=document.getElementById('d-src-k').value,flId=document.getElementById('d-fleet').value,vol=parseFloat(document.getElementById('d-vol').value)||0,meter=document.getElementById('d-meter').value,proj=document.getElementById('d-proj').value,drvId=document.getElementById('d-drv').value;if(!srcId||!flId||vol<=0){sal('dist-alert','Please select equipment and volume.',true);return}
+async function doDist(){
+  // Read source - try hidden field first, then read from visible dropdown
+  let srcId=document.getElementById('d-src-id').value;
+  let srcKind=document.getElementById('d-src-k').value||'tank';
+  if(!srcId){
+    // Try to read from the select dropdown inside d-src-nm
+    const srcSel=document.getElementById('d-src-nm').querySelector('select');
+    if(srcSel){srcId=srcSel.value;srcKind=aT().find(x=>x.id===srcId)?._k||'tank'}
+    // If still empty, try to find the first available tank
+    if(!srcId){const u=S.currentUser;if(u.role==='storekeeper'){const ids=(u.assignedId||'').split(',').map(x=>x.trim()).filter(Boolean);const t=S.storage.find(x=>ids.includes(x.id)||ids.includes(x.nb));if(t){srcId=t.id;srcKind='tank'}}else if(u.role==='tanker_driver'){const t=S.tankers.find(x=>x.id===u.assignedId||x.fleetNb===u.assignedId);if(t){srcId=t.id;srcKind='tanker'}}else{const t=aT()[0];if(t){srcId=t.id;srcKind=t._k||'tank'}}}
+  }
+  const flId=document.getElementById('d-fleet').value,vol=parseFloat(document.getElementById('d-vol').value)||0,meter=document.getElementById('d-meter').value,proj=document.getElementById('d-proj').value,drvId=document.getElementById('d-drv').value;
+  if(!srcId){sal('dist-alert','Please select a source tank first.',true);return}
+  if(!flId||vol<=0){sal('dist-alert','Please select equipment and volume.',true);return}
 if(!proj){sal('dist-alert','Please select a project.',true);return}const fl=S.fleet.find(x=>x.id===flId||x.fleetNo===flId),last=glf(flId);if(last&&last.meter&&parseFloat(meter)<=parseFloat(last.meter)){sal('dist-alert','Meter must be > '+last.meter+'.',true);return}const src=gT(srcId);if((src?.current||0)<vol){sal('dist-alert','Insufficient. Available: '+(src?.current||0).toLocaleString()+' L',true);return}const drv=S.drivers.find(x=>x.id===drvId);uT(srcId,-vol);const tx={id:uid(),type:'distribute',date:document.getElementById('d-date').value,volume:vol,from:srcKind==='tank'?'Tank '+(src?.nb||''):src?.fleetNb,to:fl?.fleetNo,fleetId:flId,fleetNo:fl?.fleetNo,meter:meter?parseFloat(meter):null,meterType:fl?.meterType||'hourmeter',project:proj,driverId:drvId,driverName:drv?.name||'',notes:document.getElementById('d-notes').value,userId:S.currentUser.id,userName:S.currentUser.name};S.transactions.push(tx);await wTx(tx,{srcId,srcKind});sal('dist-alert','Distribution: '+vol.toLocaleString()+' L to '+(fl?.fleetNo||''));['d-vol','d-meter','d-notes'].forEach(x=>document.getElementById(x).value='');document.getElementById('d-fleet').value='';document.getElementById('d-proj').value='';document.getElementById('d-drv').value='';document.getElementById('mi-card').classList.remove('show');document.getElementById('lf-card').classList.remove('show')}
 
 async function saveStorage(){const editId=document.getElementById('s-edit-id').value;const nb=document.getElementById('s-nb').value.trim();const loc=document.getElementById('s-loc').value;if(!nb||!loc){toast('Tank Nb. and Location required.');return}if(editId){const s=S.storage.find(x=>x.id===editId);if(!s)return;s.nb=nb;s.location=loc;s.capacity=parseFloat(document.getElementById('s-cap').value)||0;s.current=parseFloat(document.getElementById('s-cur').value)||0;s.status=document.getElementById('s-stat').value;closeM('m-storage');rStorage();try{await gsC({action:'saveStorage',...s})}catch(e){}toast('Tank updated.');}else{const r={id:uid(),nb,location:loc,capacity:parseFloat(document.getElementById('s-cap').value)||0,current:parseFloat(document.getElementById('s-cur').value)||0,status:document.getElementById('s-stat').value};S.storage.push(r);closeM('m-storage');rStorage();try{await gsC({action:'saveStorage',...r})}catch(e){}toast('Tank saved.');}}
