@@ -6,7 +6,7 @@
 <title>C.A.T. FuelOps</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:Arial,sans-serif;background:#212630;color:#1a1a1a;font-size:14px}
+body{font-family:Arial,sans-serif;background:#212630;color:#1a1a1a;font-size:15px}
 /* LOGIN */
 #login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;background:#212630;padding:20px}
 .lcard{background:#1a1f2a;border:1px solid #2d3545;border-radius:12px;padding:40px;width:380px}
@@ -38,8 +38,8 @@ body{font-family:Arial,sans-serif;background:#212630;color:#1a1a1a;font-size:14p
 .sbuav{width:26px;height:26px;border-radius:50%;background:#c31c2a;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:white;flex-shrink:0}
 .sbun{font-size:12px;font-weight:600;color:#ebebe5}
 .sbur{font-size:10px;color:#b7cfd7}
-.nvsec{padding:12px 16px 4px;font-size:10px;color:#4d5a70;letter-spacing:.08em;text-transform:uppercase;font-weight:700}
-.nvit{padding:8px 16px;cursor:pointer;font-size:13px;color:#8a95a8;border-left:3px solid transparent}
+.nvsec{padding:16px 16px 5px;font-size:11px;color:#c31c2a;letter-spacing:.1em;text-transform:uppercase;font-weight:800;border-top:1px solid #2d3545;margin-top:4px}
+.nvit{padding:9px 16px;cursor:pointer;font-size:13px;color:#8a95a8;border-left:3px solid transparent}
 .nvit:hover{background:#2d3545;color:#ebebe5}
 .nvit.active{background:#2d3545;color:#ebebe5;border-left-color:#c31c2a;font-weight:600}
 .sbf{margin-top:auto;padding:14px 16px;border-top:1px solid #2d3545}
@@ -55,19 +55,19 @@ body{font-family:Arial,sans-serif;background:#212630;color:#1a1a1a;font-size:14p
 .metric{background:white;border:1px solid #d8d8d4;border-radius:10px;padding:16px;border-top:3px solid #d8d8d4}
 .metric.red{border-top-color:#c31c2a}.metric.navy{border-top-color:#212630}
 .ml{font-size:10px;color:#888f99;font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px}
-.mv{font-size:22px;font-weight:700;color:#212630}.metric.red .mv{color:#c31c2a}
+.mv{font-size:24px;font-weight:700;color:#212630}.metric.red .mv{color:#c31c2a}
 .ms{font-size:11px;color:#888f99;margin-top:2px}
 /* CARD */
 .card{background:white;border:1px solid #d8d8d4;border-radius:10px;padding:18px;margin-bottom:16px}
 .card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px}
-.ct{font-size:13px;font-weight:700;color:#212630;text-transform:uppercase;letter-spacing:.04em;display:flex;align-items:center;gap:8px}
+.ct{font-size:14px;font-weight:700;color:#212630;text-transform:uppercase;letter-spacing:.04em;display:flex;align-items:center;gap:8px}
 .ctb{width:3px;height:16px;background:#c31c2a;border-radius:2px;flex-shrink:0}
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 /* TABLE */
 .tw{overflow-x:auto}
-table{width:100%;border-collapse:collapse;font-size:12.5px}
+table{width:100%;border-collapse:collapse;font-size:13px}
 th{text-align:left;padding:8px 10px;background:#212630;color:white;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;white-space:nowrap}
-td{padding:8px 10px;border-bottom:1px solid #e8e8e4;vertical-align:middle}
+td{padding:9px 11px;border-bottom:1px solid #e8e8e4;vertical-align:middle}
 tr:last-child td{border-bottom:none}
 tr:hover td{background:#f8f8f6}
 /* BADGE */
@@ -78,7 +78,7 @@ tr:hover td{background:#f8f8f6}
 .pw{background:#ebebe5;border-radius:2px;height:5px;width:80px;display:inline-block;vertical-align:middle}
 .pb{height:5px;border-radius:2px;background:#212630}.pbr{background:#c31c2a}.pba{background:#f57f17}
 /* BUTTONS */
-.btn,.pbtn{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:6px;border:1px solid #c5c5c0;background:white;cursor:pointer;font-size:11px;color:#1a1a1a;font-family:Arial,sans-serif;font-weight:600;text-transform:uppercase;letter-spacing:.03em}
+.btn,.pbtn{display:inline-flex;align-items:center;gap:6px;padding:7px 13px;border-radius:6px;border:1px solid #c5c5c0;background:white;cursor:pointer;font-size:12px;color:#1a1a1a;font-family:Arial,sans-serif;font-weight:600;text-transform:uppercase;letter-spacing:.03em}
 .btn:hover,.pbtn:hover{background:#f4f4f2}
 .btn.pr,.pbtn.pr{background:#c31c2a;border-color:#c31c2a;color:white}
 .btn.pr:hover,.pbtn.pr:hover{background:#a01524}
@@ -88,8 +88,8 @@ tr:hover td{background:#f8f8f6}
 /* FORMS */
 .fr{display:flex;gap:12px;margin-bottom:12px;flex-wrap:wrap}
 .fg{flex:1;min-width:130px;display:flex;flex-direction:column;gap:4px}
-.fg label{font-size:11px;color:#4d5360;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
-.fg input,.fg select{padding:8px 10px;border-radius:6px;border:1px solid #c5c5c0;background:white;color:#1a1a1a;font-family:Arial,sans-serif;font-size:13px;outline:none}
+.fg label{font-size:11.5px;color:#4d5360;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+.fg input,.fg select{padding:9px 11px;border-radius:6px;border:1px solid #c5c5c0;background:white;color:#1a1a1a;font-family:Arial,sans-serif;font-size:14px;outline:none}
 .fg input:focus,.fg select:focus{border-color:#c31c2a}
 .fg input.warn{border-color:#f57f17;background:#fffde7}
 .fg .hint{font-size:11px;color:#888f99}
@@ -173,13 +173,14 @@ tr:hover td{background:#f8f8f6}
       <div class="sbu"><div class="sbuav" id="nav-av">AD</div><div><div class="sbun" id="nav-nm">Admin</div><div class="sbur" id="nav-rl">Administrator</div></div></div>
     </div>
     <div id="nav-links"></div>
-    <div class="sbf"><button class="btnout" onclick="doLogout()">Sign out</button></div>
+    <div class="sbf" style="display:flex;flex-direction:column;gap:8px"><button class="btnout" onclick="openM('m-settings')" style="border-color:#c31c2a;color:white;background:#c31c2a">&#9881; Settings</button><button class="btnout" onclick="doLogout()">Sign out</button></div>
   </nav>
   <div class="main">
     <div class="topbar">
       <div class="tbtitle" id="pg-title">Dashboard</div>
       <div style="display:flex;align-items:center;gap:12px">
         <span class="gsind" id="gs-ind" style="color:#888f99">&#9679; Offline</span>
+        <span id="adj-reminder" style="font-size:11px;color:#f57f17;font-weight:700"></span>
         <span id="tb-date" style="font-size:12px;color:#888f99"></span>
         <span id="last-refresh" style="font-size:11px;color:#b7cfd7"></span>
       </div>
@@ -227,7 +228,7 @@ tr:hover td{background:#f8f8f6}
         <div class="card"><div class="card-head"><div class="ct"><div class="ctb"></div>Receive diesel from supplier</div></div>
           <div id="recv-alert" class="alert"></div>
           <div class="fr"><div class="fg"><label>Supplier *</label><select id="r-sup"></select></div><div class="fg"><label>Invoice / ticket #</label><input type="text" id="r-ticket" placeholder="INV-2024-001"></div></div>
-          <div class="fr"><div class="fg"><label>Destination tank *</label><select id="r-dest"></select></div><div class="fg"><label>Volume (L) *</label><input type="number" id="r-vol" min="0" placeholder="0"></div></div>
+          <div class="fr"><div class="fg"><label>Destination tank *</label><select id="r-dest" onchange="onRecvDestSel()"></select><div id="r-dest-stock" style="font-size:12px;margin-top:4px;display:none"></div></div><div class="fg"><label>Volume (L) *</label><input type="number" id="r-vol" min="0" placeholder="0"></div></div>
           <div class="fr"><div class="fg"><label>Unit price (per L)</label><input type="number" id="r-price" step="0.001" placeholder="0.000"></div><div class="fg"><label>Date &amp; time *</label><input type="datetime-local" id="r-date"></div></div>
           <div class="fr"><div class="fg"><label>Notes</label><input type="text" id="r-notes" placeholder="Optional"></div></div>
           <div style="display:flex;justify-content:flex-end"><button class="pbtn pr" onclick="doRecv()">Confirm receipt</button></div>
@@ -238,7 +239,7 @@ tr:hover td{background:#f8f8f6}
       <div class="page" id="page-transfer">
         <div class="card"><div class="card-head"><div class="ct"><div class="ctb"></div>Transfer diesel</div></div>
           <div id="trans-alert" class="alert"></div>
-          <div class="fr"><div class="fg"><label>From (fixed tank) *</label><select id="t-from"></select></div><div class="fg"><label>To (tanker) *</label><select id="t-to"></select></div></div>
+          <div class="fr"><div class="fg"><label>From (fixed tank) *</label><select id="t-from" onchange="onTransferSrcSel()"></select><div id="t-from-stock" style="font-size:12px;color:#2e7d32;font-weight:700;margin-top:4px;display:none"></div></div><div class="fg"><label>To (tanker) *</label><select id="t-to" onchange="onTransferDestSel()"></select><div id="t-to-stock" style="font-size:12px;color:#888f99;font-weight:600;margin-top:4px;display:none"></div></div></div>
           <div class="fr"><div class="fg"><label>Volume (L) *</label><input type="number" id="t-vol" min="0" placeholder="0"></div><div class="fg"><label>Date &amp; time *</label><input type="datetime-local" id="t-date"></div></div>
           <div class="fr"><div class="fg"><label>Notes</label><input type="text" id="t-notes" placeholder="Optional"></div></div>
           <div style="display:flex;justify-content:flex-end"><button class="pbtn pr" onclick="doTrans()">Confirm transfer</button></div>
@@ -274,6 +275,40 @@ tr:hover td{background:#f8f8f6}
           <select id="tx-f" onchange="renderTx()" style="font-size:12px;padding:6px 8px;border-radius:6px;border:1px solid #c5c5c0"><option value="">All types</option><option value="receive">Receive</option><option value="transfer">Transfer</option><option value="distribute">Distribute</option></select></div>
           <div class="tw"><table><thead><tr><th>Date/Time</th><th>Type</th><th>From</th><th>To</th><th>Vol (L)</th><th>Meter</th><th>Project</th><th>Driver</th><th>Ref</th><th>By</th></tr></thead><tbody id="all-tx"></tbody></table></div>
           <div class="empty" id="tx-empty">No transactions yet</div>
+        </div>
+      </div>
+
+      <!-- STOCK ADJUSTMENT -->
+      <div class="page" id="page-adjustment">
+        <div class="card"><div class="card-head"><div class="ct"><div class="ctb"></div>Stock adjustment</div></div>
+          <div style="background:#fff8e1;border:1px solid #f0c050;border-radius:8px;padding:12px 16px;margin-bottom:16px;font-size:13px;color:#7a5c00">
+            ⚠️ Use this only to correct discrepancies between system stock and physical measurement. Every adjustment is recorded with full audit trail.
+          </div>
+          <div id="adj-alert" class="alert"></div>
+          <div class="fr"><div class="fg"><label>Tank / Tanker *</label><select id="adj-tank" onchange="onAdjTankSel()"><option value="">— Select tank or tanker —</option></select></div></div>
+          <div id="adj-info" style="display:none;background:#dfe9ee;border:1px solid #b7cfd7;border-radius:8px;padding:14px 16px;margin-bottom:14px">
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
+              <div><div style="font-size:10px;font-weight:700;color:#4d5360;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px">Tank / Tanker</div><div style="font-size:15px;font-weight:700;color:#212630" id="adj-tank-name">—</div></div>
+              <div><div style="font-size:10px;font-weight:700;color:#4d5360;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px">System stock</div><div style="font-size:15px;font-weight:700;color:#212630" id="adj-sys-stock">—</div></div>
+              <div><div style="font-size:10px;font-weight:700;color:#4d5360;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px">Difference</div><div style="font-size:15px;font-weight:700" id="adj-diff">—</div></div>
+            </div>
+          </div>
+          <div id="adj-last-info" style="display:none;border-radius:8px;padding:12px 16px;margin-bottom:14px;border:1px solid"></div>
+          <div class="fr"><div class="fg"><label>Physical measured stock (L) *</label><input type="number" id="adj-physical" min="0" placeholder="Enter actual measured quantity" oninput="calcAdjDiff()"></div></div>
+          <div class="fr"><div class="fg"><label>Reason *</label><select id="adj-reason">
+            <option value="">— Select reason —</option>
+            <option value="Flowmeter error">Flowmeter error</option>
+            <option value="Evaporation / wastage">Evaporation / wastage</option>
+            <option value="Spillage">Spillage</option>
+            <option value="Physical count correction">Physical count correction</option>
+            <option value="Other">Other</option>
+          </select></div><div class="fg"><label>Date & time *</label><input type="datetime-local" id="adj-date"></div></div>
+          <div class="fr"><div class="fg"><label>Notes</label><input type="text" id="adj-notes" placeholder="Optional details"></div></div>
+          <div style="display:flex;justify-content:flex-end"><button class="pbtn pr" onclick="doAdjustment()">Confirm adjustment</button></div>
+        </div>
+        <div class="card" style="margin-top:16px"><div class="card-head"><div class="ct"><div class="ctb"></div>Adjustment history</div></div>
+          <div class="tw"><table><thead><tr><th>Date/Time</th><th>Tank / Tanker</th><th>System stock (L)</th><th>Physical stock (L)</th><th>Difference (L)</th><th>Reason</th><th>Notes</th><th>By</th></tr></thead><tbody id="adj-history"></tbody></table></div>
+          <div class="empty" id="adj-history-empty">No adjustments yet</div>
         </div>
       </div>
 
@@ -378,7 +413,6 @@ tr:hover td{background:#f8f8f6}
   <div class="sdiv">Identification</div>
   <div class="fr"><div class="fg"><label>Tank Nb. *</label><input id="s-nb" type="text" placeholder="e.g. TK-001"></div><div class="fg"><label>Location *</label><select id="s-loc"></select></div></div>
   <div class="sdiv">Capacity</div>
-  <div class="fr"><div class="fg"><label>Capacity (L) *</label><input id="s-cap" type="number" min="0" placeholder="0"></div><div class="fg"><label>Opening stock (L)</label><input id="s-cur" type="number" min="0" placeholder="0"></div></div>
   <div class="fr"><div class="fg"><label>Status</label><select id="s-stat"><option>Active</option><option>Maintenance</option><option>Inactive</option></select></div></div>
   <div class="mfoot"><button class="pbtn" onclick="closeM('m-storage')">Cancel</button><button class="pbtn pr" id="s-save-btn" onclick="saveStorage()">Save tank</button></div>
 </div></div>
@@ -388,8 +422,8 @@ tr:hover td{background:#f8f8f6}
   <input type="hidden" id="tk-edit-id">
   <div class="fr"><div class="fg"><label>Fleet Nb. *</label><input id="tk-fleet" type="text" placeholder="e.g. FL-021"></div><div class="fg"><label>Plate Nb. *</label><input id="tk-plate" type="text" placeholder="e.g. QA-12345"></div></div>
   <div class="fr"><div class="fg"><label>Owner</label><input id="tk-owner" type="text" placeholder="Company or person"></div><div class="fg"><label>Location *</label><select id="tk-loc"></select></div></div>
-  <option>Available</option><option>On route</option><option>Maintenance</option><option>Inactive</option></select></div></div>
-  <div class="fr"><div class="fg"><label>Capacity (L) *</label><input id="tk-cap" type="number" min="0" placeholder="0"></div><div class="fg"><label>Opening stock (L)</label><input id="tk-cur" type="number" min="0" placeholder="0"></div></div>
+  <div class="fr"><div class="fg"><label>Make</label><input id="tk-make" type="text" placeholder="e.g. Hino, MAN"></div><div class="fg"><label>Model</label><input id="tk-model" type="text" placeholder="e.g. 500"></div><div class="fg"><label>Year</label><input id="tk-year" type="number" placeholder="2020" min="1990" max="2030"></div></div>
+  <div class="fr"><div class="fg"><label>Capacity (L) *</label><input id="tk-cap" type="number" min="0" placeholder="e.g. 10000"></div><div class="fg"><label>Status</label><select id="tk-stat"><option>Available</option><option>On route</option><option>Maintenance</option><option>Inactive</option></select></div></div>
   <div class="mfoot"><button class="pbtn" onclick="closeM('m-tanker')">Cancel</button><button class="pbtn pr" id="tk-save-btn" onclick="saveTanker()">Save tanker</button></div>
 </div></div>
 
@@ -458,6 +492,47 @@ tr:hover td{background:#f8f8f6}
   <div class="mfoot"><button class="pbtn" onclick="closeM('m-gs')">Cancel</button><button class="pbtn" onclick="testGS()">Test connection</button><button class="pbtn pr" onclick="saveGS()">Save &amp; connect</button></div>
 </div></div>
 
+<div class="ov" id="m-settings"><div class="modal" style="max-width:420px">
+  <div class="mtitle">&#9881; User settings</div>
+  <div class="sdiv">Background color</div>
+  <div style="display:flex;gap:10px;margin-bottom:16px">
+    <div onclick="setBg('pearl')" id="bg-pearl" style="flex:1;padding:14px;border-radius:8px;border:2px solid #c31c2a;background:#f4f4f2;cursor:pointer;text-align:center">
+      <div style="font-size:12px;font-weight:700;color:#212630">PEARL WHITE</div>
+      <div style="font-size:11px;color:#888f99;margin-top:2px">Default</div>
+    </div>
+    <div onclick="setBg('blue')" id="bg-blue" style="flex:1;padding:14px;border-radius:8px;border:2px solid transparent;background:#dfe9ee;cursor:pointer;text-align:center">
+      <div style="font-size:12px;font-weight:700;color:#212630">PALE BLUE</div>
+      <div style="font-size:11px;color:#4d5360;margin-top:2px">CAT blue</div>
+    </div>
+    <div onclick="setBg('dark')" id="bg-dark" style="flex:1;padding:14px;border-radius:8px;border:2px solid transparent;background:#1e2330;cursor:pointer;text-align:center">
+      <div style="font-size:12px;font-weight:700;color:white">NIGHT MODE</div>
+      <div style="font-size:11px;color:#b7cfd7;margin-top:2px">Easy on eyes</div>
+    </div>
+  </div>
+  <div class="sdiv">Auto-refresh interval</div>
+  <div style="display:flex;gap:10px;margin-bottom:16px">
+    <div onclick="setRefresh(5)" id="ref-5" style="flex:1;padding:12px;border-radius:8px;border:2px solid #c31c2a;background:white;cursor:pointer;text-align:center;font-size:13px;font-weight:700;color:#212630">5 min</div>
+    <div onclick="setRefresh(10)" id="ref-10" style="flex:1;padding:12px;border-radius:8px;border:2px solid transparent;background:white;cursor:pointer;text-align:center;font-size:13px;font-weight:700;color:#212630">10 min</div>
+    <div onclick="setRefresh(15)" id="ref-15" style="flex:1;padding:12px;border-radius:8px;border:2px solid transparent;background:white;cursor:pointer;text-align:center;font-size:13px;font-weight:700;color:#212630">15 min</div>
+    <div onclick="setRefresh(30)" id="ref-30" style="flex:1;padding:12px;border-radius:8px;border:2px solid transparent;background:white;cursor:pointer;text-align:center;font-size:13px;font-weight:700;color:#212630">30 min</div>
+  </div>
+  <div class="sdiv">Low stock alert threshold</div>
+  <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
+    <div onclick="setThreshold(10)" id="thr-10" style="flex:1;min-width:60px;padding:12px;border-radius:8px;border:2px solid transparent;background:white;cursor:pointer;text-align:center;font-size:13px;font-weight:700;color:#212630">10%</div>
+    <div onclick="setThreshold(20)" id="thr-20" style="flex:1;min-width:60px;padding:12px;border-radius:8px;border:2px solid transparent;background:white;cursor:pointer;text-align:center;font-size:13px;font-weight:700;color:#212630">20%</div>
+    <div onclick="setThreshold(30)" id="thr-30" style="flex:1;min-width:60px;padding:12px;border-radius:8px;border:2px solid transparent;background:white;cursor:pointer;text-align:center;font-size:13px;font-weight:700;color:#212630">30%</div>
+    <div onclick="setThreshold(40)" id="thr-40" style="flex:1;min-width:60px;padding:12px;border-radius:8px;border:2px solid transparent;background:white;cursor:pointer;text-align:center;font-size:13px;font-weight:700;color:#212630">40%</div>
+    <div onclick="setThreshold(50)" id="thr-50" style="flex:1;min-width:60px;padding:12px;border-radius:8px;border:2px solid transparent;background:white;cursor:pointer;text-align:center;font-size:13px;font-weight:700;color:#212630">50%</div>
+  </div>
+  <div class="sdiv">Stock adjustment permission</div>
+  <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
+    <div onclick="setAdjPerm('admin')" id="adj-perm-admin" style="flex:1;padding:12px;border-radius:8px;border:2px solid #c31c2a;background:white;cursor:pointer;text-align:center;font-size:12px;font-weight:700;color:#212630">Admin only</div>
+    <div onclick="setAdjPerm('storekeeper')" id="adj-perm-storekeeper" style="flex:1;padding:12px;border-radius:8px;border:2px solid transparent;background:white;cursor:pointer;text-align:center;font-size:12px;font-weight:700;color:#212630">Admin + Storekeeper</div>
+    <div onclick="setAdjPerm('all')" id="adj-perm-all" style="flex:1;padding:12px;border-radius:8px;border:2px solid transparent;background:white;cursor:pointer;text-align:center;font-size:12px;font-weight:700;color:#212630">All roles</div>
+  </div>
+  <div class="mfoot"><button class="pbtn pr" onclick="closeM('m-settings')">Done</button></div>
+</div></div>
+
 <div class="ov" id="m-del"><div class="modal" style="max-width:380px">
   <div class="mtitle" style="color:#c31c2a">Confirm deletion</div>
   <p style="font-size:13px;color:#4d5360">You are about to delete <strong id="del-nm"></strong>. This cannot be undone.</p>
@@ -477,13 +552,22 @@ let delCtx={type:null,id:null};
 let selId=null;
 let GS_URL=localStorage.getItem('fo_gs')||'';
 const ADMIN={id:'u_admin',name:'Admin',empId:'',residencyId:'',password:'admin123',role:'admin',assignedId:null,status:'Active'};
-function allU(){return[ADMIN,...S.users]}
+function allU(){
+  // If Google Sheets has at least one admin user, don't show hardcoded Admin
+  const hasGSAdmin=S.users.some(u=>u.role==='admin'&&(u.status||'').toLowerCase()==='active');
+  if(hasGSAdmin)return S.users;
+  return[ADMIN,...S.users];
+}
 function rl(r){return{admin:'Administrator',storekeeper:'Storekeeper',tanker_driver:'Tanker Driver',driver:'Driver',pmv_admin:'PMV Admin'}[r]||r}
 function uid(){return'_'+Math.random().toString(36).substr(2,9)}
-function ndt(){return new Date().toISOString().slice(0,16)}
-function fmt(d){if(!d)return'&#8212;';try{const dt=new Date(d);return dt.toLocaleDateString('en-GB')+' '+dt.toTimeString().slice(0,5)}catch(e){return d}}
+function ndt(){
+  const now=new Date();
+  const qatar=new Date(now.getTime()+(3*60*60*1000));
+  return qatar.toISOString().slice(0,16);
+}
+function fmt(d){if(!d)return'&#8212;';try{const dt=new Date(d);const qatar=new Date(dt.getTime()+(3*60*60*1000));return qatar.toISOString().slice(0,10).split('-').reverse().join('/')+' '+qatar.toISOString().slice(11,16)}catch(e){return d}}
 function pct(c,cap){return cap>0?Math.min(100,Math.round((c||0)/cap*100)):0}
-function bar(c,cap){const p=pct(c,cap);const cl=p<20?'pbr':p<50?'pba':'';return'<div style="display:flex;align-items:center;gap:6px"><div class="pw"><div class="pb '+cl+'" style="width:'+p+'%"></div></div><span style="font-size:11px;color:#888f99">'+p+'%</span></div>'}
+function bar(c,cap){const p=pct(c,cap);const cl=p<alertThreshold?'pbr':p<50?'pba':'';return'<div style="display:flex;align-items:center;gap:6px"><div class="pw"><div class="pb '+cl+'" style="width:'+p+'%"></div></div><span style="font-size:11px;color:#888f99">'+p+'%</span></div>'}
 function sbadge(s){const m={Active:'bg',Available:'bg','On route':'bb',Maintenance:'ba',Inactive:'bgr',Idle:'bgr',Decommissioned:'bgr'};return'<span class="badge '+(m[s]||'bgr')+'">'+s+'</span>'}
 function txb(t){const m={receive:'bb',transfer:'bgr',distribute:'br'};const l={receive:'Receive',transfer:'Transfer',distribute:'Distribute'};return'<span class="badge '+m[t]+'">'+l[t]+'</span>'}
 function aT(){return[...S.storage.map(x=>({...x,_k:'tank'})),...S.tankers.map(x=>({...x,_k:'tanker'}))]}
@@ -495,6 +579,319 @@ function setLocFilter(val){S.locationFilter=val;rDash()}
 function filteredTanks(){const f=S.locationFilter;if(f==='all')return aT();return aT().filter(x=>x.location===f)}
 function filteredStorage(){const f=document.getElementById('rpt-loc-filter')?.value||'all';return f==='all'?S.storage:S.storage.filter(x=>x.location===f)}
 function filteredTankers(){const f=document.getElementById('rpt-loc-filter')?.value||'all';return f==='all'?S.tankers:S.tankers.filter(x=>x.location===f)}
+
+// ── USER SETTINGS ─────────────────────────────────────────────────────────────
+const THEMES={
+  pearl:{bg:'#f4f4f2',card:'white',text:'#1a1a1a',border:'#d8d8d4'},
+  blue:{bg:'#dfe9ee',card:'white',text:'#1a1a1a',border:'#b7cfd7'},
+  dark:{bg:'#1e2330',card:'#252b3b',text:'#ebebe5',border:'#2d3545'}
+};
+let currentBg=localStorage.getItem('fo_bg')||'pearl';
+let alertThreshold=parseInt(localStorage.getItem('fo_threshold')||'20');
+let currentRefresh=parseInt(localStorage.getItem('fo_refresh')||'5');
+
+function applyTheme(name){
+  const t=THEMES[name]||THEMES.pearl;
+  document.querySelector('.main').style.background=t.bg;
+  document.querySelector('.content').style.background=t.bg;
+  // Update cards
+  document.querySelectorAll('.card').forEach(el=>{el.style.background=t.card;el.style.borderColor=t.border;el.style.color=t.text});
+  // Update table headers stay dark
+  document.querySelectorAll('th').forEach(el=>{el.style.background='#212630';el.style.color='white'});
+  // Update table cells text color
+  document.querySelectorAll('td').forEach(el=>{el.style.color=t.text});
+  // Update topbar
+  const tb=document.querySelector('.topbar');if(tb){tb.style.background=name==='dark'?'#252b3b':'white';tb.style.borderColor=t.border}
+  // Update page title
+  const pt=document.getElementById('pg-title');if(pt)pt.style.color=name==='dark'?'#ebebe5':'#212630';
+  // Update metric labels and values
+  document.querySelectorAll('.ml').forEach(el=>{el.style.color=name==='dark'?'#b7cfd7':'#888f99'});
+  document.querySelectorAll('.ms').forEach(el=>{el.style.color=name==='dark'?'#8a95a8':'#888f99'});
+  document.querySelectorAll('.metric').forEach(el=>{el.style.background=name==='dark'?'#252b3b':'white';el.style.borderColor=t.border});
+  currentBg=name;
+  // Update settings modal selection
+  ['pearl','blue','dark'].forEach(b=>{
+    const el=document.getElementById('bg-'+b);
+    if(el)el.style.border=b===name?'2px solid #c31c2a':'2px solid transparent';
+  });
+}
+
+function setBg(name){
+  localStorage.setItem('fo_bg',name);
+  applyTheme(name);
+}
+
+function setRefresh(mins){
+  localStorage.setItem('fo_refresh',mins);
+  currentRefresh=mins;
+  REFRESH_MS=mins*60*1000;
+  stopAutoRefresh();
+  if(S.currentUser)startAutoRefresh();
+  [5,10,15,30].forEach(m=>{
+    const el=document.getElementById('ref-'+m);
+    if(el)el.style.border=m===mins?'2px solid #c31c2a':'2px solid transparent';
+  });
+  toast('Auto-refresh set to '+mins+' minutes.');
+}
+
+function setThreshold(pct){
+  localStorage.setItem('fo_threshold',pct);
+  alertThreshold=pct;
+  [10,15,20,25,30].forEach(t=>{
+    const el=document.getElementById('thr-'+t);
+    if(el)el.style.border=t===pct?'2px solid #c31c2a':'2px solid transparent';
+  });
+  rDash();
+  toast('Low stock alert set to '+pct+'%.');
+}
+
+function initSettings(){
+  applyTheme(currentBg);
+  // Mark current refresh selection
+  [5,10,15,30].forEach(m=>{
+    const el=document.getElementById('ref-'+m);
+    if(el)el.style.border=m===currentRefresh?'2px solid #c31c2a':'2px solid transparent';
+  });
+  // Apply saved refresh
+  REFRESH_MS=currentRefresh*60*1000;
+  // Mark adjustment permission
+  adjPerm=localStorage.getItem('fo_adj_perm')||'admin';
+  ['admin','storekeeper','all'].forEach(p=>{
+    const el=document.getElementById('adj-perm-'+p);
+    if(el)el.style.border=p===adjPerm?'2px solid #c31c2a':'2px solid transparent';
+  });
+  // Mark current threshold
+  [10,15,20,25,30].forEach(t=>{
+    const el=document.getElementById('thr-'+t);
+    if(el)el.style.border=t===alertThreshold?'2px solid #c31c2a':'2px solid transparent';
+  });
+}
+
+function onRecvDestSel(){
+  const id=document.getElementById('r-dest').value;
+  const el=document.getElementById('r-dest-stock');
+  if(!id){el.style.display='none';return}
+  const tank=S.storage.find(x=>x.id===id);
+  if(tank){
+    const stock=tank.current||0;
+    const cap=tank.capacity||0;
+    const p=cap>0?Math.round(stock/cap*100):0;
+    el.innerHTML=`<div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap">
+      <span>📦 Capacity: <strong>${cap.toLocaleString()} L</strong></span>
+      <span style="color:#2e7d32">⛽ Current stock: <strong>${stock.toLocaleString()} L</strong></span>
+      <span style="color:#888f99">${p}% full</span>
+    </div>`;
+    el.style.display='block';
+  } else {
+    el.style.display='none';
+  }
+}
+function onTransferSrcSel(){
+  const id=document.getElementById('t-from').value;
+  const el=document.getElementById('t-from-stock');
+  const volInput=document.getElementById('t-vol');
+  if(!id){el.style.display='none';return}
+  const tank=S.storage.find(x=>x.id===id);
+  if(tank){
+    const stock=tank.current||0;
+    const cap=tank.capacity||0;
+    const p=cap>0?Math.round(stock/cap*100):0;
+    el.innerHTML=`<div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap">
+      <span>📦 Capacity: <strong>${cap.toLocaleString()} L</strong></span>
+      <span style="color:${stock>0?'#2e7d32':'#c31c2a'}">⛽ Available: <strong>${stock.toLocaleString()} L</strong></span>
+      <span style="color:#888f99">${p}% full</span>
+    </div>`;
+    el.style.display='block';
+    volInput.max=stock;
+    volInput.oninput=function(){
+      if(parseFloat(this.value)>stock){
+        this.style.borderColor='#c31c2a';
+        this.style.background='#fdecea';
+      } else {
+        this.style.borderColor='#c5c5c0';
+        this.style.background='white';
+      }
+    }
+  } else {
+    el.style.display='none';
+  }
+}
+function onTransferDestSel(){
+  const id=document.getElementById('t-to').value;
+  const el=document.getElementById('t-to-stock');
+  if(!id){el.style.display='none';return}
+  const tanker=S.tankers.find(x=>x.id===id||x.fleetNb===id);
+  if(tanker){
+    const stock=tanker.current||0;
+    const cap=tanker.capacity||0;
+    const p=cap>0?Math.round(stock/cap*100):0;
+    el.innerHTML=`<div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap">
+      <span>📦 Capacity: <strong>${cap.toLocaleString()} L</strong></span>
+      <span style="color:#212630">⛽ Current stock: <strong>${stock.toLocaleString()} L</strong></span>
+      <span style="color:#888f99">${p}% full</span>
+    </div>`;
+    el.style.display='block';
+  } else {
+    el.style.display='none';
+  }
+}
+// ── STOCK ADJUSTMENT ──────────────────────────────────────────────────────────
+let adjPerm=localStorage.getItem('fo_adj_perm')||'admin';
+let adjHistory=[];
+
+function setAdjPerm(perm){
+  localStorage.setItem('fo_adj_perm',perm);
+  adjPerm=perm;
+  ['admin','storekeeper','all'].forEach(p=>{
+    const el=document.getElementById('adj-perm-'+p);
+    if(el)el.style.border=p===perm?'2px solid #c31c2a':'2px solid transparent';
+  });
+  buildNav();
+  toast('Adjustment permission updated.');
+}
+
+function canAdjust(){
+  const role=S.currentUser?.role;
+  if(adjPerm==='admin')return role==='admin';
+  if(adjPerm==='storekeeper')return role==='admin'||role==='storekeeper';
+  return true;
+}
+
+function rAdj(){
+  if(!canAdjust()){sal('adj-alert','You do not have permission to make stock adjustments. Contact admin.',true);return}
+  document.getElementById('adj-date').value=ndt();
+  // Populate tank dropdown with all tanks and tankers
+  const u=S.currentUser;
+  let tanks=[];
+  if(u.role==='storekeeper'){
+    const ids=(u.assignedId||'').split(',').map(x=>x.trim()).filter(Boolean);
+    tanks=S.storage.filter(x=>ids.includes(x.id)||ids.includes(x.nb)).map(x=>({...x,_k:'tank'}));
+  } else {
+    tanks=[...S.storage.map(x=>({...x,_k:'tank'})),...S.tankers.map(x=>({...x,_k:'tanker'}))];
+  }
+  document.getElementById('adj-tank').innerHTML='<option value="">— Select tank or tanker —</option>'+
+    tanks.map(t=>`<option value="${t.id}">[${t._k==='tank'?'Tank':'Tanker'}] ${t.nb||t.fleetNb}${t.location?' - '+t.location:''} (${(t.current||0).toLocaleString()} L)</option>`).join('');
+  document.getElementById('adj-info').style.display='none';
+  document.getElementById('adj-physical').value='';
+  document.getElementById('adj-reason').value='';
+  document.getElementById('adj-notes').value='';
+  document.getElementById('adj-diff').textContent='—';
+  // Load adjustment history
+  renderAdjHistory();
+}
+
+function onAdjTankSel(){
+  const id=document.getElementById('adj-tank').value;
+  const info=document.getElementById('adj-info');
+  const lastInfo=document.getElementById('adj-last-info');
+  if(!id){info.style.display='none';lastInfo.style.display='none';return}
+  const tank=aT().find(x=>x.id===id);
+  if(!tank){info.style.display='none';lastInfo.style.display='none';return}
+  const stock=tank.current||0;
+  document.getElementById('adj-tank-name').textContent=(tank.nb||tank.fleetNb)+(tank.location?' - '+tank.location:'');
+  document.getElementById('adj-sys-stock').textContent=stock.toLocaleString()+' L';
+  document.getElementById('adj-diff').textContent='—';
+  document.getElementById('adj-diff').style.color='#212630';
+  document.getElementById('adj-physical').value='';
+  info.style.display='block';
+  // Show last adjustment info
+  const tankAdjs=adjHistory.filter(a=>a.tankId===id).sort((a,b)=>new Date(b.date)-new Date(a.date));
+  const lastAdj=tankAdjs[0];
+  const now=new Date(new Date().getTime()+(3*60*60*1000));
+  const thisMonth=now.getMonth();
+  const thisYear=now.getFullYear();
+  const adjThisMonth=tankAdjs.filter(a=>{const d=new Date(a.date);return d.getMonth()===thisMonth&&d.getFullYear()===thisYear});
+  const monthDone=adjThisMonth.length>0;
+  // Frequent adjustment warning (more than 3 in last 30 days)
+  const thirtyDaysAgo=new Date(now.getTime()-30*24*60*60*1000);
+  const recentAdjs=tankAdjs.filter(a=>new Date(a.date)>=thirtyDaysAgo);
+  const frequent=recentAdjs.length>=3;
+  let html='';
+  if(lastAdj){
+    const diff=lastAdj.diff||0;
+    const diffStr=(diff>=0?'+':'')+diff.toLocaleString()+' L';
+    const diffColor=diff>0?'#f57f17':diff<0?'#c31c2a':'#2e7d32';
+    html+=`<div style="margin-bottom:8px"><strong>Last adjustment:</strong> ${fmt(lastAdj.date)} — Physical: ${(lastAdj.physical||0).toLocaleString()} L — Difference: <span style="color:${diffColor};font-weight:700">${diffStr}</span> — Reason: ${lastAdj.reason}</div>`;
+    if(recentAdjs.length>1){html+=`<div style="font-size:12px;color:#888f99">${recentAdjs.length} adjustments in the last 30 days</div>`;}
+  } else {
+    html+='<div><strong>Last adjustment:</strong> Never recorded</div>';
+  }
+  if(frequent){
+    html=`<div style="background:#fdecea;border:1px solid #c31c2a;border-radius:6px;padding:8px 12px;margin-bottom:8px;font-size:12px;color:#c31c2a;font-weight:700">⚠️ Frequent adjustments detected: ${recentAdjs.length} adjustments in the last 30 days. This may indicate a flowmeter or measurement problem.</div>`+html;
+    lastInfo.style.borderColor='#c31c2a';lastInfo.style.background='#fdecea';
+  } else if(!monthDone){
+    html=`<div style="background:#fff8e1;border:1px solid #f0c050;border-radius:6px;padding:8px 12px;margin-bottom:8px;font-size:12px;color:#7a5c00;font-weight:700">⚠️ No adjustment done this month for this tank. Monthly adjustment is recommended.</div>`+html;
+    lastInfo.style.borderColor='#f0c050';lastInfo.style.background='#fff8e1';
+  } else {
+    lastInfo.style.borderColor='#b7cfd7';lastInfo.style.background='#dfe9ee';
+  }
+  lastInfo.innerHTML=html;
+  lastInfo.style.display='block';
+}
+
+function calcAdjDiff(){
+  const id=document.getElementById('adj-tank').value;
+  const physical=parseFloat(document.getElementById('adj-physical').value);
+  if(!id||isNaN(physical))return;
+  const tank=aT().find(x=>x.id===id);
+  if(!tank)return;
+  const sys=tank.current||0;
+  const diff=physical-sys;
+  const el=document.getElementById('adj-diff');
+  el.textContent=(diff>=0?'+':'')+diff.toLocaleString()+' L';
+  el.style.color=diff===0?'#2e7d32':diff>0?'#f57f17':'#c31c2a';
+}
+
+async function doAdjustment(){
+  const id=document.getElementById('adj-tank').value;
+  const physical=parseFloat(document.getElementById('adj-physical').value);
+  const reason=document.getElementById('adj-reason').value;
+  const date=document.getElementById('adj-date').value;
+  if(!id){sal('adj-alert','Please select a tank or tanker.',true);return}
+  if(isNaN(physical)||physical<0){sal('adj-alert','Please enter a valid physical stock quantity.',true);return}
+  if(!reason){sal('adj-alert','Please select a reason.',true);return}
+  const tank=aT().find(x=>x.id===id);
+  if(!tank)return;
+  const sysStock=tank.current||0;
+  const diff=physical-sysStock;
+  if(diff===0){sal('adj-alert','No adjustment needed — physical stock matches system stock.',true);return}
+  // Confirm
+  const proceed=confirm(`Confirm stock adjustment:\n\nTank: ${tank.nb||tank.fleetNb}\nSystem stock: ${sysStock.toLocaleString()} L\nPhysical stock: ${physical.toLocaleString()} L\nDifference: ${diff>=0?'+':''}${diff.toLocaleString()} L\nReason: ${reason}\n\nThis will update the stock to ${physical.toLocaleString()} L.`);
+  if(!proceed)return;
+  // Apply adjustment
+  const adj={id:uid(),type:'adjustment',date,tankId:id,tankName:tank.nb||tank.fleetNb,tankKind:tank._k||'tank',location:tank.location||'',sysStock,physical,diff,reason,notes:document.getElementById('adj-notes').value,userId:S.currentUser.id,userName:S.currentUser.name};
+  // Update stock in memory
+  uT(id, diff);
+  adjHistory.push(adj);
+  // Write to GS
+  try{await gsC({action:'saveAdjustment',...adj})}catch(e){toast('GS write failed: '+e.message)}
+  sal('adj-alert',`Stock adjusted from ${sysStock.toLocaleString()} L to ${physical.toLocaleString()} L (${diff>=0?'+':''}${diff.toLocaleString()} L). Reason: ${reason}`);
+  // Reset form
+  document.getElementById('adj-tank').value='';
+  document.getElementById('adj-info').style.display='none';
+  document.getElementById('adj-physical').value='';
+  document.getElementById('adj-reason').value='';
+  document.getElementById('adj-notes').value='';
+  renderAdjHistory();
+  rAdj();
+}
+
+function renderAdjHistory(){
+  const el=document.getElementById('adj-history');
+  const em=document.getElementById('adj-history-empty');
+  if(!adjHistory.length){el.innerHTML='';em.style.display='';return}
+  em.style.display='none';
+  el.innerHTML=[...adjHistory].reverse().map(a=>`<tr>
+    <td style="font-size:12px;white-space:nowrap">${fmt(a.date)}</td>
+    <td style="font-weight:700">${a.tankName}${a.location?' <span style="color:#888f99;font-weight:400">'+a.location+'</span>':''}</td>
+    <td>${(a.sysStock||0).toLocaleString()}</td>
+    <td>${(a.physical||0).toLocaleString()}</td>
+    <td style="font-weight:700;color:${a.diff>0?'#f57f17':a.diff<0?'#c31c2a':'#2e7d32'}">${a.diff>=0?'+':''}${(a.diff||0).toLocaleString()}</td>
+    <td>${a.reason}</td>
+    <td style="font-size:12px;color:#888f99">${a.notes||'—'}</td>
+    <td style="font-size:12px">${a.userName}</td>
+  </tr>`).join('');
+}
 
 function setSrcId(v){
   document.getElementById('d-src-id').value=v;
@@ -524,8 +921,6 @@ function editStorage(id){
   setModal('s-modal-title','s-save-btn','Edit fixed storage tank','Update tank');
   document.getElementById('s-nb').value=s.nb;
   document.getElementById('s-loc').innerHTML='<option value="">-- Select location --</option>'+locOpts(s.location);
-  document.getElementById('s-cap').value=s.capacity||0;
-  document.getElementById('s-cur').value=s.current||0;
   document.getElementById('s-stat').value=s.status;
   openM('m-storage');
 }
@@ -552,6 +947,7 @@ function editTanker(id){
   document.getElementById('tk-loc').innerHTML='<option value="">-- Select location --</option>'+locOpts(t.location);
   document.getElementById('tk-cap').value=t.capacity||0;
   document.getElementById('tk-cur').value=t.current||0;
+  document.getElementById('tk-cap').value=t.capacity||0;
   document.getElementById('tk-stat').value=t.status;
   openM('m-tanker');
 }
@@ -680,14 +1076,15 @@ async function wTx(tx,extra){if(!GS_URL)return;try{await gsC({action:'addTx',...
 
 // ── SESSION & AUTO-REFRESH ────────────────────────────────────────────────────
 let refreshTimer=null;
-const REFRESH_MS=5*60*1000; // 5 minutes
+let REFRESH_MS=5*60*1000; // 5 minutes
 
 function startAutoRefresh(){
   stopAutoRefresh();
+  const ms=REFRESH_MS;
   refreshTimer=setInterval(async()=>{
     if(!S.currentUser||!GS_URL)return;
     await silentRefresh();
-  },REFRESH_MS);
+  },ms);
 }
 
 function stopAutoRefresh(){
@@ -708,13 +1105,14 @@ async function silentRefresh(){
     if(data.locations)S.locations=pR(data.locations,'locations');
     // Refresh transactions
     const txs=[];
-    if(data.txReceive)txs.push(...pTx(data.txReceive,'receive'));
+    if(data.txAdjustment)adjHistory=data.txAdjustment.map(r=>({id:r['ID']||'',date:r['Date/Time']||'',tankId:r['Tank ID']||r['Tank/Tanker']||'',tankName:r['Tank/Tanker']||'',tankKind:r['Type']||'',location:r['Location']||'',sysStock:+r['System Stock (L)']||0,physical:+r['Physical Stock (L)']||0,diff:+r['Difference (L)']||0,reason:r['Reason']||'',notes:r['Notes']||'',userName:r['Adjusted By']||'',userId:r['User ID']||''}));
+if(data.txReceive)txs.push(...pTx(data.txReceive,'receive'));
     if(data.txTransfer)txs.push(...pTx(data.txTransfer,'transfer'));
     if(data.txDistribute)txs.push(...pTx(data.txDistribute,'distribute'));
     if(txs.length)S.transactions=txs;
     // Update current page silently
     const curPage=document.querySelector('.page.active')?.id?.replace('page-','');
-    if(curPage){const fn={dashboard:rDash,mytank:rMyTank,transactions:renderTx,storage:rStorage,tankers:rTankers,fleet:rFleet,reports:rReports};if(fn[curPage])fn[curPage]();}
+    if(curPage){const fn={dashboard:rDash,adjustment:rAdj,mytank:rMyTank,transactions:renderTx,storage:rStorage,tankers:rTankers,fleet:rFleet,reports:rReports};if(fn[curPage])fn[curPage]();}
     // Update refresh indicator
     const ind=document.getElementById('last-refresh');
     if(ind)ind.textContent='Last sync: '+new Date().toTimeString().slice(0,5);
@@ -752,8 +1150,8 @@ async function tryAutoLogin(){
   document.getElementById('nav-av').textContent=u.name.slice(0,2).toUpperCase();
   document.getElementById('nav-nm').textContent=u.name;
   document.getElementById('nav-rl').textContent=rl(u.role);
-  document.getElementById('tb-date').textContent=new Date().toLocaleDateString('en-GB',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
-  buildNav();updGS();
+  document.getElementById('tb-date').textContent=new Date(new Date().getTime()+(3*60*60*1000)).toLocaleDateString('en-GB',{weekday:'long',year:'numeric',month:'long',day:'numeric',timeZone:'UTC'});
+  buildNav();updGS();initSettings();
   await loadGS(u.role,u.id);
   startAutoRefresh();
   if(u.role==='admin'||u.role==='pmv_admin')nav('dashboard');else nav('mytank');
@@ -762,7 +1160,7 @@ async function tryAutoLogin(){
 function popSel(){const sel=document.getElementById('user-sel');const cur=sel.value;sel.innerHTML='<option value="">&#8212; Select your name &#8212;</option>'+allU().filter(u=>u.status?.toLowerCase()==='active').map(u=>'<option value="'+u.id+'">'+u.name+' ('+rl(u.role)+')</option>').join('');if(cur)sel.value=cur}
 function onSel(){const id=document.getElementById('user-sel').value;const pws=document.getElementById('pw-sec');if(!id){pws.style.display='none';selId=null;return}selId=id;const u=allU().find(x=>x.id===id)||{name:'Admin',role:'admin'};document.getElementById('chip-av').textContent=u.name.slice(0,2).toUpperCase();document.getElementById('chip-nm').textContent=u.name;document.getElementById('chip-rl').textContent=rl(u.role);pws.style.display='block';document.getElementById('lerr').style.display='none';document.getElementById('pw').value='';setTimeout(()=>document.getElementById('pw').focus(),50)}
 function resetSel(){document.getElementById('user-sel').value='';document.getElementById('pw-sec').style.display='none';selId=null;document.getElementById('pw').value='';document.getElementById('lerr').style.display='none'}
-async function doLogin(){if(!selId){alert('Please select your name.');return}const pw=document.getElementById('pw').value;const u=allU().find(x=>x.id===selId&&x.password===pw&&x.status?.toLowerCase()==='active');if(!u){document.getElementById('lerr').style.display='block';document.getElementById('pw').value='';return}document.getElementById('lerr').style.display='none';S.currentUser=u;document.getElementById('login-wrap').style.display='none';document.getElementById('app').style.display='block';document.getElementById('nav-av').textContent=u.name.slice(0,2).toUpperCase();document.getElementById('nav-nm').textContent=u.name;document.getElementById('nav-rl').textContent=rl(u.role);document.getElementById('tb-date').textContent=new Date().toLocaleDateString('en-GB',{weekday:'long',year:'numeric',month:'long',day:'numeric'});buildNav();updGS();await loadGS(u.role,u.id);if(u.role==='admin'||u.role==='pmv_admin')nav('dashboard');else nav('mytank');startAutoRefresh()}
+async function doLogin(){if(!selId){alert('Please select your name.');return}const pw=document.getElementById('pw').value;const u=allU().find(x=>x.id===selId&&x.password===pw&&x.status?.toLowerCase()==='active');if(!u){document.getElementById('lerr').style.display='block';document.getElementById('pw').value='';return}document.getElementById('lerr').style.display='none';S.currentUser=u;document.getElementById('login-wrap').style.display='none';document.getElementById('app').style.display='block';document.getElementById('nav-av').textContent=u.name.slice(0,2).toUpperCase();document.getElementById('nav-nm').textContent=u.name;document.getElementById('nav-rl').textContent=rl(u.role);document.getElementById('tb-date').textContent=new Date(new Date().getTime()+(3*60*60*1000)).toLocaleDateString('en-GB',{weekday:'long',year:'numeric',month:'long',day:'numeric',timeZone:'UTC'});buildNav();updGS();await loadGS(u.role,u.id);if(u.role==='admin'||u.role==='pmv_admin')nav('dashboard');else nav('mytank');startAutoRefresh()}
 document.getElementById('pw').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin()})
 function doLogout(){
   localStorage.removeItem('fo_session');
@@ -774,14 +1172,27 @@ function doLogout(){
   resetSel();popSel();
 }
 
-function buildNav(){const role=S.currentUser.role;const defs={admin:[{s:'Operations'},{id:'dashboard',l:'Dashboard'},{id:'receive',l:'Receive Diesel'},{id:'transfer',l:'Transfer'},{id:'distribute',l:'Distribute'},{id:'transactions',l:'All Transactions'},{s:'Master Data'},{id:'storage',l:'Fixed Storage'},{id:'tankers',l:'Mobile Tankers'},{id:'suppliers',l:'Suppliers'},{id:'fleet',l:'Fleet / Equipment'},{id:'projects',l:'Projects'},{id:'locations',l:'Locations'},{id:'drivers',l:'Drivers List'},{s:'Admin'},{id:'users',l:'User Management'},{id:'reports',l:'Reports'},{id:'export',l:'Export / Sync'}],storekeeper:[{s:'My Tank'},{id:'mytank',l:'My Storage'},{s:'Operations'},{id:'receive',l:'Receive Diesel'},{id:'transfer',l:'Transfer'},{id:'distribute',l:'Distribute'}],tanker_driver:[{s:'My Tanker'},{id:'mytank',l:'My Tanker'},{s:'Operations'},{id:'distribute',l:'Issue Diesel'}],driver:[{s:'Overview'},{id:'mytank',l:'My Overview'}]};document.getElementById('nav-links').innerHTML=(defs[role]||defs.driver).map(x=>x.s?`<div class="nvsec">${x.s}</div>`:`<div class="nvit" id="nav-${x.id}" onclick="nav('${x.id}')">${x.l}</div>`).join('')}
-const pts={dashboard:'Dashboard',locations:'Locations',mytank:'My Tank',receive:'Receive Diesel',transfer:'Transfer',distribute:'Issue Diesel',transactions:'All Transactions',storage:'Fixed Storage',tankers:'Mobile Tankers',suppliers:'Suppliers',fleet:'Fleet / Equipment',projects:'Projects',users:'User Management',drivers:'Drivers List',reports:'Reports',export:'Export & Sync'};
+function buildNav(){const role=S.currentUser.role;const defs={admin:[{s:'Operations'},{id:'dashboard',l:'Dashboard'},{id:'receive',l:'Receive Diesel'},{id:'transfer',l:'Transfer'},{id:'distribute',l:'Distribute'},{id:'transactions',l:'All Transactions'},{id:'adjustment',l:'Stock Adjustment'},{s:'Master Data'},{id:'storage',l:'Fixed Storage'},{id:'tankers',l:'Mobile Tankers'},{id:'suppliers',l:'Suppliers'},{id:'fleet',l:'Fleet / Equipment'},{id:'projects',l:'Projects'},{id:'locations',l:'Locations'},{id:'drivers',l:'Drivers List'},{s:'Admin'},{id:'users',l:'User Management'},{id:'reports',l:'Reports'},{id:'export',l:'Export / Sync'}],storekeeper:[{s:'My Tank'},{id:'mytank',l:'My Storage'},{s:'Operations'},{id:'receive',l:'Receive Diesel'},{id:'transfer',l:'Transfer'},{id:'distribute',l:'Distribute'},{id:'adjustment',l:'Stock Adjustment'}],tanker_driver:[{s:'My Tanker'},{id:'mytank',l:'My Tanker'},{s:'Operations'},{id:'distribute',l:'Issue Diesel'}],driver:[{s:'Overview'},{id:'mytank',l:'My Overview'}]};const navItems=(defs[role]||defs.driver).filter(x=>{
+    if(x.id==='adjustment')return canAdjust();
+    return true;
+  });
+  document.getElementById('nav-links').innerHTML=navItems.map(x=>x.s?`<div class="nvsec">${x.s}</div>`:`<div class="nvit" id="nav-${x.id}" onclick="nav('${x.id}')">${x.l}</div>`).join('')}
+const pts={dashboard:'Dashboard',adjustment:'Stock Adjustment',locations:'Locations',mytank:'My Tank',receive:'Receive Diesel',transfer:'Transfer',distribute:'Issue Diesel',transactions:'All Transactions',storage:'Fixed Storage',tankers:'Mobile Tankers',suppliers:'Suppliers',fleet:'Fleet / Equipment',projects:'Projects',users:'User Management',drivers:'Drivers List',reports:'Reports',export:'Export & Sync'};
 function nav(pg){document.querySelectorAll('.nvit').forEach(n=>n.classList.remove('active'));const ni=document.getElementById('nav-'+pg);if(ni)ni.classList.add('active');document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));const p=document.getElementById('page-'+pg);if(p)p.classList.add('active');document.getElementById('pg-title').textContent=pts[pg]||pg;function updRoleUI(){const r=S.currentUser?.role;const addTankBtn=document.getElementById('add-tank-btn');if(addTankBtn)addTankBtn.style.display=(r==='admin')?'':'none';const addTankerBtn=document.getElementById('add-tanker-btn');if(addTankerBtn)addTankerBtn.style.display=(r==='admin'||r==='pmv_admin')?'':'none';const addFleetBtn=document.getElementById('add-fleet-btn');if(addFleetBtn)addFleetBtn.style.display=(r==='admin'||r==='pmv_admin')?'':'none'}
-const fn={dashboard:rDash,mytank:rMyTank,receive:pRecv,transfer:pTrans,distribute:pDist,transactions:renderTx,storage:rStorage,tankers:rTankers,suppliers:rSuppliers,fleet:rFleet,projects:rProjects,locations:rLocations,users:rUsers,drivers:rDrivers,reports:rReports};if(fn[pg])fn[pg]();updRoleUI()}
+const fn={dashboard:rDash,adjustment:rAdj,mytank:rMyTank,receive:pRecv,transfer:pTrans,distribute:pDist,transactions:renderTx,storage:rStorage,tankers:rTankers,suppliers:rSuppliers,fleet:rFleet,projects:rProjects,locations:rLocations,users:rUsers,drivers:rDrivers,reports:rReports};if(fn[pg])fn[pg]();updRoleUI()}
 
 function rMyTank(){const u=S.currentUser;let tank=null,label='',meta='';if(u.role==='tanker_driver'){tank=S.tankers.find(x=>x.id===u.assignedId||x.fleetNb===u.assignedId);if(tank){label=tank.fleetNb+(tank.plateNb?' - '+tank.plateNb:'');const details=[tank.make,tank.model,tank.year].filter(Boolean).join(' ');meta=[details?details:'',tank.owner?'Owner: '+tank.owner:'',tank.location?'Location: '+tank.location:'','Capacity: '+(tank.capacity||0).toLocaleString()+' L'].filter(Boolean).join(' · ')}}else if(u.role==='storekeeper'){const ids=(u.assignedId||'').split(',').map(x=>x.trim()).filter(Boolean);const tanks=S.storage.filter(x=>ids.includes(x.id)||ids.includes(x.nb));if(tanks.length){tank=tanks[0];label=tanks.length>1?tanks.map(t=>'Tank '+t.nb).join(', '):'Tank '+tank.nb;meta=[tank.location?'Location: '+tank.location:'','Capacity: '+(tank.capacity||0).toLocaleString()+' L',(tanks.length>1?'(+'+( tanks.length-1)+' more tanks)':'')].filter(Boolean).join(' · ')}}if(!tank){document.getElementById('my-label').textContent='No tank assigned';document.getElementById('my-meta').textContent='Contact admin.';['my-cur','my-recv','my-issued'].forEach(x=>document.getElementById(x).textContent='--');document.getElementById('my-tx').innerHTML='';document.getElementById('my-tx-empty').style.display='';return}document.getElementById('my-label').textContent=label;document.getElementById('my-meta').textContent=meta;document.getElementById('my-cur').textContent=(tank.current||0).toLocaleString()+' L';const myTx=S.transactions.filter(t=>t.userId===u.id);const rt=S.transactions.filter(t=>(t.type==='receive'||t.type==='transfer')&&t.destId===u.assignedId).reduce((a,x)=>a+x.volume,0);document.getElementById('my-recv').textContent=rt.toLocaleString()+' L';document.getElementById('my-issued').textContent=myTx.filter(t=>t.type==='distribute').reduce((a,x)=>a+x.volume,0).toLocaleString()+' L';document.getElementById('my-tx-empty').style.display=myTx.length?'none':'';document.getElementById('my-tx').innerHTML=[...myTx].reverse().map(t=>'<tr><td style="font-size:11px;white-space:nowrap">'+fmt(t.date)+'</td><td>'+txb(t.type)+'</td><td>'+(t.type==='receive'?t.from:t.to||'--')+'</td><td style="font-weight:700">'+(t.volume||0).toLocaleString()+'</td><td style="font-size:12px">'+(t.meter||'--')+'</td><td style="font-size:12px">'+(t.project||'--')+'</td><td style="font-size:12px">'+(t.driverName||'--')+'</td></tr>').join('')}
 
-function rDash(){popLocDropdowns();const today=new Date().toDateString();const ft=filteredTanks();const f=S.locationFilter;const txAll=S.transactions;const tt=txAll.filter(t=>new Date(t.date).toDateString()===today);const tankIds=new Set(ft.map(x=>x.id));const ttf=tt.filter(t=>!f||f==='all'?true:(tankIds.has(t.srcId)||tankIds.has(t.destId)));document.getElementById('m-total').textContent=ft.reduce((a,x)=>a+(x.current||0),0).toLocaleString()+' L';document.getElementById('m-recv').textContent=tt.filter(t=>t.type==='receive').reduce((a,x)=>a+x.volume,0).toLocaleString()+' L';document.getElementById('m-dist').textContent=tt.filter(t=>t.type==='distribute').reduce((a,x)=>a+x.volume,0).toLocaleString()+' L';document.getElementById('m-alerts').textContent=ft.filter(x=>x.capacity>0&&pct(x.current,x.capacity)<20).length;const locStat=document.getElementById('loc-filter-stats');if(locStat)locStat.textContent=f==='all'?ft.length+' tanks/tankers total':ft.length+' tanks/tankers at '+f;const ds=f==='all'?S.storage:S.storage.filter(x=>x.location===f);document.getElementById('dash-storage').innerHTML=ds.slice(0,5).map(s=>`<tr><td style="font-weight:700">${s.nb}</td><td>${s.location||'--'}</td><td>${(s.current||0).toLocaleString()}</td><td>${bar(s.current,s.capacity)}</td></tr>`).join('')||'<tr><td colspan="4" style="text-align:center;padding:16px;color:#888f99">No tanks yet</td></tr>';const dt=f==='all'?S.tankers:S.tankers.filter(x=>x.location===f);document.getElementById('dash-tankers').innerHTML=dt.slice(0,5).map(t=>`<tr><td style="font-weight:700">${t.fleetNb}</td><td>${t.plateNb}</td><td>${(t.current||0).toLocaleString()}</td><td>${sbadge(t.status)}</td></tr>`).join('')||'<tr><td colspan="4" style="text-align:center;padding:16px;color:#888f99">No tankers yet</td></tr>';document.getElementById('dash-tx').innerHTML=[...S.transactions].reverse().slice(0,6).map(t=>'<tr><td style="font-size:11px;white-space:nowrap">'+fmt(t.date)+'</td><td>'+txb(t.type)+'</td><td>'+(t.from||'--')+'</td><td>'+(t.to||'--')+'</td><td style="font-weight:700">'+(t.volume||0).toLocaleString()+'</td><td style="font-size:11px">'+(t.project||'--')+'</td><td style="font-size:11px">'+(t.driverName||'--')+'</td><td style="font-size:11px">'+(t.userName||'--')+'</td></tr>').join('')||'<tr><td colspan="8" style="text-align:center;padding:16px;color:#888f99">No transactions yet</td></tr>'}
+function rDash(){popLocDropdowns();const today=new Date().toDateString();const ft=filteredTanks();const f=S.locationFilter;const txAll=S.transactions;const tt=txAll.filter(t=>new Date(t.date).toDateString()===today);const tankIds=new Set(ft.map(x=>x.id));const ttf=tt.filter(t=>!f||f==='all'?true:(tankIds.has(t.srcId)||tankIds.has(t.destId)));document.getElementById('m-total').textContent=ft.reduce((a,x)=>a+(x.current||0),0).toLocaleString()+' L';document.getElementById('m-recv').textContent=tt.filter(t=>t.type==='receive').reduce((a,x)=>a+x.volume,0).toLocaleString()+' L';document.getElementById('m-dist').textContent=tt.filter(t=>t.type==='distribute').reduce((a,x)=>a+x.volume,0).toLocaleString()+' L';document.getElementById('m-alerts').textContent=ft.filter(x=>x.capacity>0&&pct(x.current,x.capacity)<alertThreshold).length;
+  // Monthly adjustment reminder in last-refresh area
+  const now2=new Date(new Date().getTime()+(3*60*60*1000));
+  const m2=now2.getMonth(),y2=now2.getFullYear();
+  const tanksNeedAdj=aT().filter(t=>{
+    const hasAdj=adjHistory.some(a=>a.tankId===t.id&&new Date(a.date).getMonth()===m2&&new Date(a.date).getFullYear()===y2);
+    return !hasAdj;
+  }).length;
+  const adjEl=document.getElementById('adj-reminder');
+  if(adjEl)adjEl.textContent=tanksNeedAdj>0?tanksNeedAdj+' tank(s) need monthly adjustment':'';const locStat=document.getElementById('loc-filter-stats');if(locStat)locStat.textContent=f==='all'?ft.length+' tanks/tankers total':ft.length+' tanks/tankers at '+f;const ds=f==='all'?S.storage:S.storage.filter(x=>x.location===f);document.getElementById('dash-storage').innerHTML=ds.slice(0,5).map(s=>`<tr><td style="font-weight:700">${s.nb}</td><td>${s.location||'--'}</td><td>${(s.current||0).toLocaleString()}</td><td>${bar(s.current,s.capacity)}</td></tr>`).join('')||'<tr><td colspan="4" style="text-align:center;padding:16px;color:#888f99">No tanks yet</td></tr>';const dt=f==='all'?S.tankers:S.tankers.filter(x=>x.location===f);document.getElementById('dash-tankers').innerHTML=dt.slice(0,5).map(t=>`<tr><td style="font-weight:700">${t.fleetNb}</td><td>${t.plateNb}</td><td>${(t.current||0).toLocaleString()}</td><td>${sbadge(t.status)}</td></tr>`).join('')||'<tr><td colspan="4" style="text-align:center;padding:16px;color:#888f99">No tankers yet</td></tr>';document.getElementById('dash-tx').innerHTML=[...S.transactions].reverse().slice(0,6).map(t=>'<tr><td style="font-size:11px;white-space:nowrap">'+fmt(t.date)+'</td><td>'+txb(t.type)+'</td><td>'+(t.from||'--')+'</td><td>'+(t.to||'--')+'</td><td style="font-weight:700">'+(t.volume||0).toLocaleString()+'</td><td style="font-size:11px">'+(t.project||'--')+'</td><td style="font-size:11px">'+(t.driverName||'--')+'</td><td style="font-size:11px">'+(t.userName||'--')+'</td></tr>').join('')||'<tr><td colspan="8" style="text-align:center;padding:16px;color:#888f99">No transactions yet</td></tr>'}
 
 function renderTx(){const f=document.getElementById('tx-f').value,list=f?S.transactions.filter(t=>t.type===f):S.transactions;document.getElementById('tx-empty').style.display=list.length?'none':'';document.getElementById('all-tx').innerHTML=[...list].reverse().map(t=>'<tr><td style="font-size:11px;white-space:nowrap">'+fmt(t.date)+'</td><td>'+txb(t.type)+'</td><td>'+(t.from||'--')+'</td><td>'+(t.to||'--')+'</td><td style="font-weight:700">'+(t.volume||0).toLocaleString()+'</td><td style="font-size:12px">'+(t.meter||'--')+'</td><td style="font-size:12px">'+(t.project||'--')+'</td><td style="font-size:12px">'+(t.driverName||'--')+'</td><td style="font-size:11px;color:#888f99">'+(t.ref||t.notes||'--')+'</td><td style="font-size:11px">'+(t.userName||'--')+'</td></tr>').join('')}
 
@@ -799,8 +1210,8 @@ function rDrivers(){const el=document.getElementById('driver-list'),em=document.
 function rReports(){popLocDropdowns();const rlf=document.getElementById('rpt-loc-filter')?.value||'all';const rStor=rlf==='all'?S.storage:S.storage.filter(x=>x.location===rlf);const rTank=rlf==='all'?S.tankers:S.tankers.filter(x=>x.location===rlf);const rAllT=[...rStor.map(x=>({...x,_k:'tank'})),...rTank.map(x=>({...x,_k:'tanker'}))];document.getElementById('rpt-sb').innerHTML=rAllT.map(x=>'<tr><td style="font-weight:700">'+(x.nb||x.fleetNb)+'</td><td>'+(x._k==='tank'?'Fixed':'Tanker')+'</td><td>'+(x.capacity||0).toLocaleString()+'</td><td>'+(x.current||0).toLocaleString()+'</td><td>'+pct(x.current,x.capacity)+'%</td><td>'+bar(x.current,x.capacity)+'</td></tr>').join('')||'<tr><td colspan="6" style="text-align:center;padding:20px;color:#888f99">No tanks yet</td></tr>';document.getElementById('rpt-cb').innerHTML=S.fleet.map(f=>{const txs=S.transactions.filter(t=>t.type==='distribute'&&(t.fleetId===f.id||t.to===f.fleetNo));const tot=txs.reduce((a,x)=>a+x.volume,0);const lm=txs[txs.length-1];const lms=lm&&lm.meter?lm.meter+' '+(f.meterType==='odometer'?'km':'hrs'):'--';return'<tr><td style="font-weight:700">'+f.fleetNo+'</td><td>'+f.ftype+'</td><td>'+(f.make||'--')+' '+(f.model||'')+'</td><td>'+tot.toLocaleString()+'</td><td>'+txs.length+'</td><td>'+lms+'</td></tr>'}).join('')||'<tr><td colspan="6" style="text-align:center;padding:20px;color:#888f99">No equipment yet</td></tr>';const now=new Date(),m=now.getMonth(),y=now.getFullYear();document.getElementById('rpt-spb').innerHTML=S.suppliers.map(sp=>{const txs=S.transactions.filter(t=>t.type==='receive'&&(t.supplierId===sp.id||t.from===sp.name));const tot=txs.reduce((a,x)=>a+x.volume,0);const mth=txs.filter(t=>{const d=new Date(t.date);return d.getMonth()===m&&d.getFullYear()===y}).reduce((a,x)=>a+x.volume,0);const last=txs.length?txs[txs.length-1].date:null;return'<tr><td style="font-weight:700">'+sp.name+'</td><td>'+txs.length+'</td><td>'+tot.toLocaleString()+'</td><td>'+(sp.orderPerMonth||0).toLocaleString()+'</td><td>'+mth.toLocaleString()+'</td><td style="font-size:12px">'+fmt(last)+'</td></tr>'}).join('')||'<tr><td colspan="6" style="text-align:center;padding:20px;color:#888f99">No suppliers yet</td></tr>';const bD={};S.transactions.forEach(t=>{const d=(t.date||'').slice(0,10);if(!d)return;if(!bD[d])bD[d]={r:0,tr:0,di:0};if(t.type==='receive')bD[d].r+=t.volume;if(t.type==='transfer')bD[d].tr+=t.volume;if(t.type==='distribute')bD[d].di+=t.volume});const days=Object.keys(bD).sort().reverse();document.getElementById('rpt-de').style.display=days.length?'none':'';document.getElementById('rpt-db').innerHTML=days.map(d=>{const x=bD[d];const net=x.r-x.di;return'<tr><td>'+d+'</td><td>'+x.r.toLocaleString()+'</td><td>'+x.tr.toLocaleString()+'</td><td>'+x.di.toLocaleString()+'</td><td style="font-weight:700;color:'+(net>=0?'#2e7d32':'#c31c2a')+'">'+(net>=0?'+':'')+net.toLocaleString()+'</td></tr>'}).join('')}
 function stab(el,panel){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');['rpt-stock','rpt-consume','rpt-supplier','rpt-daily'].forEach(p=>document.getElementById(p).style.display='none');document.getElementById(panel).style.display='';rReports()}
 
-function pRecv(){document.getElementById('r-sup').innerHTML=S.suppliers.filter(s=>(s.status||'').toLowerCase()==='active').map(s=>'<option value="'+s.id+'">'+s.name+'</option>').join('')||'<option>-- No suppliers --</option>';const u=S.currentUser;let tanks=S.storage;if(u.role==='storekeeper'){const ids=(u.assignedId||'').split(',').map(x=>x.trim()).filter(Boolean);tanks=tanks.filter(x=>ids.includes(x.id)||ids.includes(x.nb));}document.getElementById('r-dest').innerHTML=tanks.map(x=>'<option value="'+x.id+'">'+x.nb+'</option>').join('')||'<option>-- None --</option>';document.getElementById('r-date').value=ndt()}
-function pTrans(){const u=S.currentUser;let from=S.storage;if(u.role==='storekeeper'){const ids=(u.assignedId||'').split(',').map(x=>x.trim()).filter(Boolean);from=from.filter(x=>ids.includes(x.id)||ids.includes(x.nb));}document.getElementById('t-from').innerHTML=from.map(x=>'<option value="'+x.id+'">'+x.nb+'</option>').join('')||'<option>-- None --</option>';document.getElementById('t-to').innerHTML=S.tankers.map(x=>'<option value="'+x.id+'">'+x.fleetNb+' - '+x.plateNb+'</option>').join('')||'<option>-- None --</option>';document.getElementById('t-date').value=ndt()}
+function pRecv(){document.getElementById('r-sup').innerHTML=S.suppliers.filter(s=>(s.status||'').toLowerCase()==='active').map(s=>'<option value="'+s.id+'">'+s.name+'</option>').join('')||'<option>-- No suppliers --</option>';const u=S.currentUser;let tanks=S.storage;if(u.role==='storekeeper'){const ids=(u.assignedId||'').split(',').map(x=>x.trim()).filter(Boolean);tanks=tanks.filter(x=>ids.includes(x.id)||ids.includes(x.nb));}document.getElementById('r-dest').innerHTML='<option value="">-- Select tank --</option>'+tanks.map(x=>'<option value="'+x.id+'">'+x.nb+(x.location?' - '+x.location:'')+'</option>').join('')||'<option>-- None --</option>';document.getElementById('r-date').value=ndt()}
+function pTrans(){const u=S.currentUser;let from=S.storage;if(u.role==='storekeeper'){const ids=(u.assignedId||'').split(',').map(x=>x.trim()).filter(Boolean);from=from.filter(x=>ids.includes(x.id)||ids.includes(x.nb));}document.getElementById('t-from').innerHTML='<option value="">-- Select tank --</option>'+from.map(x=>'<option value="'+x.id+'">'+x.nb+(x.location?' - '+x.location:'')+'</option>').join('')||'<option>-- None --</option>';document.getElementById('t-to').innerHTML='<option value="">-- Select tanker --</option>'+S.tankers.map(x=>'<option value="'+x.id+'">'+x.fleetNb+(x.plateNb?' - '+x.plateNb:'')+'</option>').join('')||'<option>-- None --</option>';document.getElementById('t-date').value=ndt()}
 function pDist(){const u=S.currentUser;let src=null,sk='',myTanks=[];
 if(u.role==='storekeeper'){const ids=(u.assignedId||'').split(',').map(x=>x.trim()).filter(Boolean);myTanks=S.storage.filter(x=>ids.includes(x.id)||ids.includes(x.nb));src=myTanks[0]||null;sk='tank'}
 else if(u.role==='tanker_driver'){src=S.tankers.find(x=>x.id===u.assignedId||x.fleetNb===u.assignedId);sk='tanker'}
@@ -841,7 +1252,14 @@ function pickEquip(flId){const fl=S.fleet.find(x=>x.id===flId);if(!fl){console.e
 function onFleetSel(){const flId=document.getElementById('d-fleet').value,mc=document.getElementById('mi-card'),lc=document.getElementById('lf-card');if(!flId){mc.classList.remove('show');lc.classList.remove('show');return}const fl=S.fleet.find(x=>x.id===flId||x.fleetNo===flId);if(!fl){mc.classList.remove('show');lc.classList.remove('show');return}document.getElementById('mi-fleetno').textContent=fl.fleetNo||'--';document.getElementById('mi-type').textContent=fl.ftype||'--';document.getElementById('mi-cat').textContent=fl.category||'--';document.getElementById('mi-make').textContent=fl.make||'--';document.getElementById('mi-model').textContent=fl.model||'--';document.getElementById('mi-year').textContent=fl.year||'--';mc.classList.add('show');const isO=fl.meterType==='odometer';document.getElementById('d-mlbl').textContent=(isO?'Odometer (km)':'Hourmeter (hrs)')+' *';const last=glf(fl.id||fl.fleetNo),mi=document.getElementById('d-meter'),mh=document.getElementById('d-mhint');if(last){const lm=parseFloat(last.meter)||0;document.getElementById('lf-proj').textContent=last.project||'--';document.getElementById('lf-drv').textContent=last.driverName||'--';document.getElementById('lf-meter').textContent=lm?(lm+(isO?' km':' hrs')):'--';lc.classList.add('show');const ds=document.getElementById('d-drv');for(let i=0;i<ds.options.length;i++){if(ds.options[i].text===last.driverName){ds.value=ds.options[i].value;break}}mh.textContent='Must be > last: '+lm+' '+(isO?'km':'hrs');mi.min=lm+0.1;mi.oninput=function(){this.classList.toggle('warn',parseFloat(this.value)<=lm)}}else{lc.classList.remove('show');mh.textContent='No previous filling';mi.min=0;mi.oninput=null;mi.classList.remove('warn')}}
 
 async function doRecv(){const suppId=document.getElementById('r-sup').value,destId=document.getElementById('r-dest').value,vol=parseFloat(document.getElementById('r-vol').value)||0;if(!suppId||!destId||vol<=0){sal('recv-alert','Please fill in supplier, destination, and volume.',true);return}const sp=S.suppliers.find(x=>x.id===suppId),dest=S.storage.find(x=>x.id===destId);uT(destId,vol);const tx={id:uid(),type:'receive',date:document.getElementById('r-date').value,volume:vol,supplierId:suppId,from:sp?.name,to:dest?.nb,destId,ref:document.getElementById('r-ticket').value,price:parseFloat(document.getElementById('r-price').value)||0,notes:document.getElementById('r-notes').value,userId:S.currentUser.id,userName:S.currentUser.name};S.transactions.push(tx);await wTx(tx,{destId});sal('recv-alert','Receipt: '+vol.toLocaleString()+' L from '+(sp?.name||''));['r-vol','r-ticket','r-notes','r-price'].forEach(x=>document.getElementById(x).value='')}
-async function doTrans(){const fromId=document.getElementById('t-from').value,toId=document.getElementById('t-to').value,vol=parseFloat(document.getElementById('t-vol').value)||0;if(!fromId||!toId||vol<=0){sal('trans-alert','Please fill in all fields.',true);return}const from=S.storage.find(x=>x.id===fromId);if((from?.current||0)<vol){sal('trans-alert','Insufficient. Available: '+(from?.current||0).toLocaleString()+' L',true);return}const to=S.tankers.find(x=>x.id===toId);uT(fromId,-vol);uT(toId,vol);const tx={id:uid(),type:'transfer',date:document.getElementById('t-date').value,volume:vol,from:'Tank '+(from?.nb||''),to:to?.fleetNb,destId:toId,notes:document.getElementById('t-notes').value,userId:S.currentUser.id,userName:S.currentUser.name};S.transactions.push(tx);await wTx(tx,{fromId,destId:toId,destKind:'tanker'});sal('trans-alert','Transfer: '+vol.toLocaleString()+' L');['t-vol','t-notes'].forEach(x=>document.getElementById(x).value='')}
+async function doTrans(){const fromId=document.getElementById('t-from').value,toId=document.getElementById('t-to').value,vol=parseFloat(document.getElementById('t-vol').value)||0;
+  if(!fromId){sal('trans-alert','Please select a source tank.',true);return}
+  if(!toId){sal('trans-alert','Please select a destination tanker.',true);return}
+  if(vol<=0){sal('trans-alert','Please enter a valid volume.',true);return}
+  const from=S.storage.find(x=>x.id===fromId);
+  const available=from?.current||0;
+  if(vol>available){sal('trans-alert','Insufficient stock. Tank only has '+available.toLocaleString()+' L available — you tried to transfer '+vol.toLocaleString()+' L.',true);return}
+  const to=S.tankers.find(x=>x.id===toId||x.fleetNb===toId);uT(fromId,-vol);uT(toId,vol);const tx={id:uid(),type:'transfer',date:document.getElementById('t-date').value,volume:vol,from:'Tank '+(from?.nb||''),to:to?.fleetNb,destId:toId,notes:document.getElementById('t-notes').value,userId:S.currentUser.id,userName:S.currentUser.name};S.transactions.push(tx);await wTx(tx,{fromId,destId:toId,destKind:'tanker'});sal('trans-alert','Transfer: '+vol.toLocaleString()+' L');['t-vol','t-notes'].forEach(x=>document.getElementById(x).value='')}
 async function doDist(){
   // Read source - try hidden field first, then read from visible dropdown
   let srcId=document.getElementById('d-src-id').value;
@@ -887,8 +1305,8 @@ Do you want to proceed anyway?`);
   }
 if(!proj){sal('dist-alert','Please select a project.',true);return}const fl=S.fleet.find(x=>x.id===flId||x.fleetNo===flId),last=glf(flId);if(last&&last.meter&&parseFloat(meter)<=parseFloat(last.meter)){sal('dist-alert','Meter must be > '+last.meter+'.',true);return}const src=gT(srcId);if((src?.current||0)<vol){sal('dist-alert','Insufficient. Available: '+(src?.current||0).toLocaleString()+' L',true);return}const drv=S.drivers.find(x=>x.id===drvId);uT(srcId,-vol);const tx={id:uid(),type:'distribute',date:document.getElementById('d-date').value,volume:vol,from:srcKind==='tank'?'Tank '+(src?.nb||''):src?.fleetNb,to:fl?.fleetNo,fleetId:flId,fleetNo:fl?.fleetNo,meter:meter?parseFloat(meter):null,meterType:fl?.meterType||'hourmeter',project:proj,driverId:drvId,driverName:drv?.name||'',notes:document.getElementById('d-notes').value,warning:txWarning||'',userId:S.currentUser.id,userName:S.currentUser.name};S.transactions.push(tx);await wTx(tx,{srcId,srcKind});sal('dist-alert','Distribution: '+vol.toLocaleString()+' L to '+(fl?.fleetNo||''));['d-vol','d-meter','d-notes'].forEach(x=>document.getElementById(x).value='');document.getElementById('d-fleet').value='';document.getElementById('d-proj').value='';document.getElementById('d-drv').value='';document.getElementById('mi-card').classList.remove('show');document.getElementById('lf-card').classList.remove('show')}
 
-async function saveStorage(){const editId=document.getElementById('s-edit-id').value;const nb=document.getElementById('s-nb').value.trim();const loc=document.getElementById('s-loc').value;if(!nb||!loc){toast('Tank Nb. and Location required.');return}if(editId){const s=S.storage.find(x=>x.id===editId);if(!s)return;s.nb=nb;s.location=loc;s.capacity=parseFloat(document.getElementById('s-cap').value)||0;s.current=parseFloat(document.getElementById('s-cur').value)||0;s.status=document.getElementById('s-stat').value;closeM('m-storage');rStorage();try{await gsC({action:'saveStorage',...s})}catch(e){}toast('Tank updated.');}else{const r={id:uid(),nb,location:loc,capacity:parseFloat(document.getElementById('s-cap').value)||0,current:parseFloat(document.getElementById('s-cur').value)||0,status:document.getElementById('s-stat').value};S.storage.push(r);closeM('m-storage');rStorage();try{await gsC({action:'saveStorage',...r})}catch(e){}toast('Tank saved.');}}
-async function saveTanker(){const editId=document.getElementById('tk-edit-id').value;const fleet=document.getElementById('tk-fleet').value.trim(),plate=document.getElementById('tk-plate').value.trim(),loc=document.getElementById('tk-loc').value;if(!fleet||!plate||!loc){toast('Fleet Nb., Plate Nb. and Location required.');return}const vals={fleetNb:fleet,plateNb:plate,owner:document.getElementById('tk-owner').value,location:loc,make:document.getElementById('tk-make').value,model:document.getElementById('tk-model').value,year:document.getElementById('tk-year').value,capacity:parseFloat(document.getElementById('tk-cap').value)||0,current:parseFloat(document.getElementById('tk-cur').value)||0,status:document.getElementById('tk-stat').value};if(editId){const t=S.tankers.find(x=>x.id===editId);if(!t)return;Object.assign(t,vals);closeM('m-tanker');rTankers();try{await gsC({action:'saveTanker',...t})}catch(e){}toast('Tanker updated.');}else{const r={id:uid(),...vals};S.tankers.push(r);closeM('m-tanker');rTankers();try{await gsC({action:'saveTanker',...r})}catch(e){}toast('Tanker saved.');}}
+async function saveStorage(){const editId=document.getElementById('s-edit-id').value;const nb=document.getElementById('s-nb').value.trim();const loc=document.getElementById('s-loc').value;if(!nb||!loc){toast('Tank Nb. and Location required.');return}if(editId){const s=S.storage.find(x=>x.id===editId);if(!s)return;s.nb=nb;s.location=loc;s.status=document.getElementById('s-stat').value;closeM('m-storage');rStorage();try{await gsC({action:'saveStorage',...s})}catch(e){}toast('Tank updated.');}else{const r={id:uid(),nb,location:loc,capacity:parseFloat(document.getElementById('s-cap').value)||0,current:parseFloat(document.getElementById('s-cur').value)||0,status:document.getElementById('s-stat').value};S.storage.push(r);closeM('m-storage');rStorage();try{await gsC({action:'saveStorage',...r})}catch(e){}toast('Tank saved.');}}
+async function saveTanker(){const editId=document.getElementById('tk-edit-id').value;const fleet=document.getElementById('tk-fleet').value.trim(),plate=document.getElementById('tk-plate').value.trim(),loc=document.getElementById('tk-loc').value;if(!fleet||!plate||!loc){toast('Fleet Nb., Plate Nb. and Location required.');return}const vals={fleetNb:fleet,plateNb:plate,owner:document.getElementById('tk-owner').value,location:loc,make:document.getElementById('tk-make').value,model:document.getElementById('tk-model').value,year:document.getElementById('tk-year').value,capacity:parseFloat(document.getElementById('tk-cap').value)||0,current:0,status:document.getElementById('tk-stat').value};if(editId){const t=S.tankers.find(x=>x.id===editId);if(!t)return;Object.assign(t,vals);closeM('m-tanker');rTankers();try{await gsC({action:'saveTanker',...t})}catch(e){}toast('Tanker updated.');}else{const r={id:uid(),...vals};S.tankers.push(r);closeM('m-tanker');rTankers();try{await gsC({action:'saveTanker',...r})}catch(e){}toast('Tanker saved.');}}
 async function saveSupplier(){const editId=document.getElementById('sp-edit-id').value;const name=document.getElementById('sp-nm').value.trim();if(!name){toast('Name required.');return}const vals={name,contact:document.getElementById('sp-ct').value,phone:document.getElementById('sp-ph').value,email:document.getElementById('sp-em').value,orderPerMonth:parseFloat(document.getElementById('sp-ord').value)||0,status:document.getElementById('sp-stat').value};if(editId){const s=S.suppliers.find(x=>x.id===editId);if(!s)return;Object.assign(s,vals);closeM('m-supplier');rSuppliers();try{await gsC({action:'saveSupplier',...s})}catch(e){}toast('Supplier updated.');}else{const r={id:uid(),...vals};S.suppliers.push(r);closeM('m-supplier');rSuppliers();try{await gsC({action:'saveSupplier',...r})}catch(e){}toast('Supplier saved.');}}
 async function saveFleet(){const editId=document.getElementById('fl-edit-id').value;const nb=document.getElementById('fl-nb').value.trim();if(!nb){toast('Fleet No. required.');return}const vals={fleetNo:nb,ftype:document.getElementById('fl-type').value,category:document.getElementById('fl-cat').value,make:document.getElementById('fl-make').value,model:document.getElementById('fl-model').value,year:document.getElementById('fl-year').value,capacity:document.getElementById('fl-cap').value,tankCap:parseFloat(document.getElementById('fl-tcap').value)||0,meterType:document.getElementById('fl-mtype').value,owner:document.getElementById('fl-owner').value,status:document.getElementById('fl-stat').value};if(editId){const f=S.fleet.find(x=>x.id===editId);if(!f)return;Object.assign(f,vals);closeM('m-fleet');rFleet();try{await gsC({action:'saveFleet',...f,nb:f.fleetNo})}catch(e){}toast('Equipment updated.');}else{const r={id:uid(),...vals};S.fleet.push(r);closeM('m-fleet');rFleet();try{await gsC({action:'saveFleet',...r,nb:r.fleetNo})}catch(e){}toast('Equipment saved.');}}
 async function saveProject(){const name=document.getElementById('pj-nm').value.trim();if(!name){toast('Name required.');return}const r={id:uid(),name,status:document.getElementById('pj-stat').value};S.projects.push(r);closeM('m-project');document.getElementById('pj-nm').value='';rProjects();try{await gsC({action:'saveProject',...r})}catch(e){}toast('Project saved.')}
@@ -958,7 +1376,7 @@ function startAutoRefresh(){
     const activePage=document.querySelector('.page.active');
     if(activePage){
       const pg=activePage.id.replace('page-','');
-      const fn={dashboard:rDash,mytank:rMyTank,transactions:renderTx,storage:rStorage,tankers:rTankers,suppliers:rSuppliers,fleet:rFleet,projects:rProjects,locations:rLocations,users:rUsers,drivers:rDrivers,reports:rReports};
+      const fn={dashboard:rDash,adjustment:rAdj,mytank:rMyTank,transactions:renderTx,storage:rStorage,tankers:rTankers,suppliers:rSuppliers,fleet:rFleet,projects:rProjects,locations:rLocations,users:rUsers,drivers:rDrivers,reports:rReports};
       if(fn[pg])fn[pg]();
     }
     // Update last refresh time
@@ -981,7 +1399,7 @@ async function restoreSession(){
     document.getElementById('nav-av').textContent=u.name.slice(0,2).toUpperCase();
     document.getElementById('nav-nm').textContent=u.name;
     document.getElementById('nav-rl').textContent=rl(u.role);
-    document.getElementById('tb-date').textContent=new Date().toLocaleDateString('en-GB',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+    document.getElementById('tb-date').textContent=new Date(new Date().getTime()+(3*60*60*1000)).toLocaleDateString('en-GB',{weekday:'long',year:'numeric',month:'long',day:'numeric',timeZone:'UTC'});
     buildNav();updGS();
     await loadGS(u.role,u.id);
     if(u.role==='admin'||u.role==='pmv_admin')nav('dashboard');else nav('mytank');
