@@ -609,13 +609,7 @@ tr:hover td{background:#f8f8f6}
       <div style="font-size:11px;color:#4d5360;margin-top:2px">C.A.T. Pearl</div>
     </div>
   </div>
-  <div class="sdiv">Auto-refresh interval</div>
-  <div style="display:flex;gap:10px;margin-bottom:16px">
-    <div onclick="setRefresh(5)" id="ref-5" style="flex:1;padding:12px;border-radius:8px;border:2px solid #c31c2a;background:white;cursor:pointer;text-align:center;font-size:13px;font-weight:700;color:#212630">5 min</div>
-    <div onclick="setRefresh(10)" id="ref-10" style="flex:1;padding:12px;border-radius:8px;border:2px solid transparent;background:white;cursor:pointer;text-align:center;font-size:13px;font-weight:700;color:#212630">10 min</div>
-    <div onclick="setRefresh(15)" id="ref-15" style="flex:1;padding:12px;border-radius:8px;border:2px solid transparent;background:white;cursor:pointer;text-align:center;font-size:13px;font-weight:700;color:#212630">15 min</div>
-    <div onclick="setRefresh(30)" id="ref-30" style="flex:1;padding:12px;border-radius:8px;border:2px solid transparent;background:white;cursor:pointer;text-align:center;font-size:13px;font-weight:700;color:#212630">30 min</div>
-  </div>
+
   <div class="sdiv">Low stock alert threshold</div>
   <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
     <div onclick="setThreshold(10)" id="thr-10" style="flex:1;min-width:60px;padding:12px;border-radius:8px;border:2px solid transparent;background:white;cursor:pointer;text-align:center;font-size:13px;font-weight:700;color:#212630">10%</div>
@@ -749,10 +743,7 @@ function setThreshold(pct){
 function initSettings(){
   applyTheme(currentBg);
   // Mark current refresh selection
-  [5,10,15,30].forEach(m=>{
-    const el=document.getElementById('ref-'+m);
-    if(el)el.style.border=m===currentRefresh?'2px solid #c31c2a':'2px solid transparent';
-  });
+
   // Apply saved refresh
   REFRESH_MS=currentRefresh*60*1000;
   // Mark adjustment permission
@@ -1014,6 +1005,26 @@ function renderAdjHistory(){
   </tr>`).join('');
 }
 
+async function manualRefresh(){
+  if(!GS_URL){toast('Not connected to Google Sheets.');return}
+  const btn=document.getElementById('refresh-btn');
+  const icon=document.getElementById('refresh-icon');
+  if(btn)btn.style.opacity='0.5';
+  if(icon)icon.style.animation='spin .7s linear infinite';
+  try{
+    await silentRefresh();
+    const now=new Date(new Date().getTime()+(3*60*60*1000));
+    const timeStr=now.toTimeString().slice(0,5);
+    const el=document.getElementById('last-refresh');
+    if(el)el.textContent='Synced at '+timeStr;
+    toast('Data synced successfully.');
+  }catch(e){
+    toast('Sync failed: '+e.message);
+  }finally{
+    if(btn)btn.style.opacity='1';
+    if(icon)icon.style.animation='';
+  }
+}
 function setSrcId(v){
   document.getElementById('d-src-id').value=v;
   const t=aT().find(x=>x.id===v);
@@ -1222,12 +1233,8 @@ let refreshTimer=null;
 let REFRESH_MS=5*60*1000; // 5 minutes
 
 function startAutoRefresh(){
+  // Auto-refresh removed - use manual refresh button or post-transaction sync
   stopAutoRefresh();
-  const ms=REFRESH_MS;
-  refreshTimer=setInterval(async()=>{
-    if(!S.currentUser||!GS_URL)return;
-    await silentRefresh();
-  },ms);
 }
 
 function stopAutoRefresh(){
@@ -1435,7 +1442,8 @@ async function doRecv(){const suppId=document.getElementById('r-sup').value,dest
       const proceed=confirm(`⚠️ Warning: This receipt will exceed tank capacity.\n\nTank: ${destTank.nb}\nCapacity: ${cap.toLocaleString()} L\nCurrent stock: ${current.toLocaleString()} L\nVolume to receive: ${vol.toLocaleString()} L\nTotal after receipt: ${total.toLocaleString()} L\nOverflow: ${(total-cap).toLocaleString()} L\nNotes: ${notes}\n\nDo you want to proceed anyway?`);
       if(!proceed)return;
     }
-  }const sp=S.suppliers.find(x=>x.id===suppId),dest=S.storage.find(x=>x.id===destId);uT(destId,vol);const tx={id:uid(),type:'receive',date:document.getElementById('r-date').value,volume:vol,supplierId:suppId,from:sp?.name,to:dest?.nb,destId,ref:document.getElementById('r-ticket').value,price:parseFloat(document.getElementById('r-price').value)||0,notes:document.getElementById('r-notes').value,userId:S.currentUser.id,userName:S.currentUser.name};S.transactions.push(tx);await wTx(tx,{destId});sal('recv-alert','Receipt: '+vol.toLocaleString()+' L from '+(sp?.name||''));['r-vol','r-ticket','r-notes','r-price'].forEach(x=>document.getElementById(x).value='')}
+  }const sp=S.suppliers.find(x=>x.id===suppId),dest=S.storage.find(x=>x.id===destId);uT(destId,vol);const tx={id:uid(),type:'receive',date:document.getElementById('r-date').value,volume:vol,supplierId:suppId,from:sp?.name,to:dest?.nb,destId,ref:document.getElementById('r-ticket').value,price:parseFloat(document.getElementById('r-price').value)||0,notes:document.getElementById('r-notes').value,userId:S.currentUser.id,userName:S.currentUser.name};S.transactions.push(tx);await wTx(tx,{destId});sal('recv-alert','Receipt: '+vol.toLocaleString()+' L from '+(sp?.name||''));
+  await silentRefresh();['r-vol','r-ticket','r-notes','r-price'].forEach(x=>document.getElementById(x).value='')}
 async function doTrans(){const fromId=document.getElementById('t-from').value,toId=document.getElementById('t-to').value,vol=parseFloat(document.getElementById('t-vol').value)||0;
   if(!fromId){sal('trans-alert','Please select a source tank.',true);return}
   if(!toId){sal('trans-alert','Please select a destination tanker.',true);return}
@@ -1443,7 +1451,8 @@ async function doTrans(){const fromId=document.getElementById('t-from').value,to
   const from=S.storage.find(x=>x.id===fromId);
   const available=from?.current||0;
   if(vol>available){sal('trans-alert','Insufficient stock. Tank only has '+available.toLocaleString()+' L available — you tried to transfer '+vol.toLocaleString()+' L.',true);return}
-  const to=S.tankers.find(x=>x.id===toId||x.fleetNb===toId);uT(fromId,-vol);uT(toId,vol);const tx={id:uid(),type:'transfer',date:document.getElementById('t-date').value,volume:vol,from:'Tank '+(from?.nb||''),to:to?.fleetNb,destId:toId,notes:document.getElementById('t-notes').value,userId:S.currentUser.id,userName:S.currentUser.name};S.transactions.push(tx);await wTx(tx,{fromId,destId:toId,destKind:'tanker'});sal('trans-alert','Transfer: '+vol.toLocaleString()+' L');['t-vol','t-notes'].forEach(x=>document.getElementById(x).value='')}
+  const to=S.tankers.find(x=>x.id===toId||x.fleetNb===toId);uT(fromId,-vol);uT(toId,vol);const tx={id:uid(),type:'transfer',date:document.getElementById('t-date').value,volume:vol,from:'Tank '+(from?.nb||''),to:to?.fleetNb,destId:toId,notes:document.getElementById('t-notes').value,userId:S.currentUser.id,userName:S.currentUser.name};S.transactions.push(tx);await wTx(tx,{fromId,destId:toId,destKind:'tanker'});sal('trans-alert','Transfer: '+vol.toLocaleString()+' L');
+  await silentRefresh();['t-vol','t-notes'].forEach(x=>document.getElementById(x).value='')}
 async function doDist(){
   // Read source - try hidden field first, then read from visible dropdown
   let srcId=document.getElementById('d-src-id').value;
@@ -1487,7 +1496,8 @@ Do you want to proceed anyway?`);
       txWarning=`DAILY EXCESS: Total today ${totalToday}L exceeds tank capacity of ${flForCap.tankCap}L (prev: ${filledToday}L)`;
     }
   }
-if(!proj){sal('dist-alert','Please select a project.',true);return}const fl=S.fleet.find(x=>x.id===flId||x.fleetNo===flId),last=glf(flId);if(last&&last.meter&&parseFloat(meter)<=parseFloat(last.meter)){sal('dist-alert','Meter must be > '+last.meter+'.',true);return}const src=gT(srcId);if((src?.current||0)<vol){sal('dist-alert','Insufficient. Available: '+(src?.current||0).toLocaleString()+' L',true);return}const drv=S.drivers.find(x=>x.id===drvId);uT(srcId,-vol);const tx={id:uid(),type:'distribute',date:document.getElementById('d-date').value,volume:vol,from:srcKind==='tank'?'Tank '+(src?.nb||''):src?.fleetNb,to:fl?.fleetNo,fleetId:flId,fleetNo:fl?.fleetNo,meter:meter?parseFloat(meter):null,meterType:fl?.meterType||'hourmeter',project:proj,driverId:drvId,driverName:drv?.name||'',notes:document.getElementById('d-notes').value,warning:txWarning||'',userId:S.currentUser.id,userName:S.currentUser.name};S.transactions.push(tx);await wTx(tx,{srcId,srcKind});sal('dist-alert','Distribution: '+vol.toLocaleString()+' L to '+(fl?.fleetNo||''));['d-vol','d-meter','d-notes'].forEach(x=>document.getElementById(x).value='');document.getElementById('d-fleet').value='';document.getElementById('d-proj').value='';document.getElementById('d-drv').value='';document.getElementById('mi-card').classList.remove('show');document.getElementById('lf-card').classList.remove('show')}
+if(!proj){sal('dist-alert','Please select a project.',true);return}const fl=S.fleet.find(x=>x.id===flId||x.fleetNo===flId),last=glf(flId);if(last&&last.meter&&parseFloat(meter)<=parseFloat(last.meter)){sal('dist-alert','Meter must be > '+last.meter+'.',true);return}const src=gT(srcId);if((src?.current||0)<vol){sal('dist-alert','Insufficient. Available: '+(src?.current||0).toLocaleString()+' L',true);return}const drv=S.drivers.find(x=>x.id===drvId);uT(srcId,-vol);const tx={id:uid(),type:'distribute',date:document.getElementById('d-date').value,volume:vol,from:srcKind==='tank'?'Tank '+(src?.nb||''):src?.fleetNb,to:fl?.fleetNo,fleetId:flId,fleetNo:fl?.fleetNo,meter:meter?parseFloat(meter):null,meterType:fl?.meterType||'hourmeter',project:proj,driverId:drvId,driverName:drv?.name||'',notes:document.getElementById('d-notes').value,warning:txWarning||'',userId:S.currentUser.id,userName:S.currentUser.name};S.transactions.push(tx);await wTx(tx,{srcId,srcKind});sal('dist-alert','Distribution: '+vol.toLocaleString()+' L to '+(fl?.fleetNo||''));
+  await silentRefresh();['d-vol','d-meter','d-notes'].forEach(x=>document.getElementById(x).value='');document.getElementById('d-fleet').value='';document.getElementById('d-proj').value='';document.getElementById('d-drv').value='';document.getElementById('mi-card').classList.remove('show');document.getElementById('lf-card').classList.remove('show')}
 
 async function saveStorage(){const editId=document.getElementById('s-edit-id').value;const nb=document.getElementById('s-nb').value.trim();const loc=document.getElementById('s-loc').value;if(!nb||!loc){toast('Tank Nb. and Location required.');return}if(editId){const s=S.storage.find(x=>x.id===editId);if(!s)return;s.nb=nb;s.location=loc;s.status=document.getElementById('s-stat').value;closeM('m-storage');rStorage();try{await gsC({action:'saveStorage',...s})}catch(e){}toast('Tank updated.');}else{const r={id:uid(),nb,location:loc,capacity:parseFloat(document.getElementById('s-cap').value)||0,current:parseFloat(document.getElementById('s-cur').value)||0,status:document.getElementById('s-stat').value};S.storage.push(r);closeM('m-storage');rStorage();try{await gsC({action:'saveStorage',...r})}catch(e){}toast('Tank saved.');}}
 async function saveTanker(){const editId=document.getElementById('tk-edit-id').value;const fleet=document.getElementById('tk-fleet').value.trim(),plate=document.getElementById('tk-plate').value.trim(),loc=document.getElementById('tk-loc').value;if(!fleet||!plate||!loc){toast('Fleet Nb., Plate Nb. and Location required.');return}const vals={fleetNb:fleet,plateNb:plate,owner:document.getElementById('tk-owner').value,location:loc,make:document.getElementById('tk-make').value,model:document.getElementById('tk-model').value,year:document.getElementById('tk-year').value,capacity:parseFloat(document.getElementById('tk-cap').value)||0,current:0,status:document.getElementById('tk-stat').value};if(editId){const t=S.tankers.find(x=>x.id===editId);if(!t)return;Object.assign(t,vals);closeM('m-tanker');rTankers();try{await gsC({action:'saveTanker',...t})}catch(e){}toast('Tanker updated.');}else{const r={id:uid(),...vals};S.tankers.push(r);closeM('m-tanker');rTankers();try{await gsC({action:'saveTanker',...r})}catch(e){}toast('Tanker saved.');}}
