@@ -394,9 +394,90 @@ tr:hover td{background:#f8f8f6}
       <!-- EXPORT -->
       <div class="page" id="page-export">
         <div class="card"><div class="card-head"><div class="ct"><div class="ctb"></div>Export &amp; sync</div></div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
-            <div style="border:1px solid #d8d8d4;border-radius:10px;padding:18px"><div style="font-weight:700;color:#212630;margin-bottom:4px;text-transform:uppercase;font-size:12px;letter-spacing:.04em">Excel export</div><div style="font-size:12px;color:#888f99;margin-bottom:14px">Download all data with 10 sheets</div><button class="pbtn pr" onclick="doExcel()">Download Excel</button></div>
-            <div style="border:1px solid #d8d8d4;border-radius:10px;padding:18px"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px"><div style="font-weight:700;color:#212630;text-transform:uppercase;font-size:12px;letter-spacing:.04em">Google Sheets</div><span id="gs-es" style="font-size:11px;font-weight:700;color:#888f99">Not connected</span></div><div style="font-size:12px;color:#888f99;margin-bottom:14px">Real-time sync on every transaction</div><button class="pbtn" onclick="openM('m-gs')">Configure connection</button></div>
+
+          <!-- Google Sheets connection -->
+          <div style="border:1px solid #d8d8d4;border-radius:10px;padding:16px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+            <div><div style="font-weight:700;color:#212630;text-transform:uppercase;font-size:12px;letter-spacing:.04em;margin-bottom:4px">&#9729; Google Sheets connection</div><div style="font-size:12px;color:#888f99">Real-time sync on every transaction</div></div>
+            <div style="display:flex;align-items:center;gap:12px"><span id="gs-es" style="font-size:12px;font-weight:700;color:#888f99">Not connected</span><button class="pbtn" onclick="openM('m-gs')">Configure</button></div>
+          </div>
+
+          <!-- Bundle downloads -->
+          <div style="font-size:11px;font-weight:700;color:#c31c2a;text-transform:uppercase;letter-spacing:.08em;border-bottom:2px solid #c31c2a;padding-bottom:4px;margin-bottom:12px">Bundle downloads</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px">
+            <div style="border:1px solid #d8d8d4;border-radius:10px;padding:16px;display:flex;align-items:center;justify-content:space-between;gap:12px">
+              <div><div style="font-weight:700;color:#212630;font-size:13px;margin-bottom:2px">&#128196; Transactions only</div><div style="font-size:11px;color:#888f99">Receive · Transfer · Distribute · Adjustment</div></div>
+              <button class="pbtn pr" style="white-space:nowrap" onclick="doExcelTx()">Download</button>
+            </div>
+            <div style="border:1px solid #d8d8d4;border-radius:10px;padding:16px;display:flex;align-items:center;justify-content:space-between;gap:12px">
+              <div><div style="font-weight:700;color:#212630;font-size:13px;margin-bottom:2px">&#128230; Full export</div><div style="font-size:11px;color:#888f99">All master data + all transactions (12 sheets)</div></div>
+              <button class="pbtn pr" style="white-space:nowrap" onclick="doExcel()">Download</button>
+            </div>
+          </div>
+
+          <!-- Individual downloads -->
+          <div style="font-size:11px;font-weight:700;color:#c31c2a;text-transform:uppercase;letter-spacing:.08em;border-bottom:2px solid #c31c2a;padding-bottom:4px;margin-bottom:12px">Individual downloads</div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
+
+            <div style="border:1px solid #d8d8d4;border-radius:10px;padding:14px;display:flex;align-items:center;justify-content:space-between;gap:8px">
+              <div><div style="font-weight:700;color:#212630;font-size:12px">&#9981; Fixed Storage</div><div style="font-size:11px;color:#888f99" id="exp-storage-count">0 tanks</div></div>
+              <button class="pbtn sm" onclick="dlSheet('storage')">&#8659;</button>
+            </div>
+
+            <div style="border:1px solid #d8d8d4;border-radius:10px;padding:14px;display:flex;align-items:center;justify-content:space-between;gap:8px">
+              <div><div style="font-weight:700;color:#212630;font-size:12px">&#128667; Mobile Tankers</div><div style="font-size:11px;color:#888f99" id="exp-tankers-count">0 tankers</div></div>
+              <button class="pbtn sm" onclick="dlSheet('tankers')">&#8659;</button>
+            </div>
+
+            <div style="border:1px solid #d8d8d4;border-radius:10px;padding:14px;display:flex;align-items:center;justify-content:space-between;gap:8px">
+              <div><div style="font-weight:700;color:#212630;font-size:12px">&#128205; Locations</div><div style="font-size:11px;color:#888f99" id="exp-locations-count">0 locations</div></div>
+              <button class="pbtn sm" onclick="dlSheet('locations')">&#8659;</button>
+            </div>
+
+            <div style="border:1px solid #d8d8d4;border-radius:10px;padding:14px;display:flex;align-items:center;justify-content:space-between;gap:8px">
+              <div><div style="font-weight:700;color:#212630;font-size:12px">&#128196; Projects</div><div style="font-size:11px;color:#888f99" id="exp-projects-count">0 projects</div></div>
+              <button class="pbtn sm" onclick="dlSheet('projects')">&#8659;</button>
+            </div>
+
+            <div style="border:1px solid #d8d8d4;border-radius:10px;padding:14px;display:flex;align-items:center;justify-content:space-between;gap:8px">
+              <div><div style="font-weight:700;color:#212630;font-size:12px">&#128101; Drivers</div><div style="font-size:11px;color:#888f99" id="exp-drivers-count">0 drivers</div></div>
+              <button class="pbtn sm" onclick="dlSheet('drivers')">&#8659;</button>
+            </div>
+
+            <div style="border:1px solid #d8d8d4;border-radius:10px;padding:14px;display:flex;align-items:center;justify-content:space-between;gap:8px">
+              <div><div style="font-weight:700;color:#212630;font-size:12px">&#128663; Fleet Equipment</div><div style="font-size:11px;color:#888f99" id="exp-fleet-count">0 machines</div></div>
+              <button class="pbtn sm" onclick="dlSheet('fleet')">&#8659;</button>
+            </div>
+
+            <div style="border:1px solid #d8d8d4;border-radius:10px;padding:14px;display:flex;align-items:center;justify-content:space-between;gap:8px">
+              <div><div style="font-weight:700;color:#212630;font-size:12px">&#127981; Suppliers</div><div style="font-size:11px;color:#888f99" id="exp-suppliers-count">0 suppliers</div></div>
+              <button class="pbtn sm" onclick="dlSheet('suppliers')">&#8659;</button>
+            </div>
+
+            <div style="border:1px solid #d8d8d4;border-radius:10px;padding:14px;display:flex;align-items:center;justify-content:space-between;gap:8px">
+              <div><div style="font-weight:700;color:#212630;font-size:12px">&#128197; Tx - Receive</div><div style="font-size:11px;color:#888f99" id="exp-recv-count">0 records</div></div>
+              <button class="pbtn sm" onclick="dlSheet('txReceive')">&#8659;</button>
+            </div>
+
+            <div style="border:1px solid #d8d8d4;border-radius:10px;padding:14px;display:flex;align-items:center;justify-content:space-between;gap:8px">
+              <div><div style="font-weight:700;color:#212630;font-size:12px">&#128260; Tx - Transfer</div><div style="font-size:11px;color:#888f99" id="exp-trans-count">0 records</div></div>
+              <button class="pbtn sm" onclick="dlSheet('txTransfer')">&#8659;</button>
+            </div>
+
+            <div style="border:1px solid #d8d8d4;border-radius:10px;padding:14px;display:flex;align-items:center;justify-content:space-between;gap:8px">
+              <div><div style="font-weight:700;color:#212630;font-size:12px">&#9981; Tx - Distribute</div><div style="font-size:11px;color:#888f99" id="exp-dist-count">0 records</div></div>
+              <button class="pbtn sm" onclick="dlSheet('txDistribute')">&#8659;</button>
+            </div>
+
+            <div style="border:1px solid #d8d8d4;border-radius:10px;padding:14px;display:flex;align-items:center;justify-content:space-between;gap:8px">
+              <div><div style="font-weight:700;color:#212630;font-size:12px">&#9878; Tx - Adjustment</div><div style="font-size:11px;color:#888f99" id="exp-adj-count">0 records</div></div>
+              <button class="pbtn sm" onclick="dlSheet('txAdjustment')">&#8659;</button>
+            </div>
+
+            <div style="border:1px solid #d8d8d4;border-radius:10px;padding:14px;display:flex;align-items:center;justify-content:space-between;gap:8px">
+              <div><div style="font-weight:700;color:#212630;font-size:12px">&#128100; Users</div><div style="font-size:11px;color:#888f99" id="exp-users-count">0 users</div></div>
+              <button class="pbtn sm" onclick="dlSheet('users')">&#8659;</button>
+            </div>
+
           </div>
         </div>
       </div>
@@ -1112,7 +1193,7 @@ if(data.txReceive)txs.push(...pTx(data.txReceive,'receive'));
     if(txs.length)S.transactions=txs;
     // Update current page silently
     const curPage=document.querySelector('.page.active')?.id?.replace('page-','');
-    if(curPage){const fn={dashboard:rDash,adjustment:rAdj,mytank:rMyTank,transactions:renderTx,storage:rStorage,tankers:rTankers,fleet:rFleet,reports:rReports};if(fn[curPage])fn[curPage]();}
+    if(curPage){const fn={dashboard:rDash,adjustment:rAdj,export:rExport,mytank:rMyTank,transactions:renderTx,storage:rStorage,tankers:rTankers,fleet:rFleet,reports:rReports};if(fn[curPage])fn[curPage]();}
     // Update refresh indicator
     const ind=document.getElementById('last-refresh');
     if(ind)ind.textContent='Last sync: '+new Date().toTimeString().slice(0,5);
@@ -1179,7 +1260,7 @@ function buildNav(){const role=S.currentUser.role;const defs={admin:[{s:'Operati
   document.getElementById('nav-links').innerHTML=navItems.map(x=>x.s?`<div class="nvsec">${x.s}</div>`:`<div class="nvit" id="nav-${x.id}" onclick="nav('${x.id}')">${x.l}</div>`).join('')}
 const pts={dashboard:'Dashboard',adjustment:'Stock Adjustment',locations:'Locations',mytank:'My Tank',receive:'Receive Diesel',transfer:'Transfer',distribute:'Issue Diesel',transactions:'All Transactions',storage:'Fixed Storage',tankers:'Mobile Tankers',suppliers:'Suppliers',fleet:'Fleet / Equipment',projects:'Projects',users:'User Management',drivers:'Drivers List',reports:'Reports',export:'Export & Sync'};
 function nav(pg){document.querySelectorAll('.nvit').forEach(n=>n.classList.remove('active'));const ni=document.getElementById('nav-'+pg);if(ni)ni.classList.add('active');document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));const p=document.getElementById('page-'+pg);if(p)p.classList.add('active');document.getElementById('pg-title').textContent=pts[pg]||pg;function updRoleUI(){const r=S.currentUser?.role;const addTankBtn=document.getElementById('add-tank-btn');if(addTankBtn)addTankBtn.style.display=(r==='admin')?'':'none';const addTankerBtn=document.getElementById('add-tanker-btn');if(addTankerBtn)addTankerBtn.style.display=(r==='admin'||r==='pmv_admin')?'':'none';const addFleetBtn=document.getElementById('add-fleet-btn');if(addFleetBtn)addFleetBtn.style.display=(r==='admin'||r==='pmv_admin')?'':'none'}
-const fn={dashboard:rDash,adjustment:rAdj,mytank:rMyTank,receive:pRecv,transfer:pTrans,distribute:pDist,transactions:renderTx,storage:rStorage,tankers:rTankers,suppliers:rSuppliers,fleet:rFleet,projects:rProjects,locations:rLocations,users:rUsers,drivers:rDrivers,reports:rReports};if(fn[pg])fn[pg]();updRoleUI()}
+const fn={dashboard:rDash,adjustment:rAdj,export:rExport,mytank:rMyTank,receive:pRecv,transfer:pTrans,distribute:pDist,transactions:renderTx,storage:rStorage,tankers:rTankers,suppliers:rSuppliers,fleet:rFleet,projects:rProjects,locations:rLocations,users:rUsers,drivers:rDrivers,reports:rReports};if(fn[pg])fn[pg]();updRoleUI()}
 
 function rMyTank(){const u=S.currentUser;let tank=null,label='',meta='';if(u.role==='tanker_driver'){tank=S.tankers.find(x=>x.id===u.assignedId||x.fleetNb===u.assignedId);if(tank){label=tank.fleetNb+(tank.plateNb?' - '+tank.plateNb:'');const details=[tank.make,tank.model,tank.year].filter(Boolean).join(' ');meta=[details?details:'',tank.owner?'Owner: '+tank.owner:'',tank.location?'Location: '+tank.location:'','Capacity: '+(tank.capacity||0).toLocaleString()+' L'].filter(Boolean).join(' · ')}}else if(u.role==='storekeeper'){const ids=(u.assignedId||'').split(',').map(x=>x.trim()).filter(Boolean);const tanks=S.storage.filter(x=>ids.includes(x.id)||ids.includes(x.nb));if(tanks.length){tank=tanks[0];label=tanks.length>1?tanks.map(t=>'Tank '+t.nb).join(', '):'Tank '+tank.nb;meta=[tank.location?'Location: '+tank.location:'','Capacity: '+(tank.capacity||0).toLocaleString()+' L',(tanks.length>1?'(+'+( tanks.length-1)+' more tanks)':'')].filter(Boolean).join(' · ')}}if(!tank){document.getElementById('my-label').textContent='No tank assigned';document.getElementById('my-meta').textContent='Contact admin.';['my-cur','my-recv','my-issued'].forEach(x=>document.getElementById(x).textContent='--');document.getElementById('my-tx').innerHTML='';document.getElementById('my-tx-empty').style.display='';return}document.getElementById('my-label').textContent=label;document.getElementById('my-meta').textContent=meta;document.getElementById('my-cur').textContent=(tank.current||0).toLocaleString()+' L';const myTx=S.transactions.filter(t=>t.userId===u.id);const rt=S.transactions.filter(t=>(t.type==='receive'||t.type==='transfer')&&t.destId===u.assignedId).reduce((a,x)=>a+x.volume,0);document.getElementById('my-recv').textContent=rt.toLocaleString()+' L';document.getElementById('my-issued').textContent=myTx.filter(t=>t.type==='distribute').reduce((a,x)=>a+x.volume,0).toLocaleString()+' L';document.getElementById('my-tx-empty').style.display=myTx.length?'none':'';document.getElementById('my-tx').innerHTML=[...myTx].reverse().map(t=>'<tr><td style="font-size:11px;white-space:nowrap">'+fmt(t.date)+'</td><td>'+txb(t.type)+'</td><td>'+(t.type==='receive'?t.from:t.to||'--')+'</td><td style="font-weight:700">'+(t.volume||0).toLocaleString()+'</td><td style="font-size:12px">'+(t.meter||'--')+'</td><td style="font-size:12px">'+(t.project||'--')+'</td><td style="font-size:12px">'+(t.driverName||'--')+'</td></tr>').join('')}
 
@@ -1325,6 +1406,61 @@ async function confirmDel(){if(!delCtx.type)return;S[delCtx.type]=S[delCtx.type]
 function saveGS(){const url=document.getElementById('gs-url').value.trim();if(!url){toast('Enter the URL.');return}GS_URL=url;localStorage.setItem('fo_gs',GS_URL);closeM('m-gs');updGS();toast('Google Sheets URL saved.')}
 async function testGS(){const url=document.getElementById('gs-url').value.trim();if(!url){toast('Enter the URL first.');return}const old=GS_URL;GS_URL=url;showSpin('Testing connection...');try{await gsC({action:'getData',role:'admin',userId:'u_admin'});hideSpin();toast('Connection successful!')}catch(e){hideSpin();toast('Failed: '+e.message);GS_URL=old}}
 
+function rExport(){
+  if(typeof XLSX==='undefined')return;
+  document.getElementById('exp-storage-count').textContent=S.storage.length+' tanks';
+  document.getElementById('exp-tankers-count').textContent=S.tankers.length+' tankers';
+  document.getElementById('exp-locations-count').textContent=S.locations.length+' locations';
+  document.getElementById('exp-projects-count').textContent=S.projects.length+' projects';
+  document.getElementById('exp-drivers-count').textContent=S.drivers.length+' drivers';
+  document.getElementById('exp-fleet-count').textContent=S.fleet.length+' machines';
+  document.getElementById('exp-suppliers-count').textContent=S.suppliers.length+' suppliers';
+  document.getElementById('exp-recv-count').textContent=S.transactions.filter(t=>t.type==='receive').length+' records';
+  document.getElementById('exp-trans-count').textContent=S.transactions.filter(t=>t.type==='transfer').length+' records';
+  document.getElementById('exp-dist-count').textContent=S.transactions.filter(t=>t.type==='distribute').length+' records';
+  document.getElementById('exp-adj-count').textContent=(adjHistory||[]).length+' records';
+  document.getElementById('exp-users-count').textContent=S.users.length+' users';
+}
+
+function dlSheet(type){
+  if(typeof XLSX==='undefined'){toast('Excel library loading, please try again.');return}
+  const wb=XLSX.utils.book_new();
+  const date=new Date(new Date().getTime()+(3*60*60*1000)).toISOString().slice(0,10);
+  const sheets={
+    storage:{name:'Fixed Storage',headers:['Tank Nb.','Location','Capacity (L)','Current Stock (L)','Status'],rows:S.storage.map(s=>[s.nb,s.location||'',s.capacity||0,s.current||0,s.status])},
+    tankers:{name:'Mobile Tankers',headers:['Fleet Nb.','Plate Nb.','Owner','Make','Model','Year','Location','Capacity (L)','Current Stock (L)','Status'],rows:S.tankers.map(t=>[t.fleetNb,t.plateNb,t.owner||'',t.make||'',t.model||'',t.year||'',t.location||'',t.capacity||0,t.current||0,t.status])},
+    locations:{name:'Locations',headers:['Location Name','Status'],rows:S.locations.map(l=>[l.name,l.status])},
+    projects:{name:'Projects',headers:['Project Code','Project Name','Status'],rows:S.projects.map(p=>[p.code||'',p.name,p.status])},
+    drivers:{name:'Drivers',headers:['Name','Emp ID','Residency ID','Phone','License Type','Status'],rows:S.drivers.map(d=>[d.name,d.empId||'',d.residencyId||'',d.phone||'',d.license||'',d.status])},
+    fleet:{name:'Fleet Equipment',headers:['Fleet No','Type','Category','Make','Model','Year','Capacity','Tank Cap.(L)','Meter Type','Owner','Status'],rows:S.fleet.map(f=>[f.fleetNo,f.ftype,f.category||'',f.make||'',f.model||'',f.year||'',f.capacity||'',f.tankCap||0,f.meterType,f.owner||'C.A.T.',f.status])},
+    suppliers:{name:'Suppliers',headers:['Name','Contact','Phone','Email','Order/Month (L)','Status'],rows:S.suppliers.map(s=>[s.name,s.contact||'',s.phone||'',s.email||'',s.orderPerMonth||0,s.status])},
+    txReceive:{name:'Tx - Receive',headers:['Date/Time','Supplier','Destination','Volume (L)','Unit Price','Invoice Ref','Notes','By'],rows:S.transactions.filter(t=>t.type==='receive').map(t=>[t.date,t.from||'',t.to||'',t.volume||0,t.price||0,t.ref||'',t.notes||'',t.userName||''])},
+    txTransfer:{name:'Tx - Transfer',headers:['Date/Time','From','To','Volume (L)','Notes','By'],rows:S.transactions.filter(t=>t.type==='transfer').map(t=>[t.date,t.from||'',t.to||'',t.volume||0,t.notes||'',t.userName||''])},
+    txDistribute:{name:'Tx - Distribute',headers:['Date/Time','From','To Equipment','Fleet No','Volume (L)','Meter Reading','Meter Type','Project','Driver Name','Notes','By','Warning'],rows:S.transactions.filter(t=>t.type==='distribute').map(t=>[t.date,t.from||'',t.to||'',t.fleetNo||'',t.volume||0,t.meter||'',t.meterType||'',t.project||'',t.driverName||'',t.notes||'',t.userName||'',t.warning||''])},
+    txAdjustment:{name:'Tx - Adjustment',headers:['Date/Time','Tank/Tanker','Type','Location','System Stock (L)','Physical Stock (L)','Difference (L)','Reason','Notes','Adjusted By'],rows:(adjHistory||[]).map(a=>[a.date||'',a.tankName||'',a.tankKind||'',a.location||'',a.sysStock||0,a.physical||0,a.diff||0,a.reason||'',a.notes||'',a.userName||''])},
+    users:{name:'Users',headers:['Full Name','Emp ID','Residency ID','Role','Assigned To','Status'],rows:S.users.map(u=>[u.name,u.empId||'',u.residencyId||'',u.role,u.assignedId||'',u.status])}
+  };
+  const s=sheets[type];if(!s)return;
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([s.headers,...s.rows]),s.name);
+  XLSX.writeFile(wb,'CAT_FuelOps_'+s.name.replace(/ /g,'_')+'_'+date+'.xlsx');
+  toast(s.name+' downloaded.');
+}
+
+function doExcelTx(){
+  if(typeof XLSX==='undefined'){toast('Excel library loading, please try again.');return}
+  const wb=XLSX.utils.book_new();
+  // Tx - Receive
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([['Date/Time','Supplier','Destination','Volume (L)','Unit Price','Invoice Ref','Notes','By'],...S.transactions.filter(t=>t.type==='receive').map(t=>[t.date,t.from||'',t.to||'',t.volume||0,t.price||0,t.ref||'',t.notes||'',t.userName||''])]),'Tx - Receive');
+  // Tx - Transfer
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([['Date/Time','From','To','Volume (L)','Notes','By'],...S.transactions.filter(t=>t.type==='transfer').map(t=>[t.date,t.from||'',t.to||'',t.volume||0,t.notes||'',t.userName||''])]),'Tx - Transfer');
+  // Tx - Distribute
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([['Date/Time','From','To Equipment','Fleet No','Volume (L)','Meter Reading','Meter Type','Project','Driver Name','Notes','Recorded By','Warning'],...S.transactions.filter(t=>t.type==='distribute').map(t=>[t.date,t.from||'',t.to||'',t.fleetNo||'',t.volume||0,t.meter||'',t.meterType||'',t.project||'',t.driverName||'',t.notes||'',t.userName||'',t.warning||''])]),'Tx - Distribute');
+  // Tx - Adjustment
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([['Date/Time','Tank/Tanker','Type','Location','System Stock (L)','Physical Stock (L)','Difference (L)','Reason','Notes','Adjusted By'],...(adjHistory||[]).map(a=>[a.date||'',a.tankName||'',a.tankKind||'',a.location||'',a.sysStock||0,a.physical||0,a.diff||0,a.reason||'',a.notes||'',a.userName||''])]),'Tx - Adjustment');
+  XLSX.writeFile(wb,'CAT_FuelOps_Transactions_'+new Date(new Date().getTime()+(3*60*60*1000)).toISOString().slice(0,10)+'.xlsx');
+  toast('Transactions Excel downloaded.');
+}
+
 function doExcel(){if(typeof XLSX==='undefined'){toast('Excel library loading, please try again in a moment.');return}const wb=XLSX.utils.book_new();
 // Fixed Storage
 XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([['Tank Nb.','Location','Capacity (L)','Current Stock (L)','Status'],...S.storage.map(s=>[s.nb,s.location||'',s.capacity||0,s.current||0,s.status])]),'Fixed Storage');
@@ -1341,7 +1477,9 @@ XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([['Location Name','Statu
 // Drivers
 XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([['Name','Emp ID','Residency ID','Phone','License Type','Status'],...S.drivers.map(d=>[d.name,d.empId||'',d.residencyId||'',d.phone||'',d.license||'',d.status])]),'Drivers');
 // Users & Passwords
-XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([['Full Name','Emp ID','Residency ID','Role','Password','Assigned To','Status'],...S.users.map(u=>[u.name,u.empId||'',u.residencyId||'',u.role,u.password,u.assignedId||'',u.status])]),'Users & Passwords');XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([['Date/Time','Supplier','Destination','Volume (L)','Unit Price','Invoice Ref','Notes','By'],...S.transactions.filter(t=>t.type==='receive').map(t=>[t.date,t.from||'',t.to||'',t.volume||0,t.price||0,t.ref||'',t.notes||'',t.userName||''])]),'Tx - Receive');XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([['Date/Time','From','To','Volume (L)','Notes','By'],...S.transactions.filter(t=>t.type==='transfer').map(t=>[t.date,t.from||'',t.to||'',t.volume||0,t.notes||'',t.userName||''])]),'Tx - Transfer');XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([['Date/Time','From','To Equipment','Fleet No','Volume (L)','Meter','Meter Type','Project','Driver','Notes','By'],...S.transactions.filter(t=>t.type==='distribute').map(t=>[t.date,t.from||'',t.to||'',t.fleetNo||'',t.volume||0,t.meter||'',t.meterType||'',t.project||'',t.driverName||'',t.notes||'',t.userName||''])]),'Tx - Distribute');XLSX.writeFile(wb,'CAT_FuelOps_'+new Date().toISOString().slice(0,10)+'.xlsx');toast('Excel downloaded.')}
+XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([['Full Name','Emp ID','Residency ID','Role','Password','Assigned To','Status'],...S.users.map(u=>[u.name,u.empId||'',u.residencyId||'',u.role,u.password,u.assignedId||'',u.status])]),'Users & Passwords');XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([['Date/Time','Supplier','Destination','Volume (L)','Unit Price','Invoice Ref','Notes','By'],...S.transactions.filter(t=>t.type==='receive').map(t=>[t.date,t.from||'',t.to||'',t.volume||0,t.price||0,t.ref||'',t.notes||'',t.userName||''])]),'Tx - Receive');XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([['Date/Time','From','To','Volume (L)','Notes','By'],...S.transactions.filter(t=>t.type==='transfer').map(t=>[t.date,t.from||'',t.to||'',t.volume||0,t.notes||'',t.userName||''])]),'Tx - Transfer');XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([['Date/Time','From','To Equipment','Fleet No','Volume (L)','Meter','Meter Type','Project','Driver','Notes','By'],...S.transactions.filter(t=>t.type==='distribute').map(t=>[t.date,t.from||'',t.to||'',t.fleetNo||'',t.volume||0,t.meter||'',t.meterType||'',t.project||'',t.driverName||'',t.notes||'',t.userName||'',t.warning||''])]),'Tx - Distribute');
+XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([['Date/Time','Tank/Tanker','Type','Location','System Stock (L)','Physical Stock (L)','Difference (L)','Reason','Notes','Adjusted By'],...(adjHistory||[]).map(a=>[a.date||'',a.tankName||'',a.tankKind||'',a.location||'',a.sysStock||0,a.physical||0,a.diff||0,a.reason||'',a.notes||'',a.userName||''])]),'Tx - Adjustment');
+XLSX.writeFile(wb,'CAT_FuelOps_'+new Date().toISOString().slice(0,10)+'.xlsx');toast('Excel downloaded.')}
 
 async function loadLoginUsers(){
   if(!GS_URL)return;
@@ -1376,7 +1514,7 @@ function startAutoRefresh(){
     const activePage=document.querySelector('.page.active');
     if(activePage){
       const pg=activePage.id.replace('page-','');
-      const fn={dashboard:rDash,adjustment:rAdj,mytank:rMyTank,transactions:renderTx,storage:rStorage,tankers:rTankers,suppliers:rSuppliers,fleet:rFleet,projects:rProjects,locations:rLocations,users:rUsers,drivers:rDrivers,reports:rReports};
+      const fn={dashboard:rDash,adjustment:rAdj,export:rExport,mytank:rMyTank,transactions:renderTx,storage:rStorage,tankers:rTankers,suppliers:rSuppliers,fleet:rFleet,projects:rProjects,locations:rLocations,users:rUsers,drivers:rDrivers,reports:rReports};
       if(fn[pg])fn[pg]();
     }
     // Update last refresh time
