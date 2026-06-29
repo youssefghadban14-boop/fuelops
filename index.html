@@ -766,8 +766,9 @@ function checkRecvOverflow(){
   if(!destId||!req)return;
   const tank=S.storage.find(x=>x.id===destId);
   if(tank&&tank.capacity>0){
-    const remaining=tank.capacity-(tank.current||0);
-    const totalCheck=stock+vol;if(totalCheck>cap){
+    const ckStock=tank.current||0;
+    const ckCap=tank.capacity;
+    const totalCheck=ckStock+vol;if(totalCheck>ckCap){
       req.style.display='inline';
       document.getElementById('r-notes').placeholder='Required — explain why volume exceeds tank space';
     } else {
@@ -1223,7 +1224,46 @@ function glf(fid){const fl=S.fleet.find(x=>x.id===fid||x.fleetNo===fid);const fl
 
 async function gsC(p){if(!GS_URL)throw new Error('Not connected');const r=await fetch(GS_URL+'?'+new URLSearchParams(p).toString());const j=await r.json();if(!j.ok)throw new Error(j.error||'API error');return j.data}
 function updGS(){const c=GS_URL?'#2e7d32':'#888f99';const t=GS_URL?'&#9679; Online':'&#9679; Offline';document.getElementById('gs-ind').innerHTML=t;document.getElementById('gs-ind').style.color=c;const e=document.getElementById('gs-es');if(e){e.textContent=GS_URL?'Connected':'Not connected';e.style.color=c}}
-async function loadGS(role,uid){if(!GS_URL)return;showSpin('Loading from Google Sheets...');try{const d=await gsC({action:'getData',role,userId:uid});if(d.storage)S.storage=pR(d.storage,'storage');if(d.tankers)S.tankers=pR(d.tankers,'tankers');if(d.suppliers)S.suppliers=pR(d.suppliers,'suppliers');if(d.fleet)S.fleet=pR(d.fleet,'fleet');if(d.drivers)S.drivers=pR(d.drivers,'drivers');if(d.users)S.users=pR(d.users,'users');if(d.projects)S.projects=pR(d.projects,'projects');if(d.txReceive)S.transactions.push(...pTx(d.txReceive,'receive'));if(d.txTransfer)S.transactions.push(...pTx(d.txTransfer,'transfer'));if(d.txDistribute)S.transactions.push(...pTx(d.txDistribute,'distribute'));popSel();toast('Data loaded from Google Sheets.')}catch(e){toast('GS load failed: '+e.message)}finally{hideSpin()}}
+async function loadGS(role,uid){
+  if(!GS_URL)return;
+  showSpin('Loading from Google Sheets...');
+  try{
+    const d=await gsC({action:'getData',role,userId:uid});
+    // Master data
+    if(d.storage)S.storage=pR(d.storage,'storage');
+    if(d.tankers)S.tankers=pR(d.tankers,'tankers');
+    if(d.suppliers)S.suppliers=pR(d.suppliers,'suppliers');
+    if(d.fleet)S.fleet=pR(d.fleet,'fleet');
+    if(d.drivers)S.drivers=pR(d.drivers,'drivers');
+    if(d.users)S.users=pR(d.users,'users');
+    if(d.projects)S.projects=pR(d.projects,'projects');
+    if(d.locations)S.locations=pR(d.locations,'locations');
+    // Transactions - ALWAYS clear first then reload
+    S.transactions=[];
+    if(d.txReceive)S.transactions.push(...pTx(d.txReceive,'receive'));
+    if(d.txTransfer)S.transactions.push(...pTx(d.txTransfer,'transfer'));
+    if(d.txDistribute)S.transactions.push(...pTx(d.txDistribute,'distribute'));
+    // Adjustments
+    if(d.txAdjustment)adjHistory=d.txAdjustment.map(r=>({
+      id:r['ID']||'',date:r['Date/Time']||'',
+      tankId:r['Tank ID']||r['Tank/Tanker']||'',
+      tankName:r['Tank/Tanker']||'',tankKind:r['Type']||'',
+      location:r['Location']||'',sysStock:+r['System Stock (L)']||0,
+      physical:+r['Physical Stock (L)']||0,diff:+r['Difference (L)']||0,
+      reason:r['Reason']||'',notes:r['Notes']||'',
+      userName:r['Adjusted By']||'',userId:r['User ID']||''
+    }));
+    console.log('Loaded: '+S.transactions.length+' transactions, '+S.storage.length+' tanks, '+S.fleet.length+' fleet');
+    popSel();
+    popLocDropdowns();
+    toast('Data loaded. '+S.transactions.length+' transactions.');
+  }catch(e){
+    console.error('GS load failed:',e);
+    toast('GS load failed: '+e.message);
+  }finally{
+    hideSpin();
+  }
+}
 function pR(rows,type){if(!rows||!rows.length)return[];return rows.filter(r=>r['Status']!=='Inactive').map(r=>{if(type==='storage')return{id:r['ID'],nb:r['Tank Nb.'],location:r['Location']||'',capacity:+r['Capacity (L)']||0,current:+r['Current Stock (L)']||0,status:r['Status'],assignedId:r['Assigned ID']||''};if(type==='locations')return{id:r['ID'],name:r['Location Name']||r['Name'],status:r['Status']};if(type==='tankers')return{id:r['ID'],fleetNb:r['Fleet Nb.'],plateNb:r['Plate Nb.'],owner:r['Owner']||'',make:r['Make']||'',model:r['Model']||'',year:r['Year']||'',location:r['Location']||'',capacity:+r['Capacity (L)']||0,current:+r['Current Stock (L)']||0,status:r['Status']};if(type==='suppliers')return{id:r['ID'],name:r['Name'],contact:r['Contact']||'',phone:r['Phone']||'',email:r['Email']||'',orderPerMonth:+r['Order/Month (L)']||0,status:r['Status']};if(type==='fleet')return{id:r['ID'],fleetNo:r['Fleet No'],ftype:r['Type']||'',category:r['Category']||'',make:r['Make']||'',model:r['Model']||'',capacity:r['Capacity']||'',year:r['Year']||'',tankCap:+r['Tank Capacity (L)']||0,meterType:r['Meter Type']||'hourmeter',owner:r['Owner']||'C.A.T.',status:r['Status']};if(type==='drivers')return{id:r['ID'],name:r['Name'],empId:r['Employee ID']||'',residencyId:r['Residency ID']||'',phone:r['Phone']||'',license:r['License Type']||'',status:r['Status']};if(type==='users')return{id:r['ID'],name:r['Full Name'],empId:r['Employee ID']||'',residencyId:r['Residency ID']||'',role:r['Role'],password:r['Password'],assignedId:r['Assigned ID']||null,status:r['Status']};if(type==='projects')return{id:r['ID'],code:r['Project Code']||'',name:r['Project Name'],status:r['Status']};return r})}
 function pTx(rows,type){if(!rows||!rows.length)return[];return rows.map(r=>{if(type==='receive')return{id:r['ID'],type,date:r['Date/Time'],volume:+r['Volume (L)']||0,from:r['Supplier'],to:r['Destination'],ref:r['Invoice Ref'],price:+r['Unit Price']||0,notes:r['Notes'],userId:r['User ID'],userName:r['Recorded By']};if(type==='transfer')return{id:r['ID'],type,date:r['Date/Time'],volume:+r['Volume (L)']||0,from:r['From'],to:r['To'],notes:r['Notes'],userId:r['User ID'],userName:r['Recorded By']};if(type==='distribute')return{id:r['ID'],type,date:r['Date/Time'],volume:+r['Volume (L)']||0,from:r['From'],to:r['To Equipment'],fleetId:r['Fleet No'],meter:r['Meter Reading'],meterType:r['Meter Type'],project:r['Project'],driverName:r['Driver Name'],notes:r['Notes'],userId:r['User ID'],userName:r['Recorded By']};return r})}
 async function wTx(tx,extra){if(!GS_URL)return;try{await gsC({action:'addTx',...tx,...extra})}catch(e){toast('GS write failed: '+e.message)}}
@@ -1330,6 +1370,15 @@ function buildNav(){const role=S.currentUser.role;const defs={admin:[{s:'Operati
 const pts={dashboard:'Dashboard',adjustment:'Stock Adjustment',locations:'Locations',mytank:'My Tank',receive:'Receive Diesel',transfer:'Transfer',distribute:'Issue Diesel',transactions:'All Transactions',storage:'Fixed Storage',tankers:'Mobile Tankers',suppliers:'Suppliers',fleet:'Fleet / Equipment',projects:'Projects',users:'User Management',drivers:'Drivers List',reports:'Reports',export:'Export & Sync'};
 function nav(pg){document.querySelectorAll('.nvit').forEach(n=>n.classList.remove('active'));const ni=document.getElementById('nav-'+pg);if(ni)ni.classList.add('active');document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));const p=document.getElementById('page-'+pg);if(p)p.classList.add('active');document.getElementById('pg-title').textContent=pts[pg]||pg;function updRoleUI(){const r=S.currentUser?.role;const addTankBtn=document.getElementById('add-tank-btn');if(addTankBtn)addTankBtn.style.display=(r==='admin')?'':'none';const addTankerBtn=document.getElementById('add-tanker-btn');if(addTankerBtn)addTankerBtn.style.display=(r==='admin'||r==='pmv_admin')?'':'none';const addFleetBtn=document.getElementById('add-fleet-btn');if(addFleetBtn)addFleetBtn.style.display=(r==='admin'||r==='pmv_admin')?'':'none'}
 const fn={dashboard:rDash,adjustment:rAdj,export:rExport,mytank:rMyTank,receive:pRecv,transfer:pTrans,distribute:pDist,transactions:renderTx,storage:rStorage,tankers:rTankers,suppliers:rSuppliers,fleet:rFleet,projects:rProjects,locations:rLocations,users:rUsers,drivers:rDrivers,reports:rReports};if(fn[pg])fn[pg]();updRoleUI()}
+
+function isToday(d){
+  try{
+    const nowQ=new Date(new Date().getTime()+(3*60*60*1000));
+    const todayStr=nowQ.toISOString().slice(0,10);
+    const dq=new Date(new Date(d).getTime()+(3*60*60*1000));
+    return dq.toISOString().slice(0,10)===todayStr;
+  }catch{return false}
+}
 
 function rMyTank(){const u=S.currentUser;let tank=null,label='',meta='';if(u.role==='tanker_driver'){tank=S.tankers.find(x=>x.id===u.assignedId||x.fleetNb===u.assignedId);if(tank){label=tank.fleetNb+(tank.plateNb?' - '+tank.plateNb:'');const details=[tank.make,tank.model,tank.year].filter(Boolean).join(' ');meta=[details?details:'',tank.owner?'Owner: '+tank.owner:'',tank.location?'Location: '+tank.location:'','Capacity: '+(tank.capacity||0).toLocaleString()+' L'].filter(Boolean).join(' · ')}}else if(u.role==='storekeeper'){const ids=(u.assignedId||'').split(',').map(x=>x.trim()).filter(Boolean);const tanks=S.storage.filter(x=>ids.includes(x.id)||ids.includes(x.nb));if(tanks.length){tank=tanks[0];label=tanks.length>1?tanks.map(t=>'Tank '+t.nb).join(', '):'Tank '+tank.nb;meta=[tank.location?'Location: '+tank.location:'','Capacity: '+(tank.capacity||0).toLocaleString()+' L',(tanks.length>1?'(+'+( tanks.length-1)+' more tanks)':'')].filter(Boolean).join(' · ')}}if(!tank){document.getElementById('my-label').textContent='No tank assigned';document.getElementById('my-meta').textContent='Contact admin.';['my-cur','my-recv','my-issued'].forEach(x=>document.getElementById(x).textContent='--');document.getElementById('my-tx').innerHTML='';document.getElementById('my-tx-empty').style.display='';return}document.getElementById('my-label').textContent=label;document.getElementById('my-meta').textContent=meta;document.getElementById('my-cur').textContent=(tank.current||0).toLocaleString()+' L';// Show transactions by this user OR involving their tanks
   const myTx=S.transactions.filter(t=>t.userId===u.id||(
