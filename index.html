@@ -776,7 +776,7 @@ function checkRecvOverflow(){
   const tank=S.storage.find(x=>x.id===destId);
   if(tank&&tank.capacity>0){
     const remaining=tank.capacity-(tank.current||0);
-    if(vol>remaining){
+    const totalCheck=stock+vol;if(totalCheck>cap){
       req.style.display='inline';
       document.getElementById('r-notes').placeholder='Required — explain why volume exceeds tank space';
     } else {
@@ -1420,18 +1420,19 @@ async function doRecv(){const suppId=document.getElementById('r-sup').value,dest
   const destTank=S.storage.find(x=>x.id===destId);
   if(destTank&&destTank.capacity>0){
     const current=destTank.current||0;
-    const remaining=destTank.capacity-current;
+    const cap=destTank.capacity;
+    const remaining=cap-current;
     const total=current+vol;
-    if(vol>remaining){
+    if(total>cap){  // Check if total (current + new) exceeds capacity
       const notes=document.getElementById('r-notes').value.trim();
       if(!notes){
-        sal('recv-alert','Volume exceeds tank capacity by '+(vol-remaining).toLocaleString()+' L. You must enter a reason in the Notes field before proceeding.',true);
+        sal('recv-alert','Total stock ('+current.toLocaleString()+' + '+vol.toLocaleString()+' = '+total.toLocaleString()+' L) exceeds tank capacity of '+cap.toLocaleString()+' L by '+(total-cap).toLocaleString()+' L. You must enter a reason in the Notes field before proceeding.',true);
         document.getElementById('r-notes').focus();
         document.getElementById('r-notes').style.borderColor='#c31c2a';
         document.getElementById('r-notes').style.background='#fdecea';
         return;
       }
-      const proceed=confirm(`⚠️ Warning: This receipt will exceed tank capacity.\n\nTank: ${destTank.nb}\nCapacity: ${destTank.capacity.toLocaleString()} L\nCurrent stock: ${current.toLocaleString()} L\nRemaining space: ${remaining.toLocaleString()} L\nVolume to receive: ${vol.toLocaleString()} L\nOverflow: ${(vol-remaining).toLocaleString()} L\nNotes: ${notes}\n\nDo you want to proceed anyway?`);
+      const proceed=confirm(`⚠️ Warning: This receipt will exceed tank capacity.\n\nTank: ${destTank.nb}\nCapacity: ${cap.toLocaleString()} L\nCurrent stock: ${current.toLocaleString()} L\nVolume to receive: ${vol.toLocaleString()} L\nTotal after receipt: ${total.toLocaleString()} L\nOverflow: ${(total-cap).toLocaleString()} L\nNotes: ${notes}\n\nDo you want to proceed anyway?`);
       if(!proceed)return;
     }
   }const sp=S.suppliers.find(x=>x.id===suppId),dest=S.storage.find(x=>x.id===destId);uT(destId,vol);const tx={id:uid(),type:'receive',date:document.getElementById('r-date').value,volume:vol,supplierId:suppId,from:sp?.name,to:dest?.nb,destId,ref:document.getElementById('r-ticket').value,price:parseFloat(document.getElementById('r-price').value)||0,notes:document.getElementById('r-notes').value,userId:S.currentUser.id,userName:S.currentUser.name};S.transactions.push(tx);await wTx(tx,{destId});sal('recv-alert','Receipt: '+vol.toLocaleString()+' L from '+(sp?.name||''));['r-vol','r-ticket','r-notes','r-price'].forEach(x=>document.getElementById(x).value='')}
