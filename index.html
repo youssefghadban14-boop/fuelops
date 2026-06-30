@@ -33,24 +33,38 @@ body{font-family:Arial,sans-serif;background:#212630;color:#1a1a1a;font-size:15p
 .sidebar{width:220px;min-width:220px;background:#212630;border-right:1px solid #2d3545;display:flex;flex-direction:column;overflow-y:auto;transition:transform .25s ease;z-index:300}
 .sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:290}
 .sidebar-overlay.open{display:block}
-.mobile-menu-btn{display:none;background:none;border:none;font-size:22px;color:#212630;cursor:pointer;padding:4px 8px;line-height:1}
+.mobile-menu-btn{display:none;background:#212630;border:none;color:white;cursor:pointer;padding:10px 16px;line-height:1;border-radius:10px;font-family:Arial,sans-serif;font-size:14px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;align-items:center;gap:8px}
 @media (max-width:860px){
   .sidebar{position:fixed;top:0;left:0;bottom:0;transform:translateX(-100%);box-shadow:4px 0 20px rgba(0,0,0,.3)}
   .sidebar.open{transform:translateX(0)}
-  .mobile-menu-btn{display:inline-block}
+  .mobile-menu-btn{display:inline-flex}
   .main{width:100%}
   .content{padding:14px}
   .topbar{padding:10px 14px;flex-wrap:wrap;gap:8px}
   .fr{gap:10px}
   .fg{min-width:100%}
-  .fg input,.fg select{padding:12px 13px;font-size:16px}
+  .fg label{font-size:11px;margin-bottom:7px}
+  .fg input,.fg select{padding:13px 14px;font-size:16px;border-radius:10px;border-width:1.5px;background:#f4f4f2}
+  .fg input:focus,.fg select:focus{border-color:#c31c2a;box-shadow:0 0 0 3px rgba(195,28,42,.12);background:white}
   .metrics{grid-template-columns:repeat(2,1fr)}
   .g2{grid-template-columns:1fr}
-  .btn,.pbtn{padding:10px 16px;font-size:13px}
-  .card{padding:14px}
+  .btn,.pbtn{padding:12px 18px;font-size:14px;border-radius:10px}
+  .card{padding:18px;border-radius:14px;box-shadow:0 2px 14px rgba(0,0,0,.07);border-color:#e5e5e0}
   .card-head{flex-direction:column;align-items:flex-start;gap:8px}
   .tw table{display:none}
   .mobile-cards{display:block}
+  /* Operational screens: full-width bold submit button, EquipTrack-style */
+  #page-receive .pbtn.pr,#page-transfer .pbtn.pr,#page-distribute .pbtn.pr,#page-adjustment .pbtn.pr{
+    width:100%;padding:17px;font-size:16px;border-radius:12px;letter-spacing:.06em;
+    box-shadow:0 4px 14px rgba(195,28,42,.3);margin-top:6px;
+  }
+  #page-receive [style*="justify-content:flex-end"],
+  #page-transfer [style*="justify-content:flex-end"],
+  #page-distribute [style*="justify-content:flex-end"],
+  #page-adjustment [style*="justify-content:flex-end"]{justify-content:stretch !important}
+  .hide-mobile{display:none !important}
+  .topbar{flex-wrap:nowrap !important}
+  .topbar-right{gap:8px !important}
 }
 @media (min-width:861px){
   .mobile-cards{display:none}
@@ -152,7 +166,6 @@ tr:hover td{background:#f8f8f6}
 .tab.active{color:#c31c2a;border-bottom-color:#c31c2a}
 /* MISC */
 .empty{text-align:center;padding:40px;color:#888f99;font-size:13px}
-.mobile-cards{display:none}
 .mc-item{background:white;border:1px solid #d8d8d4;border-radius:10px;padding:14px;margin-bottom:10px}
 .mc-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:8px}
 .mc-title{font-size:15px;font-weight:700;color:#212630}
@@ -217,17 +230,17 @@ tr:hover td{background:#f8f8f6}
   <div class="main">
     <div class="topbar">
       <div style="display:flex;align-items:center;gap:8px">
-        <button class="mobile-menu-btn" onclick="toggleSidebar()" aria-label="Menu">&#9776;</button>
+        <button class="mobile-menu-btn" onclick="toggleSidebar()" aria-label="Menu">&#9776; Menu</button>
         <div class="tbtitle" id="pg-title">Dashboard</div>
       </div>
-      <div style="display:flex;align-items:center;gap:12px">
+      <div style="display:flex;align-items:center;gap:12px" class="topbar-right">
         <span class="gsind" id="gs-ind" style="color:#888f99">&#9679; Offline</span>
-        <span id="adj-reminder" style="font-size:11px;color:#f57f17;font-weight:700"></span>
+        <span id="adj-reminder" class="hide-mobile" style="font-size:11px;color:#f57f17;font-weight:700"></span>
         <button id="refresh-btn" onclick="manualRefresh()" style="padding:6px 14px;background:white;border:1px solid #d0d0ca;border-radius:6px;font-size:12px;font-weight:700;color:#212630;cursor:pointer;display:inline-flex;align-items:center;gap:6px;font-family:Arial,sans-serif">
           <span id="refresh-icon" style="font-size:14px">&#8635;</span> Sync
         </button>
-        <span id="tb-date" style="font-size:12px;color:#888f99"></span>
-        <span id="last-refresh" style="font-size:11px;color:#b7cfd7"></span>
+        <span id="tb-date" class="hide-mobile" style="font-size:12px;color:#888f99"></span>
+        <span id="last-refresh" class="hide-mobile" style="font-size:11px;color:#b7cfd7"></span>
       </div>
     </div>
     <div class="content">
