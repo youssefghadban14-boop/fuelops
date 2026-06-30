@@ -655,6 +655,17 @@ function allU(){
 }
 function rl(r){return{admin:'Administrator',storekeeper:'Storekeeper',tanker_driver:'Tanker Driver',driver:'Driver',pmv_admin:'PMV Admin'}[r]||r}
 function uid(){return'_'+Math.random().toString(36).substr(2,9)}
+function rid(prefix){
+  const d=new Date(new Date().getTime()+(3*60*60*1000)); // Qatar time
+  const yy=String(d.getUTCFullYear()).slice(2);
+  const mm=String(d.getUTCMonth()+1).padStart(2,'0');
+  const dd=String(d.getUTCDate()).padStart(2,'0');
+  const hh=String(d.getUTCHours()).padStart(2,'0');
+  const mi=String(d.getUTCMinutes()).padStart(2,'0');
+  const ss=String(d.getUTCSeconds()).padStart(2,'0');
+  const rand=String(Math.floor(Math.random()*90)+10);
+  return prefix+'-'+yy+mm+dd+'-'+hh+mi+ss+'-'+rand;
+}
 function ndt(){
   const now=new Date();
   const qatar=new Date(now.getTime()+(3*60*60*1000));
@@ -973,7 +984,7 @@ async function doAdjustment(){
   const proceed=confirm(`Confirm stock adjustment:\n\nTank: ${tank.nb||tank.fleetNb}\nSystem stock: ${sysStock.toLocaleString()} L\nPhysical stock: ${physical.toLocaleString()} L\nDifference: ${diff>=0?'+':''}${diff.toLocaleString()} L\nReason: ${reason}\n\nThis will update the stock to ${physical.toLocaleString()} L.`);
   if(!proceed)return;
   // Apply adjustment
-  const adj={id:uid(),type:'adjustment',date,tankId:id,tankName:tank.nb||tank.fleetNb,tankKind:tank._k||'tank',location:tank.location||'',sysStock,physical,diff,reason,notes:document.getElementById('adj-notes').value,userId:S.currentUser.id,userName:S.currentUser.name};
+  const adj={id:rid('ADJ'),type:'adjustment',date,tankId:id,tankName:tank.nb||tank.fleetNb,tankKind:tank._k||'tank',location:tank.location||'',sysStock,physical,diff,reason,notes:document.getElementById('adj-notes').value,userId:S.currentUser.id,userName:S.currentUser.name};
   // Update stock in memory
   uT(id, diff);
   adjHistory.push(adj);
@@ -1547,7 +1558,7 @@ async function doRecv(){const suppId=document.getElementById('r-sup').value,dest
       const proceed=confirm(`⚠️ Warning: This receipt will exceed tank capacity.\n\nTank: ${destTank.nb}\nCapacity: ${cap.toLocaleString()} L\nCurrent stock: ${current.toLocaleString()} L\nVolume to receive: ${vol.toLocaleString()} L\nTotal after receipt: ${total.toLocaleString()} L\nOverflow: ${(total-cap).toLocaleString()} L\nNotes: ${notes}\n\nDo you want to proceed anyway?`);
       if(!proceed)return;
     }
-  }const sp=S.suppliers.find(x=>x.id===suppId),dest=S.storage.find(x=>x.id===destId);uT(destId,vol);const tx={id:uid(),type:'receive',date:document.getElementById('r-date').value,volume:vol,supplierId:suppId,from:sp?.name,to:dest?.nb,destId,ref:document.getElementById('r-ticket').value,price:parseFloat(document.getElementById('r-price').value)||0,notes:document.getElementById('r-notes').value,userId:S.currentUser.id,userName:S.currentUser.name};S.transactions.push(tx);await wTx(tx,{destId});sal('recv-alert','Receipt: '+vol.toLocaleString()+' L from '+(sp?.name||''));
+  }const sp=S.suppliers.find(x=>x.id===suppId),dest=S.storage.find(x=>x.id===destId);uT(destId,vol);const tx={id:rid('RCV'),type:'receive',date:document.getElementById('r-date').value,volume:vol,supplierId:suppId,from:sp?.name,to:dest?.nb,destId,ref:document.getElementById('r-ticket').value,price:parseFloat(document.getElementById('r-price').value)||0,notes:document.getElementById('r-notes').value,userId:S.currentUser.id,userName:S.currentUser.name};S.transactions.push(tx);await wTx(tx,{destId});sal('recv-alert','Receipt: '+vol.toLocaleString()+' L from '+(sp?.name||''));
   await silentRefresh();['r-vol','r-ticket','r-notes','r-price'].forEach(x=>document.getElementById(x).value='')}
 async function doTrans(){const fromId=document.getElementById('t-from').value,toId=document.getElementById('t-to').value,vol=parseFloat(document.getElementById('t-vol').value)||0;
   if(!fromId){sal('trans-alert','Please select a source tank.',true);return}
@@ -1556,7 +1567,7 @@ async function doTrans(){const fromId=document.getElementById('t-from').value,to
   const from=S.storage.find(x=>x.id===fromId);
   const available=from?.current||0;
   if(vol>available){sal('trans-alert','Insufficient stock. Tank only has '+available.toLocaleString()+' L available — you tried to transfer '+vol.toLocaleString()+' L.',true);return}
-  const to=S.tankers.find(x=>x.id===toId||x.fleetNb===toId);uT(fromId,-vol);uT(toId,vol);const tx={id:uid(),type:'transfer',date:document.getElementById('t-date').value,volume:vol,from:'Tank '+(from?.nb||''),to:to?.fleetNb,destId:toId,notes:document.getElementById('t-notes').value,userId:S.currentUser.id,userName:S.currentUser.name};S.transactions.push(tx);await wTx(tx,{fromId,destId:toId,destKind:'tanker'});sal('trans-alert','Transfer: '+vol.toLocaleString()+' L');
+  const to=S.tankers.find(x=>x.id===toId||x.fleetNb===toId);uT(fromId,-vol);uT(toId,vol);const tx={id:rid('TRF'),type:'transfer',date:document.getElementById('t-date').value,volume:vol,from:'Tank '+(from?.nb||''),to:to?.fleetNb,destId:toId,notes:document.getElementById('t-notes').value,userId:S.currentUser.id,userName:S.currentUser.name};S.transactions.push(tx);await wTx(tx,{fromId,destId:toId,destKind:'tanker'});sal('trans-alert','Transfer: '+vol.toLocaleString()+' L');
   await silentRefresh();['t-vol','t-notes'].forEach(x=>document.getElementById(x).value='')}
 async function doDist(){
   // Read source - try hidden field first, then read from visible dropdown
@@ -1601,7 +1612,7 @@ Do you want to proceed anyway?`);
       txWarning=`DAILY EXCESS: Total today ${totalToday}L exceeds tank capacity of ${flForCap.tankCap}L (prev: ${filledToday}L)`;
     }
   }
-if(!proj){sal('dist-alert','Please select a project.',true);return}const fl=S.fleet.find(x=>x.id===flId||x.fleetNo===flId),last=glf(flId);if(last&&last.meter&&parseFloat(meter)<=parseFloat(last.meter)){sal('dist-alert','Meter must be > '+last.meter+'.',true);return}const src=gT(srcId);if((src?.current||0)<vol){sal('dist-alert','Insufficient. Available: '+(src?.current||0).toLocaleString()+' L',true);return}const drv=S.drivers.find(x=>x.id===drvId);uT(srcId,-vol);const tx={id:uid(),type:'distribute',date:document.getElementById('d-date').value,volume:vol,from:srcKind==='tank'?'Tank '+(src?.nb||''):src?.fleetNb,to:fl?.fleetNo,fleetId:flId,fleetNo:fl?.fleetNo,meter:meter?parseFloat(meter):null,meterType:fl?.meterType||'hourmeter',project:proj,driverId:drvId,driverName:drv?.name||'',notes:document.getElementById('d-notes').value,warning:txWarning||'',userId:S.currentUser.id,userName:S.currentUser.name};S.transactions.push(tx);await wTx(tx,{srcId,srcKind});sal('dist-alert','Distribution: '+vol.toLocaleString()+' L to '+(fl?.fleetNo||''));
+if(!proj){sal('dist-alert','Please select a project.',true);return}const fl=S.fleet.find(x=>x.id===flId||x.fleetNo===flId),last=glf(flId);if(last&&last.meter&&parseFloat(meter)<=parseFloat(last.meter)){sal('dist-alert','Meter must be > '+last.meter+'.',true);return}const src=gT(srcId);if((src?.current||0)<vol){sal('dist-alert','Insufficient. Available: '+(src?.current||0).toLocaleString()+' L',true);return}const drv=S.drivers.find(x=>x.id===drvId);uT(srcId,-vol);const tx={id:rid('DST'),type:'distribute',date:document.getElementById('d-date').value,volume:vol,from:srcKind==='tank'?'Tank '+(src?.nb||''):src?.fleetNb,to:fl?.fleetNo,fleetId:flId,fleetNo:fl?.fleetNo,meter:meter?parseFloat(meter):null,meterType:fl?.meterType||'hourmeter',project:proj,driverId:drvId,driverName:drv?.name||'',notes:document.getElementById('d-notes').value,warning:txWarning||'',userId:S.currentUser.id,userName:S.currentUser.name};S.transactions.push(tx);await wTx(tx,{srcId,srcKind});sal('dist-alert','Distribution: '+vol.toLocaleString()+' L to '+(fl?.fleetNo||''));
   await silentRefresh();['d-vol','d-meter','d-notes'].forEach(x=>document.getElementById(x).value='');document.getElementById('d-fleet').value='';document.getElementById('d-proj').value='';document.getElementById('d-drv').value='';document.getElementById('mi-card').classList.remove('show');document.getElementById('lf-card').classList.remove('show')}
 
 async function saveStorage(){const editId=document.getElementById('s-edit-id').value;const nb=document.getElementById('s-nb').value.trim();const loc=document.getElementById('s-loc').value;if(!nb||!loc){toast('Tank Nb. and Location required.');return}if(editId){const s=S.storage.find(x=>x.id===editId);if(!s)return;s.nb=nb;s.location=loc;s.status=document.getElementById('s-stat').value;closeM('m-storage');rStorage();try{await gsC({action:'saveStorage',...s})}catch(e){}toast('Tank updated.');}else{const r={id:uid(),nb,location:loc,capacity:0,current:0,status:document.getElementById('s-stat').value};S.storage.push(r);closeM('m-storage');rStorage();try{await gsC({action:'saveStorage',...r})}catch(e){}toast('Tank saved.');}}
