@@ -261,10 +261,10 @@ tr:hover td{background:#f8f8f6}
           <div class="metric red"><div class="ml">Low stock alerts</div><div class="mv" id="m-alerts">0</div><div class="ms">below 20%</div></div>
         </div>
         <div class="g2">
-          <div class="card"><div class="card-head"><div class="ct"><div class="ctb"></div>Fixed storage</div><button class="btn sm nv" onclick="nav('storage')">View all</button></div><div class="tw"><table><thead><tr><th>Tank Nb.</th><th>Location</th><th>Current (L)</th><th>Level</th></tr></thead><tbody id="dash-storage"></tbody></table></div></div>
-          <div class="card"><div class="card-head"><div class="ct"><div class="ctb"></div>Mobile tankers</div><button class="btn sm nv" onclick="nav('tankers')">View all</button></div><div class="tw"><table><thead><tr><th>Fleet Nb.</th><th>Plate</th><th>Current (L)</th><th>Status</th></tr></thead><tbody id="dash-tankers"></tbody></table></div></div>
+          <div class="card"><div class="card-head"><div class="ct"><div class="ctb"></div>Fixed storage</div><button class="btn sm nv" onclick="nav('storage')">View all</button></div><div class="tw"><table><thead><tr><th>Tank Nb.</th><th>Location</th><th>Current (L)</th><th>Level</th></tr></thead><tbody id="dash-storage"></tbody></table></div><div class="mobile-cards" id="dash-storage-cards"></div></div>
+          <div class="card"><div class="card-head"><div class="ct"><div class="ctb"></div>Mobile tankers</div><button class="btn sm nv" onclick="nav('tankers')">View all</button></div><div class="tw"><table><thead><tr><th>Fleet Nb.</th><th>Plate</th><th>Current (L)</th><th>Status</th></tr></thead><tbody id="dash-tankers"></tbody></table></div><div class="mobile-cards" id="dash-tankers-cards"></div></div>
         </div>
-        <div class="card"><div class="card-head"><div class="ct"><div class="ctb"></div>Recent transactions</div><button class="btn sm nv" onclick="nav('transactions')">View all</button></div><div class="tw"><table><thead><tr><th>Date/Time</th><th>Type</th><th>From</th><th>To</th><th>Vol (L)</th><th>Project</th><th>Driver</th><th>By</th></tr></thead><tbody id="dash-tx"></tbody></table></div></div>
+        <div class="card"><div class="card-head"><div class="ct"><div class="ctb"></div>Recent transactions</div><button class="btn sm nv" onclick="nav('transactions')">View all</button></div><div class="tw"><table><thead><tr><th>Date/Time</th><th>Type</th><th>From</th><th>To</th><th>Vol (L)</th><th>Project</th><th>Driver</th><th>By</th></tr></thead><tbody id="dash-tx"></tbody></table></div><div class="mobile-cards" id="dash-tx-cards"></div></div>
       </div>
 
       <!-- MY TANK -->
@@ -282,7 +282,7 @@ tr:hover td{background:#f8f8f6}
           <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:#4d5360;cursor:pointer;font-weight:600">
             <input type="checkbox" id="my-show-all" onchange="rMyTank()" style="accent-color:#c31c2a">
             Show all history
-          </label></div><div class="tw"><table><thead><tr><th>Date/Time</th><th>Type</th><th>To/From</th><th>Vol (L)</th><th>Meter</th><th>Project</th><th>Driver</th></tr></thead><tbody id="my-tx"></tbody></table></div><div class="empty" id="my-tx-empty">No transactions yet</div></div>
+          </label></div><div class="tw"><table><thead><tr><th>Date/Time</th><th>Type</th><th>To/From</th><th>Vol (L)</th><th>Meter</th><th>Project</th><th>Driver</th></tr></thead><tbody id="my-tx"></tbody></table></div><div class="mobile-cards" id="my-tx-cards"></div><div class="empty" id="my-tx-empty">No transactions yet</div></div>
       </div>
 
       <!-- RECEIVE -->
@@ -380,6 +380,7 @@ tr:hover td{background:#f8f8f6}
         </div>
         <div class="card" style="margin-top:16px"><div class="card-head"><div class="ct"><div class="ctb"></div>Adjustment history</div></div>
           <div class="tw"><table><thead><tr><th>Date/Time</th><th>Tank / Tanker</th><th>System stock (L)</th><th>Physical stock (L)</th><th>Difference (L)</th><th>Reason</th><th>Notes</th><th>By</th></tr></thead><tbody id="adj-history"></tbody></table></div>
+          <div class="mobile-cards" id="adj-history-cards"></div>
           <div class="empty" id="adj-history-empty">No adjustments yet</div>
         </div>
       </div>
@@ -413,6 +414,7 @@ tr:hover td{background:#f8f8f6}
       <!-- FLEET -->
       <div class="page" id="page-fleet">
         <div class="card"><div class="card-head"><div class="ct"><div class="ctb"></div>Fleet / equipment</div><span id="add-fleet-btn"><button class="pbtn pr" onclick="openAddFleet()">+ Add equipment</button></span></div>
+          <div class="fr"><div class="fg" style="max-width:320px"><input type="text" id="fleet-search" placeholder="Search Fleet No..." oninput="rFleet()" style="padding:10px 12px;border-radius:6px;border:1px solid #c5c5c0;font-family:Arial,sans-serif;font-size:14px"></div></div>
           <div class="tw"><table><thead><tr><th>Fleet No</th><th>Type</th><th>Category</th><th>Make</th><th>Model</th><th>Year</th><th>Capacity</th><th>Tank Cap.(L)</th><th>Meter</th><th>Owner</th><th>Last meter</th><th>Total fuel (L)</th><th>Status</th><th></th></tr></thead><tbody id="fleet-list"></tbody></table></div>
           <div class="empty" id="fleet-empty">No equipment added yet</div>
         </div>
@@ -1067,9 +1069,11 @@ async function doAdjustment(){
 function renderAdjHistory(){
   const el=document.getElementById('adj-history');
   const em=document.getElementById('adj-history-empty');
-  if(!adjHistory.length){el.innerHTML='';em.style.display='';return}
+  const cardsEl=document.getElementById('adj-history-cards');
+  if(!adjHistory.length){el.innerHTML='';if(cardsEl)cardsEl.innerHTML='';em.style.display='';return}
   em.style.display='none';
-  el.innerHTML=[...adjHistory].reverse().map(a=>`<tr>
+  const ordered=[...adjHistory].reverse();
+  el.innerHTML=ordered.map(a=>`<tr>
     <td style="font-size:12px;white-space:nowrap">${fmt(a.date)}</td>
     <td style="font-weight:700">${a.tankName}${a.location?' <span style="color:#888f99;font-weight:400">'+a.location+'</span>':''}</td>
     <td>${(a.sysStock||0).toLocaleString()}</td>
@@ -1079,6 +1083,7 @@ function renderAdjHistory(){
     <td style="font-size:12px;color:#888f99">${a.notes||'—'}</td>
     <td style="font-size:12px">${a.userName}</td>
   </tr>`).join('');
+  if(cardsEl)cardsEl.innerHTML=ordered.map(a=>`<div class="mc-item"><div class="mc-top"><div><div class="mc-title">${a.tankName}</div><div class="mc-sub">${fmt(a.date)}${a.location?' · '+a.location:''}</div></div><div style="font-weight:700;color:${a.diff>0?'#f57f17':a.diff<0?'#c31c2a':'#2e7d32'}">${a.diff>=0?'+':''}${(a.diff||0).toLocaleString()} L</div></div><div class="mc-grid"><div class="mc-field"><strong>System</strong>${(a.sysStock||0).toLocaleString()} L</div><div class="mc-field"><strong>Physical</strong>${(a.physical||0).toLocaleString()} L</div><div class="mc-field"><strong>Reason</strong>${a.reason}</div><div class="mc-field"><strong>By</strong>${a.userName}</div></div></div>`).join('');
 }
 
 async function manualRefresh(){
@@ -1494,6 +1499,7 @@ function rMyTank(){
     document.getElementById('my-meta').textContent='Contact admin.';
     ['my-cur','my-recv','my-issued'].forEach(x=>{const el=document.getElementById(x);if(el)el.textContent='--'});
     document.getElementById('my-tx').innerHTML='';
+    const myCardsEl0=document.getElementById('my-tx-cards');if(myCardsEl0)myCardsEl0.innerHTML='';
     document.getElementById('my-tx-empty').style.display='';
     return;
   }
@@ -1522,7 +1528,8 @@ function rMyTank(){
   const showAll=document.getElementById('my-show-all')?.checked;
   const displayTx=showAll?myTx:myTx.filter(t=>isToday(t.date));
   document.getElementById('my-tx-empty').style.display=displayTx.length?'none':'';
-  document.getElementById('my-tx').innerHTML=[...displayTx].reverse().map(t=>`<tr>
+  const orderedTx=[...displayTx].reverse();
+  document.getElementById('my-tx').innerHTML=orderedTx.map(t=>`<tr>
     <td style="font-size:11px;white-space:nowrap">${fmt(t.date)}</td>
     <td>${txb(t.type)}</td>
     <td>${t.type==='receive'?(t.from||'--'):(t.to||'--')}</td>
@@ -1531,6 +1538,8 @@ function rMyTank(){
     <td style="font-size:12px">${t.project||'--'}</td>
     <td style="font-size:12px">${t.driverName||'--'}</td>
   </tr>`).join('');
+  const myCardsEl=document.getElementById('my-tx-cards');
+  if(myCardsEl)myCardsEl.innerHTML=orderedTx.map(t=>`<div class="mc-item"><div class="mc-top"><div><div class="mc-title">${(t.volume||0).toLocaleString()} L</div><div class="mc-sub">${fmt(t.date)}</div></div>${txb(t.type)}</div><div class="mc-grid"><div class="mc-field"><strong>${t.type==='receive'?'From':'To'}</strong>${t.type==='receive'?(t.from||'--'):(t.to||'--')}</div><div class="mc-field"><strong>Meter</strong>${t.meter||'--'}</div><div class="mc-field"><strong>Project</strong>${t.project||'--'}</div><div class="mc-field"><strong>Driver</strong>${t.driverName||'--'}</div></div></div>`).join('');
 }
 
 
@@ -1543,14 +1552,30 @@ function rDash(){popLocDropdowns();const today=new Date().toDateString();const f
     return !hasAdj;
   }).length;
   const adjEl=document.getElementById('adj-reminder');
-  if(adjEl)adjEl.textContent=tanksNeedAdj>0?tanksNeedAdj+' tank(s) need monthly adjustment':'';const locStat=document.getElementById('loc-filter-stats');if(locStat)locStat.textContent=f==='all'?ft.length+' tanks/tankers total':ft.length+' tanks/tankers at '+f;const ds=f==='all'?S.storage:S.storage.filter(x=>x.location===f);document.getElementById('dash-storage').innerHTML=ds.slice(0,5).map(s=>`<tr><td style="font-weight:700">${s.nb}</td><td>${s.location||'--'}</td><td>${(s.current||0).toLocaleString()}</td><td>${bar(s.current,s.capacity)}</td></tr>`).join('')||'<tr><td colspan="4" style="text-align:center;padding:16px;color:#888f99">No tanks yet</td></tr>';const dt=f==='all'?S.tankers:S.tankers.filter(x=>x.location===f);document.getElementById('dash-tankers').innerHTML=dt.slice(0,5).map(t=>`<tr><td style="font-weight:700">${t.fleetNb}</td><td>${t.plateNb}</td><td>${(t.current||0).toLocaleString()}</td><td>${sbadge(t.status)}</td></tr>`).join('')||'<tr><td colspan="4" style="text-align:center;padding:16px;color:#888f99">No tankers yet</td></tr>';document.getElementById('dash-tx').innerHTML=[...S.transactions].reverse().slice(0,6).map(t=>'<tr><td style="font-size:11px;white-space:nowrap">'+fmt(t.date)+'</td><td>'+txb(t.type)+'</td><td>'+(t.from||'--')+'</td><td>'+(t.to||'--')+'</td><td style="font-weight:700">'+(t.volume||0).toLocaleString()+'</td><td style="font-size:11px">'+(t.project||'--')+'</td><td style="font-size:11px">'+(t.driverName||'--')+'</td><td style="font-size:11px">'+(t.userName||'--')+'</td></tr>').join('')||'<tr><td colspan="8" style="text-align:center;padding:16px;color:#888f99">No transactions yet</td></tr>'}
+  const ds=f==='all'?S.storage:S.storage.filter(x=>x.location===f);
+  const dsTop5=ds.slice(0,5);
+  document.getElementById('dash-storage').innerHTML=dsTop5.map(s=>`<tr><td style="font-weight:700">${s.nb}</td><td>${s.location||'--'}</td><td>${(s.current||0).toLocaleString()}</td><td>${bar(s.current,s.capacity)}</td></tr>`).join('')||'<tr><td colspan="4" style="text-align:center;padding:16px;color:#888f99">No tanks yet</td></tr>';
+  const dsCardsEl=document.getElementById('dash-storage-cards');
+  if(dsCardsEl)dsCardsEl.innerHTML=dsTop5.map(s=>`<div class="mc-item"><div class="mc-top"><div><div class="mc-title">${s.nb}</div><div class="mc-sub">${s.location||'--'}</div></div></div>${bar(s.current,s.capacity)}<div class="mc-grid"><div class="mc-field"><strong>Current</strong>${(s.current||0).toLocaleString()} L</div></div></div>`).join('')||'<div class="empty">No tanks yet</div>';
+
+  const dt=f==='all'?S.tankers:S.tankers.filter(x=>x.location===f);
+  const dtTop5=dt.slice(0,5);
+  document.getElementById('dash-tankers').innerHTML=dtTop5.map(t=>`<tr><td style="font-weight:700">${t.fleetNb}</td><td>${t.plateNb}</td><td>${(t.current||0).toLocaleString()}</td><td>${sbadge(t.status)}</td></tr>`).join('')||'<tr><td colspan="4" style="text-align:center;padding:16px;color:#888f99">No tankers yet</td></tr>';
+  const dtCardsEl=document.getElementById('dash-tankers-cards');
+  if(dtCardsEl)dtCardsEl.innerHTML=dtTop5.map(t=>`<div class="mc-item"><div class="mc-top"><div><div class="mc-title">${t.fleetNb}</div><div class="mc-sub">${t.plateNb}</div></div>${sbadge(t.status)}</div><div class="mc-grid"><div class="mc-field"><strong>Current</strong>${(t.current||0).toLocaleString()} L</div></div></div>`).join('')||'<div class="empty">No tankers yet</div>';
+
+  const dashTxTop6=[...S.transactions].reverse().slice(0,6);
+  document.getElementById('dash-tx').innerHTML=dashTxTop6.map(t=>'<tr><td style="font-size:11px;white-space:nowrap">'+fmt(t.date)+'</td><td>'+txb(t.type)+'</td><td>'+(t.from||'--')+'</td><td>'+(t.to||'--')+'</td><td style="font-weight:700">'+(t.volume||0).toLocaleString()+'</td><td style="font-size:11px">'+(t.project||'--')+'</td><td style="font-size:11px">'+(t.driverName||'--')+'</td><td style="font-size:11px">'+(t.userName||'--')+'</td></tr>').join('')||'<tr><td colspan="8" style="text-align:center;padding:16px;color:#888f99">No transactions yet</td></tr>';
+  const dashTxCardsEl=document.getElementById('dash-tx-cards');
+  if(dashTxCardsEl)dashTxCardsEl.innerHTML=dashTxTop6.map(t=>`<div class="mc-item"><div class="mc-top"><div><div class="mc-title">${(t.volume||0).toLocaleString()} L</div><div class="mc-sub">${fmt(t.date)}</div></div>${txb(t.type)}</div><div class="mc-grid"><div class="mc-field"><strong>From</strong>${t.from||'--'}</div><div class="mc-field"><strong>To</strong>${t.to||'--'}</div><div class="mc-field"><strong>Project</strong>${t.project||'--'}</div><div class="mc-field"><strong>By</strong>${t.userName||'--'}</div></div></div>`).join('')||'<div class="empty">No transactions yet</div>';
+}
 
 function renderTx(){const f=document.getElementById('tx-f').value,list=f?S.transactions.filter(t=>t.type===f):S.transactions,cardsEl=document.getElementById('all-tx-cards');document.getElementById('tx-empty').style.display=list.length?'none':'';const ordered=[...list].reverse();document.getElementById('all-tx').innerHTML=ordered.map(t=>'<tr><td style="font-size:11px;white-space:nowrap">'+fmt(t.date)+'</td><td>'+txb(t.type)+'</td><td>'+(t.from||'--')+'</td><td>'+(t.to||'--')+'</td><td style="font-weight:700">'+(t.volume||0).toLocaleString()+'</td><td style="font-size:12px">'+(t.meter||'--')+'</td><td style="font-size:12px">'+(t.project||'--')+'</td><td style="font-size:12px">'+(t.driverName||'--')+'</td><td style="font-size:11px;color:#888f99">'+(t.ref||t.notes||'--')+'</td><td style="font-size:11px">'+(t.userName||'--')+'</td></tr>').join('');if(cardsEl)cardsEl.innerHTML=ordered.map(t=>`<div class="mc-item"><div class="mc-top"><div><div class="mc-title">${(t.volume||0).toLocaleString()} L</div><div class="mc-sub">${fmt(t.date)}</div></div>${txb(t.type)}</div><div class="mc-grid"><div class="mc-field"><strong>From</strong>${t.from||'--'}</div><div class="mc-field"><strong>To</strong>${t.to||'--'}</div><div class="mc-field"><strong>Project</strong>${t.project||'--'}</div><div class="mc-field"><strong>Driver</strong>${t.driverName||'--'}</div><div class="mc-field"><strong>By</strong>${t.userName||'--'}</div><div class="mc-field"><strong>Ref/Notes</strong>${t.ref||t.notes||'--'}</div></div></div>`).join('')}
 
 function rStorage(){const el=document.getElementById('storage-list'),em=document.getElementById('storage-empty'),cardsEl=document.getElementById('storage-cards');if(!S.storage.length){el.innerHTML='';if(cardsEl)cardsEl.innerHTML='';em.style.display='';return}em.style.display='none';const rows=S.storage.map(s=>{const as=S.users.find(u=>{if(!u.assignedId)return false;const ids=u.assignedId.split(',').map(x=>x.trim());return ids.includes(s.id)||ids.includes(s.nb)});return{s,as}});el.innerHTML=rows.map(({s,as})=>`<tr><td style="font-weight:700">${s.nb}</td><td>${s.location||'--'}</td><td>${(s.capacity||0).toLocaleString()}</td><td>${(s.current||0).toLocaleString()}</td><td>${bar(s.current,s.capacity)}</td><td style="font-size:12px">${as?as.name:'--'}</td><td>${sbadge(s.status)}</td><td>${db('storage',s.id,s.nb)}</td></tr>`).join('');if(cardsEl)cardsEl.innerHTML=rows.map(({s,as})=>`<div class="mc-item"><div class="mc-top"><div><div class="mc-title">${s.nb}</div><div class="mc-sub">${s.location||'--'}</div></div>${sbadge(s.status)}</div>${bar(s.current,s.capacity)}<div class="mc-grid"><div class="mc-field"><strong>Capacity</strong>${(s.capacity||0).toLocaleString()} L</div><div class="mc-field"><strong>Current</strong>${(s.current||0).toLocaleString()} L</div><div class="mc-field"><strong>Assigned to</strong>${as?as.name:'--'}</div></div><div class="mc-actions">${editBtn('editStorage',s.id)}${db('storage',s.id,s.nb)}</div></div>`).join('')}
 function rTankers(){const el=document.getElementById('tanker-list'),em=document.getElementById('tanker-empty'),cardsEl=document.getElementById('tanker-cards');if(!S.tankers.length){el.innerHTML='';if(cardsEl)cardsEl.innerHTML='';em.style.display='';return}em.style.display='none';const rows=S.tankers.map(t=>{const as=S.users.find(u=>u.role==='tanker_driver'&&(u.assignedId===t.id||u.assignedId===t.fleetNb));return{t,as}});el.innerHTML=rows.map(({t,as})=>`<tr><td style="font-weight:700">${t.fleetNb}</td><td>${t.plateNb}</td><td>${t.owner||'--'}</td><td>${t.make||'--'}</td><td>${t.model||'--'}</td><td>${t.year||'--'}</td><td>${t.location||'--'}</td><td>${(t.capacity||0).toLocaleString()}</td><td>${(t.current||0).toLocaleString()}</td><td>${bar(t.current,t.capacity)}</td><td style="font-size:12px">${as?as.name:'--'}</td><td>${sbadge(t.status)}</td><td style="display:flex;gap:5px">${editBtn('editTanker',t.id)}${dbTanker(t)}</td></tr>`).join('');if(cardsEl)cardsEl.innerHTML=rows.map(({t,as})=>`<div class="mc-item"><div class="mc-top"><div><div class="mc-title">${t.fleetNb}</div><div class="mc-sub">${t.plateNb} · ${t.location||'--'}</div></div>${sbadge(t.status)}</div>${bar(t.current,t.capacity)}<div class="mc-grid"><div class="mc-field"><strong>Make/Model</strong>${[t.make,t.model].filter(Boolean).join(' ')||'--'}</div><div class="mc-field"><strong>Capacity</strong>${(t.capacity||0).toLocaleString()} L</div><div class="mc-field"><strong>Current</strong>${(t.current||0).toLocaleString()} L</div><div class="mc-field"><strong>Driver</strong>${as?as.name:'--'}</div></div><div class="mc-actions">${editBtn('editTanker',t.id)}${dbTanker(t)}</div></div>`).join('')}
 function rSuppliers(){const el=document.getElementById('supplier-list'),em=document.getElementById('supplier-empty');if(!S.suppliers.length){el.innerHTML='';em.style.display='';return}em.style.display='none';const now=new Date(),m=now.getMonth(),y=now.getFullYear();el.innerHTML=S.suppliers.map(sp=>{const txs=S.transactions.filter(t=>t.type==='receive'&&(t.supplierId===sp.id||t.from===sp.name));const mth=txs.filter(t=>{const d=new Date(t.date);return d.getMonth()===m&&d.getFullYear()===y}).reduce((a,x)=>a+x.volume,0);const last=txs.length?txs[txs.length-1].date:null;const ord=sp.orderPerMonth||0;const pp=ord>0?Math.round(mth/ord*100):null;const pb=pp!==null?'<span class="badge '+(pp>=100?'bg':'ba')+'">'+pp+'%</span>':'';return`<tr><td style="font-weight:700">${sp.name}</td><td>${sp.contact||'--'}</td><td>${sp.phone||'--'}</td><td>${ord.toLocaleString()}</td><td>${mth.toLocaleString()} ${pb}</td><td style="font-size:11px">${fmt(last)}</td><td>${sbadge(sp.status)}</td><td style="display:flex;gap:5px">${editBtn('editSupplier',sp.id)}${db('suppliers',sp.id,sp.name)}</td></tr>`}).join('')}
-function rFleet(){const el=document.getElementById('fleet-list'),em=document.getElementById('fleet-empty');if(!S.fleet.length){el.innerHTML='';em.style.display='';return}em.style.display='none';el.innerHTML=S.fleet.map(f=>{const txs=S.transactions.filter(t=>t.type==='distribute'&&(t.fleetId===f.id||t.to===f.fleetNo));const tot=txs.reduce((a,x)=>a+x.volume,0);const lm=txs[txs.length-1];const isO=isOdometer(f.meterType);const lms=lm&&lm.meter?lm.meter+' '+(isO?'km':'hrs'):'--';return'<tr><td style="font-weight:700">'+f.fleetNo+'</td><td>'+f.ftype+'</td><td>'+(f.category||'--')+'</td><td>'+(f.make||'--')+'</td><td>'+(f.model||'--')+'</td><td>'+(f.year||'--')+'</td><td>'+(f.capacity||'--')+'</td><td>'+(f.tankCap?f.tankCap.toLocaleString():'--')+'</td><td>'+(isO?'Odo(km)':'Hour(hrs)')+'</td><td style="font-size:12px">'+lms+'</td><td>'+tot.toLocaleString()+'</td><td>'+sbadge(f.status)+'</td><td>'+db('fleet',f.id,f.fleetNo)+'</td></tr>'}).join('')}
+function rFleet(){const el=document.getElementById('fleet-list'),em=document.getElementById('fleet-empty');const q=(document.getElementById('fleet-search')?.value||'').toLowerCase().trim();let list=S.fleet;if(q)list=list.filter(f=>(f.fleetNo||'').toLowerCase().includes(q));if(!list.length){el.innerHTML='';em.style.display='';em.textContent=q?'No equipment found matching "'+q+'"':'No equipment added yet';return}em.style.display='none';el.innerHTML=list.map(f=>{const txs=S.transactions.filter(t=>t.type==='distribute'&&(t.fleetId===f.id||t.to===f.fleetNo));const tot=txs.reduce((a,x)=>a+x.volume,0);const lm=txs[txs.length-1];const isO=isOdometer(f.meterType);const lms=lm&&lm.meter?lm.meter+' '+(isO?'km':'hrs'):'--';return'<tr><td style="font-weight:700">'+f.fleetNo+'</td><td>'+f.ftype+'</td><td>'+(f.category||'--')+'</td><td>'+(f.make||'--')+'</td><td>'+(f.model||'--')+'</td><td>'+(f.year||'--')+'</td><td>'+(f.capacity||'--')+'</td><td>'+(f.tankCap?f.tankCap.toLocaleString():'--')+'</td><td>'+(isO?'Odo(km)':'Hour(hrs)')+'</td><td style="font-size:12px">'+lms+'</td><td>'+tot.toLocaleString()+'</td><td>'+sbadge(f.status)+'</td><td>'+db('fleet',f.id,f.fleetNo)+'</td></tr>'}).join('')}
 function rProjects(){const el=document.getElementById('project-list'),em=document.getElementById('project-empty');if(!S.projects.length){el.innerHTML='';em.style.display='';return}em.style.display='none';el.innerHTML=S.projects.map(p=>'<tr><td style="font-weight:700">'+p.name+'</td><td>'+sbadge(p.status)+'</td><td>'+db('projects',p.id,p.name)+'</td></tr>').join('')}
 function rLocations(){const el=document.getElementById('location-list'),em=document.getElementById('location-empty');if(!S.locations.length){el.innerHTML='';em.style.display='';return}em.style.display='none';el.innerHTML=S.locations.map(l=>{const tanks=S.storage.filter(s=>s.location===l.name).length;const tankers=S.tankers.filter(t=>t.location===l.name).length;return`<tr><td style="font-weight:700">${l.name}</td><td>${tanks}</td><td>${tankers}</td><td>${sbadge(l.status)}</td><td style="display:flex;gap:5px">${editBtn('editLocation',l.id)}${db('locations',l.id,l.name)}</td></tr>`}).join('')}
 async function saveLocation(){const editId=document.getElementById('loc-edit-id').value;const name=document.getElementById('loc-nm').value.trim();if(!name){toast('Location name required.');return}const status=document.getElementById('loc-stat').value;if(editId){const l=S.locations.find(x=>x.id===editId);if(!l)return;l.name=name;l.status=status;closeM('m-location');popLocDropdowns();rLocations();try{await gsC({action:'saveLocation',...l})}catch(e){}toast('Location updated.');}else{const r={id:uid(),name,status};S.locations.push(r);closeM('m-location');document.getElementById('loc-nm').value='';popLocDropdowns();rLocations();try{await gsC({action:'saveLocation',...r})}catch(e){}toast('Location saved.');}}
