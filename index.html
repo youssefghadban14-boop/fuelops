@@ -218,12 +218,10 @@ tr:hover td{background:#f8f8f6}
           <div style="width:56px;height:56px;background:#c31c2a;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:28px">&#9981;</div>
           <div><h2 style="font-size:18px;font-weight:700;color:white;margin-bottom:3px" id="my-label">My Tank</h2><p style="font-size:12px;color:#b7cfd7" id="my-meta"></p></div>
         </div>
-        <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:16px">
-          <div class="metric"><div class="ml">Opening stock</div><div class="mv" id="my-opening">— L</div><div class="ms">start of today</div></div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px">
+          <div class="metric navy"><div class="ml">Current stock</div><div class="mv" id="my-cur">0 L</div><div class="ms">live balance</div></div>
           <div class="metric"><div class="ml">Received today</div><div class="mv" id="my-recv">0 L</div><div class="ms">from suppliers</div></div>
           <div class="metric red"><div class="ml">Issued today</div><div class="mv" id="my-issued">0 L</div><div class="ms">to equipment</div></div>
-          <div class="metric navy"><div class="ml">Current stock</div><div class="mv" id="my-cur">0 L</div><div class="ms">live balance</div></div>
-          <div class="metric" style="border-top-color:#f57f17"><div class="ml">Variance</div><div class="mv" id="my-variance" style="font-size:18px">—</div><div class="ms">vs calculated</div></div>
         </div>
         <div class="card"><div class="card-head"><div class="ct"><div class="ctb"></div>My transactions</div>
           <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:#4d5360;cursor:pointer;font-weight:600">
@@ -1381,21 +1379,78 @@ function isToday(d){
   }catch{return false}
 }
 
-function rMyTank(){const u=S.currentUser;let tank=null,label='',meta='';if(u.role==='tanker_driver'){tank=S.tankers.find(x=>x.id===u.assignedId||x.fleetNb===u.assignedId);if(tank){label=tank.fleetNb+(tank.plateNb?' - '+tank.plateNb:'');const details=[tank.make,tank.model,tank.year].filter(Boolean).join(' ');meta=[details?details:'',tank.owner?'Owner: '+tank.owner:'',tank.location?'Location: '+tank.location:'','Capacity: '+(tank.capacity||0).toLocaleString()+' L'].filter(Boolean).join(' · ')}}else if(u.role==='storekeeper'){const ids=(u.assignedId||'').split(',').map(x=>x.trim()).filter(Boolean);const tanks=S.storage.filter(x=>ids.includes(x.id)||ids.includes(x.nb));if(tanks.length){tank=tanks[0];label=tanks.length>1?tanks.map(t=>'Tank '+t.nb).join(', '):'Tank '+tank.nb;meta=[tank.location?'Location: '+tank.location:'','Capacity: '+(tank.capacity||0).toLocaleString()+' L',(tanks.length>1?'(+'+( tanks.length-1)+' more tanks)':'')].filter(Boolean).join(' · ')}}if(!tank){document.getElementById('my-label').textContent='No tank assigned';document.getElementById('my-meta').textContent='Contact admin.';['my-cur','my-recv','my-issued'].forEach(x=>document.getElementById(x).textContent='--');document.getElementById('my-tx').innerHTML='';document.getElementById('my-tx-empty').style.display='';return}document.getElementById('my-label').textContent=label;document.getElementById('my-meta').textContent=meta;document.getElementById('my-cur').textContent=(tank.current||0).toLocaleString()+' L';// Show transactions by this user OR involving their tanks
-  const myTx=S.transactions.filter(t=>t.userId===u.id||(
-    (t.type==='receive'||t.type==='transfer')&&(myTankIds.includes(t.destId)||myTankNbs.includes(t.destId)||myTankNbs.includes(t.to)||myTankDbIds.includes(t.destId))
-  ));// Match by destId, tank nb, or tank name - handles all GS formats
-  const myTankIds=u.role==='storekeeper'?(u.assignedId||'').split(',').map(x=>x.trim()).filter(Boolean):[u.assignedId||''];
-  const myTankObjs=S.storage.filter(x=>myTankIds.some(id=>x.id===id||x.nb===id));
-  const myTankNbs=myTankObjs.map(x=>x.nb);
-  const myTankDbIds=myTankObjs.map(x=>x.id);
-  const rt=S.transactions.filter(t=>(t.type==='receive'||t.type==='transfer')&&(
+function rMyTank(){
+  const u=S.currentUser;
+  let tank=null,label='',meta='';
+  let myTankIds=[],myTankNbs=[],myTankDbIds=[];
+
+  if(u.role==='tanker_driver'){
+    tank=S.tankers.find(x=>x.id===u.assignedId||x.fleetNb===u.assignedId);
+    if(tank){
+      label=tank.fleetNb+(tank.plateNb?' - '+tank.plateNb:'');
+      const details=[tank.make,tank.model,tank.year].filter(Boolean).join(' ');
+      meta=[details?details:'',tank.owner?'Owner: '+tank.owner:'',tank.location?'Location: '+tank.location:'','Capacity: '+(tank.capacity||0).toLocaleString()+' L'].filter(Boolean).join(' · ');
+      myTankIds=[tank.id,tank.fleetNb];
+      myTankNbs=[tank.fleetNb];
+      myTankDbIds=[tank.id];
+    }
+  } else if(u.role==='storekeeper'){
+    const ids=(u.assignedId||'').split(',').map(x=>x.trim()).filter(Boolean);
+    const tanks=S.storage.filter(x=>ids.includes(x.id)||ids.includes(x.nb));
+    if(tanks.length){
+      tank=tanks[0];
+      label=tanks.length>1?tanks.map(t=>'Tank '+t.nb).join(', '):'Tank '+tank.nb;
+      meta=[tank.location?'Location: '+tank.location:'','Capacity: '+(tank.capacity||0).toLocaleString()+' L',(tanks.length>1?'(+'+(tanks.length-1)+' more tanks)':'')].filter(Boolean).join(' · ');
+      myTankIds=ids;
+      myTankNbs=tanks.map(t=>t.nb);
+      myTankDbIds=tanks.map(t=>t.id);
+    }
+  }
+
+  if(!tank){
+    document.getElementById('my-label').textContent='No tank assigned';
+    document.getElementById('my-meta').textContent='Contact admin.';
+    ['my-cur','my-recv','my-issued'].forEach(x=>{const el=document.getElementById(x);if(el)el.textContent='--'});
+    document.getElementById('my-tx').innerHTML='';
+    document.getElementById('my-tx-empty').style.display='';
+    return;
+  }
+
+  document.getElementById('my-label').textContent=label;
+  document.getElementById('my-meta').textContent=meta;
+
+  // Transactions involving any of this user's tanks (receive/transfer into it, distribute from it), OR recorded by this user
+  const matchesMyTank=t=>(
+    myTankIds.includes(t.destId)||myTankNbs.includes(t.destId)||myTankNbs.includes(t.to)||myTankDbIds.includes(t.destId)|| // receive/transfer in
+    myTankIds.includes(t.srcId)||myTankNbs.includes(t.srcId)||myTankNbs.includes(t.from)||myTankDbIds.includes(t.srcId)    // distribute out
+  );
+  const myTx=S.transactions.filter(t=>t.userId===u.id||matchesMyTank(t));
+
+  // TODAY only, for the summary cards
+  const recvToday=myTx.filter(t=>(t.type==='receive'||t.type==='transfer')&&isToday(t.date)&&(
     myTankIds.includes(t.destId)||myTankNbs.includes(t.destId)||myTankNbs.includes(t.to)||myTankDbIds.includes(t.destId)
-  )).reduce((a,x)=>a+x.volume,0);document.getElementById('my-recv').textContent=rt.toLocaleString()+' L';document.getElementById('my-issued').textContent=myTx.filter(t=>t.type==='distribute').reduce((a,x)=>a+x.volume,0).toLocaleString()+' L';// Show today's transactions first, with option to see all
-  const todayTx=myTx.filter(t=>isToday(t.date));
+  )).reduce((a,x)=>a+(x.volume||0),0);
+  const issuedToday=myTx.filter(t=>t.type==='distribute'&&isToday(t.date)).reduce((a,x)=>a+(x.volume||0),0);
+
+  document.getElementById('my-cur').textContent=(tank.current||0).toLocaleString()+' L';
+  document.getElementById('my-recv').textContent=recvToday.toLocaleString()+' L';
+  document.getElementById('my-issued').textContent=issuedToday.toLocaleString()+' L';
+
+  // Transaction table - today by default, full history if checkbox ticked
   const showAll=document.getElementById('my-show-all')?.checked;
-  const displayTx=showAll?myTx:todayTx;
-  document.getElementById('my-tx-empty').style.display=displayTx.length?'none':'';document.getElementById('my-tx').innerHTML=[...displayTx].reverse().map(t=>'<tr><td style="font-size:11px;white-space:nowrap">'+fmt(t.date)+'</td><td>'+txb(t.type)+'</td><td>'+(t.type==='receive'?t.from:t.to||'--')+'</td><td style="font-weight:700">'+(t.volume||0).toLocaleString()+'</td><td style="font-size:12px">'+(t.meter||'--')+'</td><td style="font-size:12px">'+(t.project||'--')+'</td><td style="font-size:12px">'+(t.driverName||'--')+'</td></tr>').join('')}
+  const displayTx=showAll?myTx:myTx.filter(t=>isToday(t.date));
+  document.getElementById('my-tx-empty').style.display=displayTx.length?'none':'';
+  document.getElementById('my-tx').innerHTML=[...displayTx].reverse().map(t=>`<tr>
+    <td style="font-size:11px;white-space:nowrap">${fmt(t.date)}</td>
+    <td>${txb(t.type)}</td>
+    <td>${t.type==='receive'?(t.from||'--'):(t.to||'--')}</td>
+    <td style="font-weight:700">${(t.volume||0).toLocaleString()}</td>
+    <td style="font-size:12px">${t.meter||'--'}</td>
+    <td style="font-size:12px">${t.project||'--'}</td>
+    <td style="font-size:12px">${t.driverName||'--'}</td>
+  </tr>`).join('');
+}
+
 
 function rDash(){popLocDropdowns();const today=new Date().toDateString();const ft=filteredTanks();const f=S.locationFilter;const txAll=S.transactions;const tt=txAll.filter(t=>new Date(t.date).toDateString()===today);const tankIds=new Set(ft.map(x=>x.id));const ttf=tt.filter(t=>!f||f==='all'?true:(tankIds.has(t.srcId)||tankIds.has(t.destId)));document.getElementById('m-total').textContent=ft.reduce((a,x)=>a+(x.current||0),0).toLocaleString()+' L';document.getElementById('m-recv').textContent=tt.filter(t=>t.type==='receive').reduce((a,x)=>a+x.volume,0).toLocaleString()+' L';document.getElementById('m-dist').textContent=tt.filter(t=>t.type==='distribute').reduce((a,x)=>a+x.volume,0).toLocaleString()+' L';document.getElementById('m-alerts').textContent=ft.filter(x=>x.capacity>0&&pct(x.current,x.capacity)<alertThreshold).length;
   // Monthly adjustment reminder in last-refresh area
