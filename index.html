@@ -181,6 +181,9 @@ tr:hover td{background:#f8f8f6}
       <div style="display:flex;align-items:center;gap:12px">
         <span class="gsind" id="gs-ind" style="color:#888f99">&#9679; Offline</span>
         <span id="adj-reminder" style="font-size:11px;color:#f57f17;font-weight:700"></span>
+        <button id="refresh-btn" onclick="manualRefresh()" style="padding:6px 14px;background:white;border:1px solid #d0d0ca;border-radius:6px;font-size:12px;font-weight:700;color:#212630;cursor:pointer;display:inline-flex;align-items:center;gap:6px;font-family:Arial,sans-serif">
+          <span id="refresh-icon" style="font-size:14px">&#8635;</span> Sync
+        </button>
         <span id="tb-date" style="font-size:12px;color:#888f99"></span>
         <span id="last-refresh" style="font-size:11px;color:#b7cfd7"></span>
       </div>
@@ -395,7 +398,7 @@ tr:hover td{background:#f8f8f6}
       <div class="page" id="page-reports">
         <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;background:white;padding:12px 16px;border-radius:8px;border:1px solid #d8d8d4">
           <span style="font-size:11px;font-weight:700;color:#4d5360;text-transform:uppercase;letter-spacing:.05em">Location</span>
-          <select id="rpt-loc-filter" onchange="renderReports()" style="padding:7px 12px;border-radius:6px;border:1px solid #c5c5c0;font-size:13px;font-weight:600;color:#212630;min-width:180px">
+          <select id="rpt-loc-filter" onchange="rReports()" style="padding:7px 12px;border-radius:6px;border:1px solid #c5c5c0;font-size:13px;font-weight:600;color:#212630;min-width:180px">
             <option value="all">All locations</option>
           </select>
         </div>
@@ -1065,7 +1068,7 @@ function editBtn(fn,id){return`<button class="btn sm" onclick="${fn}('${id}')">E
 function openAddStorage(){
   document.getElementById('s-edit-id').value='';
   setModal('s-modal-title','s-save-btn','Add fixed storage tank','Save tank');
-  ['s-nb','s-cap','s-cur'].forEach(x=>document.getElementById(x).value='');
+  ['s-nb'].forEach(x=>document.getElementById(x).value='');
   document.getElementById('s-loc').innerHTML='<option value="">-- Select location --</option>'+locOpts('');
   document.getElementById('s-stat').value='Active';
   openM('m-storage');
@@ -1084,7 +1087,7 @@ function editStorage(id){
 function openAddTanker(){
   document.getElementById('tk-edit-id').value='';
   setModal('tk-modal-title','tk-save-btn','Add mobile tanker','Save tanker');
-  ['tk-fleet','tk-plate','tk-owner','tk-make','tk-model','tk-year','tk-cap','tk-cur'].forEach(x=>document.getElementById(x).value='');
+  ['tk-fleet','tk-plate','tk-owner','tk-make','tk-model','tk-year','tk-cap'].forEach(x=>document.getElementById(x).value='');
   document.getElementById('tk-loc').innerHTML='<option value="">-- Select location --</option>'+locOpts('');
   document.getElementById('tk-stat').value='Available';
   openM('m-tanker');
@@ -1100,8 +1103,6 @@ function editTanker(id){
   document.getElementById('tk-model').value=t.model||'';
   document.getElementById('tk-year').value=t.year||'';
   document.getElementById('tk-loc').innerHTML='<option value="">-- Select location --</option>'+locOpts(t.location);
-  document.getElementById('tk-cap').value=t.capacity||0;
-  document.getElementById('tk-cur').value=t.current||0;
   document.getElementById('tk-cap').value=t.capacity||0;
   document.getElementById('tk-stat').value=t.status;
   openM('m-tanker');
@@ -1548,7 +1549,7 @@ Do you want to proceed anyway?`);
 if(!proj){sal('dist-alert','Please select a project.',true);return}const fl=S.fleet.find(x=>x.id===flId||x.fleetNo===flId),last=glf(flId);if(last&&last.meter&&parseFloat(meter)<=parseFloat(last.meter)){sal('dist-alert','Meter must be > '+last.meter+'.',true);return}const src=gT(srcId);if((src?.current||0)<vol){sal('dist-alert','Insufficient. Available: '+(src?.current||0).toLocaleString()+' L',true);return}const drv=S.drivers.find(x=>x.id===drvId);uT(srcId,-vol);const tx={id:uid(),type:'distribute',date:document.getElementById('d-date').value,volume:vol,from:srcKind==='tank'?'Tank '+(src?.nb||''):src?.fleetNb,to:fl?.fleetNo,fleetId:flId,fleetNo:fl?.fleetNo,meter:meter?parseFloat(meter):null,meterType:fl?.meterType||'hourmeter',project:proj,driverId:drvId,driverName:drv?.name||'',notes:document.getElementById('d-notes').value,warning:txWarning||'',userId:S.currentUser.id,userName:S.currentUser.name};S.transactions.push(tx);await wTx(tx,{srcId,srcKind});sal('dist-alert','Distribution: '+vol.toLocaleString()+' L to '+(fl?.fleetNo||''));
   await silentRefresh();['d-vol','d-meter','d-notes'].forEach(x=>document.getElementById(x).value='');document.getElementById('d-fleet').value='';document.getElementById('d-proj').value='';document.getElementById('d-drv').value='';document.getElementById('mi-card').classList.remove('show');document.getElementById('lf-card').classList.remove('show')}
 
-async function saveStorage(){const editId=document.getElementById('s-edit-id').value;const nb=document.getElementById('s-nb').value.trim();const loc=document.getElementById('s-loc').value;if(!nb||!loc){toast('Tank Nb. and Location required.');return}if(editId){const s=S.storage.find(x=>x.id===editId);if(!s)return;s.nb=nb;s.location=loc;s.status=document.getElementById('s-stat').value;closeM('m-storage');rStorage();try{await gsC({action:'saveStorage',...s})}catch(e){}toast('Tank updated.');}else{const r={id:uid(),nb,location:loc,capacity:parseFloat(document.getElementById('s-cap').value)||0,current:parseFloat(document.getElementById('s-cur').value)||0,status:document.getElementById('s-stat').value};S.storage.push(r);closeM('m-storage');rStorage();try{await gsC({action:'saveStorage',...r})}catch(e){}toast('Tank saved.');}}
+async function saveStorage(){const editId=document.getElementById('s-edit-id').value;const nb=document.getElementById('s-nb').value.trim();const loc=document.getElementById('s-loc').value;if(!nb||!loc){toast('Tank Nb. and Location required.');return}if(editId){const s=S.storage.find(x=>x.id===editId);if(!s)return;s.nb=nb;s.location=loc;s.status=document.getElementById('s-stat').value;closeM('m-storage');rStorage();try{await gsC({action:'saveStorage',...s})}catch(e){}toast('Tank updated.');}else{const r={id:uid(),nb,location:loc,capacity:0,current:0,status:document.getElementById('s-stat').value};S.storage.push(r);closeM('m-storage');rStorage();try{await gsC({action:'saveStorage',...r})}catch(e){}toast('Tank saved.');}}
 async function saveTanker(){const editId=document.getElementById('tk-edit-id').value;const fleet=document.getElementById('tk-fleet').value.trim(),plate=document.getElementById('tk-plate').value.trim(),loc=document.getElementById('tk-loc').value;if(!fleet||!plate||!loc){toast('Fleet Nb., Plate Nb. and Location required.');return}const vals={fleetNb:fleet,plateNb:plate,owner:document.getElementById('tk-owner').value,location:loc,make:document.getElementById('tk-make').value,model:document.getElementById('tk-model').value,year:document.getElementById('tk-year').value,capacity:parseFloat(document.getElementById('tk-cap').value)||0,current:0,status:document.getElementById('tk-stat').value};if(editId){const t=S.tankers.find(x=>x.id===editId);if(!t)return;Object.assign(t,vals);closeM('m-tanker');rTankers();try{await gsC({action:'saveTanker',...t})}catch(e){}toast('Tanker updated.');}else{const r={id:uid(),...vals};S.tankers.push(r);closeM('m-tanker');rTankers();try{await gsC({action:'saveTanker',...r})}catch(e){}toast('Tanker saved.');}}
 async function saveSupplier(){const editId=document.getElementById('sp-edit-id').value;const name=document.getElementById('sp-nm').value.trim();if(!name){toast('Name required.');return}const vals={name,contact:document.getElementById('sp-ct').value,phone:document.getElementById('sp-ph').value,email:document.getElementById('sp-em').value,orderPerMonth:parseFloat(document.getElementById('sp-ord').value)||0,status:document.getElementById('sp-stat').value};if(editId){const s=S.suppliers.find(x=>x.id===editId);if(!s)return;Object.assign(s,vals);closeM('m-supplier');rSuppliers();try{await gsC({action:'saveSupplier',...s})}catch(e){}toast('Supplier updated.');}else{const r={id:uid(),...vals};S.suppliers.push(r);closeM('m-supplier');rSuppliers();try{await gsC({action:'saveSupplier',...r})}catch(e){}toast('Supplier saved.');}}
 async function saveFleet(){const editId=document.getElementById('fl-edit-id').value;const nb=document.getElementById('fl-nb').value.trim();if(!nb){toast('Fleet No. required.');return}const vals={fleetNo:nb,ftype:document.getElementById('fl-type').value,category:document.getElementById('fl-cat').value,make:document.getElementById('fl-make').value,model:document.getElementById('fl-model').value,year:document.getElementById('fl-year').value,capacity:document.getElementById('fl-cap').value,tankCap:parseFloat(document.getElementById('fl-tcap').value)||0,meterType:document.getElementById('fl-mtype').value,owner:document.getElementById('fl-owner').value,status:document.getElementById('fl-stat').value};if(editId){const f=S.fleet.find(x=>x.id===editId);if(!f)return;Object.assign(f,vals);closeM('m-fleet');rFleet();try{await gsC({action:'saveFleet',...f,nb:f.fleetNo})}catch(e){}toast('Equipment updated.');}else{const r={id:uid(),...vals};S.fleet.push(r);closeM('m-fleet');rFleet();try{await gsC({action:'saveFleet',...r,nb:r.fleetNo})}catch(e){}toast('Equipment saved.');}}
@@ -1669,53 +1670,6 @@ if(GS_URL){
   }
 }
 
-// ── AUTO-REFRESH & SESSION RESTORE ───────────────────────────────────────────
-function startAutoRefresh(){
-  clearInterval(window._refreshInterval);
-  window._refreshInterval = setInterval(async()=>{
-    if(!S.currentUser||!GS_URL)return;
-    const u=S.currentUser;
-    // Silent refresh - reset transactions and reload
-    S.transactions=[];
-    S.storage=[];S.tankers=[];S.suppliers=[];S.fleet=[];S.drivers=[];S.projects=[];S.users=[];
-    await loadGS(u.role,u.id);
-    // Re-render current page
-    const activePage=document.querySelector('.page.active');
-    if(activePage){
-      const pg=activePage.id.replace('page-','');
-      const fn={dashboard:rDash,adjustment:rAdj,export:rExport,mytank:rMyTank,transactions:renderTx,storage:rStorage,tankers:rTankers,suppliers:rSuppliers,fleet:rFleet,projects:rProjects,locations:rLocations,users:rUsers,drivers:rDrivers,reports:rReports};
-      if(fn[pg])fn[pg]();
-    }
-    // Update last refresh time
-    const el=document.getElementById('last-refresh');
-    if(el)el.textContent='Last refresh: '+new Date().toLocaleTimeString('en-GB');
-  }, 5*60*1000); // every 5 minutes
-}
-
-async function restoreSession(){
-  const saved=localStorage.getItem('fo_session');
-  if(!saved)return;
-  try{
-    const u=JSON.parse(saved);
-    if(!u||!u.id||!u.role)return;
-    S.currentUser=u;
-    // Re-add to users array if not admin
-    if(u.role!=='admin')S.users=[u];
-    document.getElementById('login-wrap').style.display='none';
-    document.getElementById('app').style.display='block';
-    document.getElementById('nav-av').textContent=u.name.slice(0,2).toUpperCase();
-    document.getElementById('nav-nm').textContent=u.name;
-    document.getElementById('nav-rl').textContent=rl(u.role);
-    document.getElementById('tb-date').textContent=new Date(new Date().getTime()+(3*60*60*1000)).toLocaleDateString('en-GB',{weekday:'long',year:'numeric',month:'long',day:'numeric',timeZone:'UTC'});
-    buildNav();updGS();
-    await loadGS(u.role,u.id);
-    if(u.role==='admin'||u.role==='pmv_admin')nav('dashboard');else nav('mytank');
-    startAutoRefresh();
-  }catch(e){localStorage.removeItem('fo_session')}
-}
-
-// Start auto-refresh after login too
-restoreSession();
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </body>
