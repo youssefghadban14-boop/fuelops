@@ -225,7 +225,7 @@ tr:hover td{background:#f8f8f6}
       <div class="sbu"><div class="sbuav" id="nav-av">AD</div><div><div class="sbun" id="nav-nm">Admin</div><div class="sbur" id="nav-rl">Administrator</div></div></div>
     </div>
     <div id="nav-links"></div>
-    <div class="sbf" style="display:flex;flex-direction:column;gap:8px"><button class="btnout" onclick="openM('m-settings')" style="border-color:#c31c2a;color:white;background:#c31c2a">&#9881; Settings</button><button class="btnout" onclick="doLogout()">Sign out</button></div>
+    <div class="sbf" style="display:flex;flex-direction:column;gap:8px"><button id="settings-btn" class="btnout" onclick="openSettings()" style="border-color:#c31c2a;color:white;background:#c31c2a">&#9881; Settings</button><button class="btnout" onclick="doLogout()">Sign out</button></div>
   </nav>
   <div class="main">
     <div class="topbar">
@@ -414,7 +414,10 @@ tr:hover td{background:#f8f8f6}
       <!-- FLEET -->
       <div class="page" id="page-fleet">
         <div class="card"><div class="card-head"><div class="ct"><div class="ctb"></div>Fleet / equipment</div><span id="add-fleet-btn"><button class="pbtn pr" onclick="openAddFleet()">+ Add equipment</button></span></div>
-          <div class="fr"><div class="fg" style="max-width:320px"><input type="text" id="fleet-search" placeholder="Search Fleet No..." oninput="rFleet()" style="padding:10px 12px;border-radius:6px;border:1px solid #c5c5c0;font-family:Arial,sans-serif;font-size:14px"></div></div>
+          <div class="fr">
+            <div class="fg" style="max-width:320px"><input type="text" id="fleet-search" placeholder="Search Fleet No..." oninput="rFleet()" style="padding:10px 12px;border-radius:6px;border:1px solid #c5c5c0;font-family:Arial,sans-serif;font-size:14px"></div>
+            <div class="fg" style="max-width:220px"><select id="fleet-type-filter" onchange="rFleet()" style="padding:10px 12px;border-radius:6px;border:1px solid #c5c5c0;font-family:Arial,sans-serif;font-size:14px"><option value="">All types</option></select></div>
+          </div>
           <div class="tw"><table><thead><tr><th>Fleet No</th><th>Type</th><th>Category</th><th>Make</th><th>Model</th><th>Year</th><th>Capacity</th><th>Tank Cap.(L)</th><th>Meter</th><th>Owner</th><th>Last meter</th><th>Total fuel (L)</th><th>Status</th><th></th></tr></thead><tbody id="fleet-list"></tbody></table></div>
           <div class="empty" id="fleet-empty">No equipment added yet</div>
         </div>
@@ -679,11 +682,13 @@ tr:hover td{background:#f8f8f6}
     <div onclick="setThreshold(40)" id="thr-40" style="flex:1;min-width:60px;padding:12px;border-radius:8px;border:2px solid transparent;background:white;cursor:pointer;text-align:center;font-size:13px;font-weight:700;color:#212630">40%</div>
     <div onclick="setThreshold(50)" id="thr-50" style="flex:1;min-width:60px;padding:12px;border-radius:8px;border:2px solid transparent;background:white;cursor:pointer;text-align:center;font-size:13px;font-weight:700;color:#212630">50%</div>
   </div>
+  <div id="adj-perm-section">
   <div class="sdiv">Stock adjustment permission</div>
   <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
     <div onclick="setAdjPerm('admin')" id="adj-perm-admin" style="flex:1;padding:12px;border-radius:8px;border:2px solid #c31c2a;background:white;cursor:pointer;text-align:center;font-size:12px;font-weight:700;color:#212630">Admin only</div>
     <div onclick="setAdjPerm('storekeeper')" id="adj-perm-storekeeper" style="flex:1;padding:12px;border-radius:8px;border:2px solid transparent;background:white;cursor:pointer;text-align:center;font-size:12px;font-weight:700;color:#212630">Admin + Storekeeper</div>
     <div onclick="setAdjPerm('all')" id="adj-perm-all" style="flex:1;padding:12px;border-radius:8px;border:2px solid transparent;background:white;cursor:pointer;text-align:center;font-size:12px;font-weight:700;color:#212630">All roles</div>
+  </div>
   </div>
   <div class="mfoot"><button class="pbtn pr" onclick="closeM('m-settings')">Done</button></div>
 </div></div>
@@ -817,20 +822,30 @@ function setThreshold(pct){
   toast('Low stock alert set to '+pct+'%.');
 }
 
+function isAdmin(){return S.currentUser?.role==='admin'}
+function openSettings(){
+  if(S.currentUser?.role!=='admin'){toast('Settings can only be changed by Admin.');return}
+  initSettings();
+  openM('m-settings');
+}
 function initSettings(){
   applyTheme(currentBg);
-  // Mark current refresh selection
 
   // Apply saved refresh
   REFRESH_MS=currentRefresh*60*1000;
-  // Mark adjustment permission
+
+  // Stock adjustment permission section: Admin only, both visibility and ability to change
+  const adjSection=document.getElementById('adj-perm-section');
+  const isAdmin=S.currentUser?.role==='admin';
+  if(adjSection)adjSection.style.display=isAdmin?'':'none';
   adjPerm=localStorage.getItem('fo_adj_perm')||'admin';
   ['admin','storekeeper','all'].forEach(p=>{
     const el=document.getElementById('adj-perm-'+p);
     if(el)el.style.border=p===adjPerm?'2px solid #c31c2a':'2px solid transparent';
   });
+
   // Mark current threshold
-  [10,15,20,25,30].forEach(t=>{
+  [10,20,30,40,50].forEach(t=>{
     const el=document.getElementById('thr-'+t);
     if(el)el.style.border=t===alertThreshold?'2px solid #c31c2a':'2px solid transparent';
   });
@@ -930,6 +945,7 @@ let adjPerm=localStorage.getItem('fo_adj_perm')||'admin';
 let adjHistory=[];
 
 function setAdjPerm(perm){
+  if(S.currentUser?.role!=='admin')return; // defensive guard - only Admin may change this
   localStorage.setItem('fo_adj_perm',perm);
   adjPerm=perm;
   ['admin','storekeeper','all'].forEach(p=>{
@@ -1151,6 +1167,7 @@ function editBtn(fn,id){return`<button class="btn sm" onclick="${fn}('${id}')">E
 
 // ── STORAGE EDIT ──────────────────────────────────────────────────────────────
 function openAddStorage(){
+  if(!isAdmin()){toast('Only Admin can manage fixed storage tanks.');return}
   document.getElementById('s-edit-id').value='';
   setModal('s-modal-title','s-save-btn','Add fixed storage tank','Save tank');
   ['s-nb'].forEach(x=>document.getElementById(x).value='');
@@ -1159,6 +1176,7 @@ function openAddStorage(){
   openM('m-storage');
 }
 function editStorage(id){
+  if(!isAdmin()){toast('Only Admin can manage fixed storage tanks.');return}
   const s=S.storage.find(x=>x.id===id);if(!s)return;
   document.getElementById('s-edit-id').value=id;
   setModal('s-modal-title','s-save-btn','Edit fixed storage tank','Update tank');
@@ -1170,6 +1188,7 @@ function editStorage(id){
 
 // ── TANKER EDIT ───────────────────────────────────────────────────────────────
 function openAddTanker(){
+  if(!isAdmin()&&S.currentUser?.role!=='pmv_admin'){toast('Only Admin or PMV Admin can manage mobile tankers.');return}
   document.getElementById('tk-edit-id').value='';
   setModal('tk-modal-title','tk-save-btn','Add mobile tanker','Save tanker');
   ['tk-fleet','tk-plate','tk-owner','tk-make','tk-model','tk-year','tk-cap'].forEach(x=>document.getElementById(x).value='');
@@ -1178,6 +1197,7 @@ function openAddTanker(){
   openM('m-tanker');
 }
 function editTanker(id){
+  if(!isAdmin()&&S.currentUser?.role!=='pmv_admin'){toast('Only Admin or PMV Admin can manage mobile tankers.');return}
   const t=S.tankers.find(x=>x.id===id);if(!t)return;
   document.getElementById('tk-edit-id').value=id;
   setModal('tk-modal-title','tk-save-btn','Edit mobile tanker','Update tanker');
@@ -1195,6 +1215,7 @@ function editTanker(id){
 
 // ── SUPPLIER EDIT ─────────────────────────────────────────────────────────────
 function openAddSupplier(){
+  if(S.currentUser?.role!=='admin'){toast('Only Admin can manage suppliers.');return}
   document.getElementById('sp-edit-id').value='';
   setModal('sp-modal-title','sp-save-btn','Add supplier','Save supplier');
   ['sp-nm','sp-ct','sp-ph','sp-em','sp-ord'].forEach(x=>document.getElementById(x).value='');
@@ -1202,6 +1223,7 @@ function openAddSupplier(){
   openM('m-supplier');
 }
 function editSupplier(id){
+  if(!isAdmin()){toast('Only Admin can manage suppliers.');return}
   const s=S.suppliers.find(x=>x.id===id);if(!s)return;
   document.getElementById('sp-edit-id').value=id;
   setModal('sp-modal-title','sp-save-btn','Edit supplier','Update supplier');
@@ -1216,6 +1238,7 @@ function editSupplier(id){
 
 // ── FLEET EDIT ────────────────────────────────────────────────────────────────
 function openAddFleet(){
+  if(!isAdmin()&&S.currentUser?.role!=='pmv_admin'){toast('Only Admin or PMV Admin can manage equipment.');return}
   document.getElementById('fl-edit-id').value='';
   setModal('fl-modal-title','fl-save-btn','Add fleet / equipment','Save equipment');
   ['fl-nb','fl-cat','fl-make','fl-model','fl-year','fl-cap','fl-tcap'].forEach(x=>document.getElementById(x).value='');
@@ -1226,6 +1249,7 @@ function openAddFleet(){
   openM('m-fleet');
 }
 function editFleet(id){
+  if(!isAdmin()&&S.currentUser?.role!=='pmv_admin'){toast('Only Admin or PMV Admin can manage equipment.');return}
   const f=S.fleet.find(x=>x.id===id);if(!f)return;
   document.getElementById('fl-edit-id').value=id;
   setModal('fl-modal-title','fl-save-btn','Edit fleet / equipment','Update equipment');
@@ -1245,6 +1269,7 @@ function editFleet(id){
 
 // ── PROJECT EDIT ──────────────────────────────────────────────────────────────
 function openAddProject(){
+  if(S.currentUser?.role!=='admin'){toast('Only Admin can manage projects.');return}
   document.getElementById('pj-edit-id').value='';
   setModal('pj-modal-title','pj-save-btn','Add project','Save project');
   document.getElementById('pj-nm').value='';
@@ -1252,9 +1277,11 @@ function openAddProject(){
   openM('m-project');
 }
 function editProject(id){
+  if(!isAdmin()){toast('Only Admin can manage projects.');return}
   const p=S.projects.find(x=>x.id===id);if(!p)return;
   document.getElementById('pj-edit-id').value=id;
   setModal('pj-modal-title','pj-save-btn','Edit project','Update project');
+  const codeEl=document.getElementById('pj-code');if(codeEl)codeEl.value=p.code||'';
   document.getElementById('pj-nm').value=p.name;
   document.getElementById('pj-stat').value=p.status;
   openM('m-project');
@@ -1262,6 +1289,7 @@ function editProject(id){
 
 // ── LOCATION EDIT ─────────────────────────────────────────────────────────────
 function openAddLocation(){
+  if(S.currentUser?.role!=='admin'){toast('Only Admin can manage locations.');return}
   document.getElementById('loc-edit-id').value='';
   setModal('loc-modal-title','loc-save-btn','Add location','Save location');
   document.getElementById('loc-nm').value='';
@@ -1269,6 +1297,7 @@ function openAddLocation(){
   openM('m-location');
 }
 function editLocation(id){
+  if(!isAdmin()){toast('Only Admin can manage locations.');return}
   const l=S.locations.find(x=>x.id===id);if(!l)return;
   document.getElementById('loc-edit-id').value=id;
   setModal('loc-modal-title','loc-save-btn','Edit location','Update location');
@@ -1279,6 +1308,7 @@ function editLocation(id){
 
 // ── DRIVER EDIT ───────────────────────────────────────────────────────────────
 function openAddDriver(){
+  if(S.currentUser?.role!=='admin'){toast('Only Admin can manage drivers.');return}
   document.getElementById('dr-edit-id').value='';
   setModal('dr-modal-title','dr-save-btn','Add driver','Save driver');
   ['dr-nm','dr-eid','dr-rid','dr-ph','dr-lic'].forEach(x=>document.getElementById(x).value='');
@@ -1286,6 +1316,7 @@ function openAddDriver(){
   openM('m-driver');
 }
 function editDriver(id){
+  if(!isAdmin()){toast('Only Admin can manage drivers.');return}
   const d=S.drivers.find(x=>x.id===id);if(!d)return;
   document.getElementById('dr-edit-id').value=id;
   setModal('dr-modal-title','dr-save-btn','Edit driver','Update driver');
@@ -1452,7 +1483,10 @@ function buildNav(){const role=S.currentUser.role;const defs={admin:[{s:'Operati
     if(x.id==='adjustment')return canAdjust();
     return true;
   });
-  document.getElementById('nav-links').innerHTML=navItems.map(x=>x.s?`<div class="nvsec">${x.s}</div>`:`<div class="nvit" id="nav-${x.id}" onclick="nav('${x.id}')">${x.l}</div>`).join('')}
+  document.getElementById('nav-links').innerHTML=navItems.map(x=>x.s?`<div class="nvsec">${x.s}</div>`:`<div class="nvit" id="nav-${x.id}" onclick="nav('${x.id}')">${x.l}</div>`).join('');
+  const settingsBtn=document.getElementById('settings-btn');
+  if(settingsBtn)settingsBtn.style.display=role==='admin'?'':'none';
+}
 const pts={dashboard:'Dashboard',adjustment:'Stock Adjustment',locations:'Locations',mytank:'My Tank',receive:'Receive Diesel',transfer:'Transfer',distribute:'Issue Diesel',transactions:'All Transactions',storage:'Fixed Storage',tankers:'Mobile Tankers',suppliers:'Suppliers',fleet:'Fleet / Equipment',projects:'Projects',users:'User Management',drivers:'Drivers List',reports:'Reports',export:'Export & Sync'};
 function nav(pg){closeSidebar();document.querySelectorAll('.nvit').forEach(n=>n.classList.remove('active'));const ni=document.getElementById('nav-'+pg);if(ni)ni.classList.add('active');document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));const p=document.getElementById('page-'+pg);if(p)p.classList.add('active');document.getElementById('pg-title').textContent=pts[pg]||pg;function updRoleUI(){const r=S.currentUser?.role;const addTankBtn=document.getElementById('add-tank-btn');if(addTankBtn)addTankBtn.style.display=(r==='admin')?'':'none';const addTankerBtn=document.getElementById('add-tanker-btn');if(addTankerBtn)addTankerBtn.style.display=(r==='admin'||r==='pmv_admin')?'':'none';const addFleetBtn=document.getElementById('add-fleet-btn');if(addFleetBtn)addFleetBtn.style.display=(r==='admin'||r==='pmv_admin')?'':'none'}
 const fn={dashboard:rDash,adjustment:rAdj,export:rExport,mytank:rMyTank,receive:pRecv,transfer:pTrans,distribute:pDist,transactions:renderTx,storage:rStorage,tankers:rTankers,suppliers:rSuppliers,fleet:rFleet,projects:rProjects,locations:rLocations,users:rUsers,drivers:rDrivers,reports:rReports};if(fn[pg])fn[pg]();updRoleUI()}
@@ -1575,10 +1609,32 @@ function renderTx(){const f=document.getElementById('tx-f').value,list=f?S.trans
 function rStorage(){const el=document.getElementById('storage-list'),em=document.getElementById('storage-empty'),cardsEl=document.getElementById('storage-cards');if(!S.storage.length){el.innerHTML='';if(cardsEl)cardsEl.innerHTML='';em.style.display='';return}em.style.display='none';const rows=S.storage.map(s=>{const as=S.users.find(u=>{if(!u.assignedId)return false;const ids=u.assignedId.split(',').map(x=>x.trim());return ids.includes(s.id)||ids.includes(s.nb)});return{s,as}});el.innerHTML=rows.map(({s,as})=>`<tr><td style="font-weight:700">${s.nb}</td><td>${s.location||'--'}</td><td>${(s.capacity||0).toLocaleString()}</td><td>${(s.current||0).toLocaleString()}</td><td>${bar(s.current,s.capacity)}</td><td style="font-size:12px">${as?as.name:'--'}</td><td>${sbadge(s.status)}</td><td>${db('storage',s.id,s.nb)}</td></tr>`).join('');if(cardsEl)cardsEl.innerHTML=rows.map(({s,as})=>`<div class="mc-item"><div class="mc-top"><div><div class="mc-title">${s.nb}</div><div class="mc-sub">${s.location||'--'}</div></div>${sbadge(s.status)}</div>${bar(s.current,s.capacity)}<div class="mc-grid"><div class="mc-field"><strong>Capacity</strong>${(s.capacity||0).toLocaleString()} L</div><div class="mc-field"><strong>Current</strong>${(s.current||0).toLocaleString()} L</div><div class="mc-field"><strong>Assigned to</strong>${as?as.name:'--'}</div></div><div class="mc-actions">${editBtn('editStorage',s.id)}${db('storage',s.id,s.nb)}</div></div>`).join('')}
 function rTankers(){const el=document.getElementById('tanker-list'),em=document.getElementById('tanker-empty'),cardsEl=document.getElementById('tanker-cards');if(!S.tankers.length){el.innerHTML='';if(cardsEl)cardsEl.innerHTML='';em.style.display='';return}em.style.display='none';const rows=S.tankers.map(t=>{const as=S.users.find(u=>u.role==='tanker_driver'&&(u.assignedId===t.id||u.assignedId===t.fleetNb));return{t,as}});el.innerHTML=rows.map(({t,as})=>`<tr><td style="font-weight:700">${t.fleetNb}</td><td>${t.plateNb}</td><td>${t.owner||'--'}</td><td>${t.make||'--'}</td><td>${t.model||'--'}</td><td>${t.year||'--'}</td><td>${t.location||'--'}</td><td>${(t.capacity||0).toLocaleString()}</td><td>${(t.current||0).toLocaleString()}</td><td>${bar(t.current,t.capacity)}</td><td style="font-size:12px">${as?as.name:'--'}</td><td>${sbadge(t.status)}</td><td style="display:flex;gap:5px">${editBtn('editTanker',t.id)}${dbTanker(t)}</td></tr>`).join('');if(cardsEl)cardsEl.innerHTML=rows.map(({t,as})=>`<div class="mc-item"><div class="mc-top"><div><div class="mc-title">${t.fleetNb}</div><div class="mc-sub">${t.plateNb} · ${t.location||'--'}</div></div>${sbadge(t.status)}</div>${bar(t.current,t.capacity)}<div class="mc-grid"><div class="mc-field"><strong>Make/Model</strong>${[t.make,t.model].filter(Boolean).join(' ')||'--'}</div><div class="mc-field"><strong>Capacity</strong>${(t.capacity||0).toLocaleString()} L</div><div class="mc-field"><strong>Current</strong>${(t.current||0).toLocaleString()} L</div><div class="mc-field"><strong>Driver</strong>${as?as.name:'--'}</div></div><div class="mc-actions">${editBtn('editTanker',t.id)}${dbTanker(t)}</div></div>`).join('')}
 function rSuppliers(){const el=document.getElementById('supplier-list'),em=document.getElementById('supplier-empty');if(!S.suppliers.length){el.innerHTML='';em.style.display='';return}em.style.display='none';const now=new Date(),m=now.getMonth(),y=now.getFullYear();el.innerHTML=S.suppliers.map(sp=>{const txs=S.transactions.filter(t=>t.type==='receive'&&(t.supplierId===sp.id||t.from===sp.name));const mth=txs.filter(t=>{const d=new Date(t.date);return d.getMonth()===m&&d.getFullYear()===y}).reduce((a,x)=>a+x.volume,0);const last=txs.length?txs[txs.length-1].date:null;const ord=sp.orderPerMonth||0;const pp=ord>0?Math.round(mth/ord*100):null;const pb=pp!==null?'<span class="badge '+(pp>=100?'bg':'ba')+'">'+pp+'%</span>':'';return`<tr><td style="font-weight:700">${sp.name}</td><td>${sp.contact||'--'}</td><td>${sp.phone||'--'}</td><td>${ord.toLocaleString()}</td><td>${mth.toLocaleString()} ${pb}</td><td style="font-size:11px">${fmt(last)}</td><td>${sbadge(sp.status)}</td><td style="display:flex;gap:5px">${editBtn('editSupplier',sp.id)}${db('suppliers',sp.id,sp.name)}</td></tr>`}).join('')}
-function rFleet(){const el=document.getElementById('fleet-list'),em=document.getElementById('fleet-empty');const q=(document.getElementById('fleet-search')?.value||'').toLowerCase().trim();let list=S.fleet;if(q)list=list.filter(f=>(f.fleetNo||'').toLowerCase().includes(q));if(!list.length){el.innerHTML='';em.style.display='';em.textContent=q?'No equipment found matching "'+q+'"':'No equipment added yet';return}em.style.display='none';el.innerHTML=list.map(f=>{const txs=S.transactions.filter(t=>t.type==='distribute'&&(t.fleetId===f.id||t.to===f.fleetNo));const tot=txs.reduce((a,x)=>a+x.volume,0);const lm=txs[txs.length-1];const isO=isOdometer(f.meterType);const lms=lm&&lm.meter?lm.meter+' '+(isO?'km':'hrs'):'--';return'<tr><td style="font-weight:700">'+f.fleetNo+'</td><td>'+f.ftype+'</td><td>'+(f.category||'--')+'</td><td>'+(f.make||'--')+'</td><td>'+(f.model||'--')+'</td><td>'+(f.year||'--')+'</td><td>'+(f.capacity||'--')+'</td><td>'+(f.tankCap?f.tankCap.toLocaleString():'--')+'</td><td>'+(isO?'Odo(km)':'Hour(hrs)')+'</td><td style="font-size:12px">'+lms+'</td><td>'+tot.toLocaleString()+'</td><td>'+sbadge(f.status)+'</td><td>'+db('fleet',f.id,f.fleetNo)+'</td></tr>'}).join('')}
+function rFleet(){
+  const el=document.getElementById('fleet-list'),em=document.getElementById('fleet-empty');
+  const typeSel=document.getElementById('fleet-type-filter');
+  // Populate the type dropdown dynamically from actual data, preserving the current selection
+  if(typeSel){
+    const curSel=typeSel.value;
+    const types=[...new Set(S.fleet.map(f=>f.ftype).filter(Boolean))].sort();
+    typeSel.innerHTML='<option value="">All types</option>'+types.map(t=>'<option value="'+t+'">'+t+'</option>').join('');
+    typeSel.value=types.includes(curSel)?curSel:'';
+  }
+  const q=(document.getElementById('fleet-search')?.value||'').toLowerCase().trim();
+  const typeFilter=typeSel?typeSel.value:'';
+  let list=S.fleet;
+  if(q)list=list.filter(f=>(f.fleetNo||'').toLowerCase().includes(q));
+  if(typeFilter)list=list.filter(f=>f.ftype===typeFilter);
+  if(!list.length){
+    el.innerHTML='';em.style.display='';
+    em.textContent=(q||typeFilter)?'No equipment found matching the current search/filter':'No equipment added yet';
+    return;
+  }
+  em.style.display='none';
+  el.innerHTML=list.map(f=>{const txs=S.transactions.filter(t=>t.type==='distribute'&&(t.fleetId===f.id||t.to===f.fleetNo));const tot=txs.reduce((a,x)=>a+x.volume,0);const lm=txs[txs.length-1];const isO=isOdometer(f.meterType);const lms=lm&&lm.meter?lm.meter+' '+(isO?'km':'hrs'):'--';return'<tr><td style="font-weight:700">'+f.fleetNo+'</td><td>'+f.ftype+'</td><td>'+(f.category||'--')+'</td><td>'+(f.make||'--')+'</td><td>'+(f.model||'--')+'</td><td>'+(f.year||'--')+'</td><td>'+(f.capacity||'--')+'</td><td>'+(f.tankCap?f.tankCap.toLocaleString():'--')+'</td><td>'+(isO?'Odo(km)':'Hour(hrs)')+'</td><td style="font-size:12px">'+lms+'</td><td>'+tot.toLocaleString()+'</td><td>'+sbadge(f.status)+'</td><td>'+db('fleet',f.id,f.fleetNo)+'</td></tr>'}).join('')
+}
 function rProjects(){const el=document.getElementById('project-list'),em=document.getElementById('project-empty');if(!S.projects.length){el.innerHTML='';em.style.display='';return}em.style.display='none';el.innerHTML=S.projects.map(p=>'<tr><td style="font-weight:700">'+p.name+'</td><td>'+sbadge(p.status)+'</td><td>'+db('projects',p.id,p.name)+'</td></tr>').join('')}
 function rLocations(){const el=document.getElementById('location-list'),em=document.getElementById('location-empty');if(!S.locations.length){el.innerHTML='';em.style.display='';return}em.style.display='none';el.innerHTML=S.locations.map(l=>{const tanks=S.storage.filter(s=>s.location===l.name).length;const tankers=S.tankers.filter(t=>t.location===l.name).length;return`<tr><td style="font-weight:700">${l.name}</td><td>${tanks}</td><td>${tankers}</td><td>${sbadge(l.status)}</td><td style="display:flex;gap:5px">${editBtn('editLocation',l.id)}${db('locations',l.id,l.name)}</td></tr>`}).join('')}
-async function saveLocation(){const editId=document.getElementById('loc-edit-id').value;const name=document.getElementById('loc-nm').value.trim();if(!name){toast('Location name required.');return}const status=document.getElementById('loc-stat').value;if(editId){const l=S.locations.find(x=>x.id===editId);if(!l)return;l.name=name;l.status=status;closeM('m-location');popLocDropdowns();rLocations();try{await gsC({action:'saveLocation',...l})}catch(e){}toast('Location updated.');}else{const r={id:uid(),name,status};S.locations.push(r);closeM('m-location');document.getElementById('loc-nm').value='';popLocDropdowns();rLocations();try{await gsC({action:'saveLocation',...r})}catch(e){}toast('Location saved.');}}
+async function saveLocation(){if(!isAdmin()){toast('Only Admin can manage locations.');return}const editId=document.getElementById('loc-edit-id').value;const name=document.getElementById('loc-nm').value.trim();if(!name){toast('Location name required.');return}const status=document.getElementById('loc-stat').value;if(editId){const l=S.locations.find(x=>x.id===editId);if(!l)return;l.name=name;l.status=status;closeM('m-location');popLocDropdowns();rLocations();try{await gsC({action:'saveLocation',...l})}catch(e){}toast('Location updated.');}else{const r={id:uid(),name,status};S.locations.push(r);closeM('m-location');document.getElementById('loc-nm').value='';popLocDropdowns();rLocations();try{await gsC({action:'saveLocation',...r})}catch(e){}toast('Location saved.');}}
 
 function rUsers(){const el=document.getElementById('user-list'),em=document.getElementById('user-empty');if(!S.users.length){el.innerHTML='';em.style.display='';return}em.style.display='none';el.innerHTML=S.users.map(u=>{let as='--';if(u.role==='storekeeper'){const t=S.storage.find(x=>x.id===u.assignedId||x.nb===u.assignedId);if(t)as='Tank '+t.nb}if(u.role==='tanker_driver'){const t=S.tankers.find(x=>x.id===u.assignedId||x.fleetNb===u.assignedId);if(t)as=t.fleetNb+' - '+t.plateNb}return`<tr><td style="font-weight:700">${u.name}</td><td style="font-size:12px">${u.empId||'--'}</td><td><span class="badge bb">${rl(u.role)}</span></td><td style="font-size:12px">${as}</td><td>${sbadge(u.status)}</td><td style="display:flex;gap:6px"><button class="btn sm" onclick="editUser('${u.id}')">Edit</button>${db('users',u.id,u.name)}</td></tr>`}).join('')}
 function rDrivers(){const el=document.getElementById('driver-list'),em=document.getElementById('driver-empty');if(!S.drivers.length){el.innerHTML='';em.style.display='';return}em.style.display='none';el.innerHTML=S.drivers.map(d=>'<tr><td style="font-weight:700">'+d.name+'</td><td>'+(d.empId||'--')+'</td><td>'+(d.residencyId||'--')+'</td><td>'+(d.phone||'--')+'</td><td>'+(d.license||'--')+'</td><td>'+sbadge(d.status)+'</td><td>'+db('drivers',d.id,d.name)+'</td></tr>').join('')}
@@ -1663,7 +1719,25 @@ async function doTrans(){const fromId=document.getElementById('t-from').value,to
   const from=S.storage.find(x=>x.id===fromId);
   const available=from?.current||0;
   if(vol>available){sal('trans-alert','Insufficient stock. Tank only has '+available.toLocaleString()+' L available — you tried to transfer '+vol.toLocaleString()+' L.',true);return}
-  const to=S.tankers.find(x=>x.id===toId||x.fleetNb===toId);uT(fromId,-vol);uT(toId,vol);const tx={id:rid('TRF'),type:'transfer',date:document.getElementById('t-date').value,volume:vol,from:'Tank '+(from?.nb||''),to:to?.fleetNb,destId:toId,notes:document.getElementById('t-notes').value,userId:S.currentUser.id,userName:S.currentUser.name};S.transactions.push(tx);await wTx(tx,{fromId,destId:toId,destKind:'tanker'});sal('trans-alert','Transfer: '+vol.toLocaleString()+' L');
+  const to=S.tankers.find(x=>x.id===toId||x.fleetNb===toId);
+  // Check destination tanker capacity, same pattern as Receive
+  if(to&&to.capacity>0){
+    const toCurrent=to.current||0;
+    const toTotal=toCurrent+vol;
+    if(toTotal>to.capacity){
+      const notes=document.getElementById('t-notes').value.trim();
+      if(!notes){
+        sal('trans-alert','Volume exceeds tanker capacity by '+(toTotal-to.capacity).toLocaleString()+' L. You must enter a reason in the Notes field before proceeding.',true);
+        document.getElementById('t-notes').focus();
+        document.getElementById('t-notes').style.borderColor='#c31c2a';
+        document.getElementById('t-notes').style.background='#fdecea';
+        return;
+      }
+      const proceed=confirm(`⚠️ Warning: This transfer will exceed tanker capacity.\n\nTanker: ${to.fleetNb}\nCapacity: ${to.capacity.toLocaleString()} L\nCurrent stock: ${toCurrent.toLocaleString()} L\nVolume to transfer: ${vol.toLocaleString()} L\nTotal after transfer: ${toTotal.toLocaleString()} L\nOverflow: ${(toTotal-to.capacity).toLocaleString()} L\nNotes: ${notes}\n\nDo you want to proceed anyway?`);
+      if(!proceed)return;
+    }
+  }
+  uT(fromId,-vol);uT(toId,vol);const tx={id:rid('TRF'),type:'transfer',date:document.getElementById('t-date').value,volume:vol,from:'Tank '+(from?.nb||''),to:to?.fleetNb,destId:toId,notes:document.getElementById('t-notes').value,userId:S.currentUser.id,userName:S.currentUser.name};S.transactions.push(tx);await wTx(tx,{fromId,destId:toId,destKind:'tanker'});sal('trans-alert','Transfer: '+vol.toLocaleString()+' L');
   await silentRefresh();['t-vol','t-notes'].forEach(x=>document.getElementById(x).value='')}
 async function doDist(){
   // Read source - try hidden field first, then read from visible dropdown
@@ -1711,22 +1785,48 @@ Do you want to proceed anyway?`);
 if(!proj){sal('dist-alert','Please select a project.',true);return}const fl=S.fleet.find(x=>x.id===flId||x.fleetNo===flId),last=glf(flId);if(last&&last.meter&&parseFloat(meter)<=parseFloat(last.meter)){sal('dist-alert','Meter must be > '+last.meter+'.',true);return}const src=gT(srcId);if((src?.current||0)<vol){sal('dist-alert','Insufficient. Available: '+(src?.current||0).toLocaleString()+' L',true);return}const drv=S.drivers.find(x=>x.id===drvId);uT(srcId,-vol);const tx={id:rid('DST'),type:'distribute',date:document.getElementById('d-date').value,volume:vol,from:srcKind==='tank'?'Tank '+(src?.nb||''):src?.fleetNb,to:fl?.fleetNo,fleetId:flId,fleetNo:fl?.fleetNo,meter:meter?parseFloat(meter):null,meterType:fl?.meterType||'hourmeter',project:proj,driverId:drvId,driverName:drv?.name||'',notes:document.getElementById('d-notes').value,warning:txWarning||'',userId:S.currentUser.id,userName:S.currentUser.name};S.transactions.push(tx);await wTx(tx,{srcId,srcKind});sal('dist-alert','Distribution: '+vol.toLocaleString()+' L to '+(fl?.fleetNo||''));
   await silentRefresh();['d-vol','d-meter','d-notes'].forEach(x=>document.getElementById(x).value='');document.getElementById('d-fleet').value='';document.getElementById('d-proj').value='';document.getElementById('d-drv').value='';document.getElementById('mi-card').classList.remove('show');document.getElementById('lf-card').classList.remove('show')}
 
-async function saveStorage(){const editId=document.getElementById('s-edit-id').value;const nb=document.getElementById('s-nb').value.trim();const loc=document.getElementById('s-loc').value;if(!nb||!loc){toast('Tank Nb. and Location required.');return}if(editId){const s=S.storage.find(x=>x.id===editId);if(!s)return;s.nb=nb;s.location=loc;s.status=document.getElementById('s-stat').value;closeM('m-storage');rStorage();try{await gsC({action:'saveStorage',...s})}catch(e){}toast('Tank updated.');}else{const r={id:uid(),nb,location:loc,capacity:0,current:0,status:document.getElementById('s-stat').value};S.storage.push(r);closeM('m-storage');rStorage();try{await gsC({action:'saveStorage',...r})}catch(e){}toast('Tank saved.');}}
-async function saveTanker(){const editId=document.getElementById('tk-edit-id').value;const fleet=document.getElementById('tk-fleet').value.trim(),plate=document.getElementById('tk-plate').value.trim(),loc=document.getElementById('tk-loc').value;if(!fleet||!plate||!loc){toast('Fleet Nb., Plate Nb. and Location required.');return}const vals={fleetNb:fleet,plateNb:plate,owner:document.getElementById('tk-owner').value,location:loc,make:document.getElementById('tk-make').value,model:document.getElementById('tk-model').value,year:document.getElementById('tk-year').value,capacity:parseFloat(document.getElementById('tk-cap').value)||0,current:0,status:document.getElementById('tk-stat').value};if(editId){const t=S.tankers.find(x=>x.id===editId);if(!t)return;Object.assign(t,vals);closeM('m-tanker');rTankers();try{await gsC({action:'saveTanker',...t})}catch(e){}toast('Tanker updated.');}else{const r={id:uid(),...vals};S.tankers.push(r);closeM('m-tanker');rTankers();try{await gsC({action:'saveTanker',...r})}catch(e){}toast('Tanker saved.');}}
-async function saveSupplier(){const editId=document.getElementById('sp-edit-id').value;const name=document.getElementById('sp-nm').value.trim();if(!name){toast('Name required.');return}const vals={name,contact:document.getElementById('sp-ct').value,phone:document.getElementById('sp-ph').value,email:document.getElementById('sp-em').value,orderPerMonth:parseFloat(document.getElementById('sp-ord').value)||0,status:document.getElementById('sp-stat').value};if(editId){const s=S.suppliers.find(x=>x.id===editId);if(!s)return;Object.assign(s,vals);closeM('m-supplier');rSuppliers();try{await gsC({action:'saveSupplier',...s})}catch(e){}toast('Supplier updated.');}else{const r={id:uid(),...vals};S.suppliers.push(r);closeM('m-supplier');rSuppliers();try{await gsC({action:'saveSupplier',...r})}catch(e){}toast('Supplier saved.');}}
-async function saveFleet(){const editId=document.getElementById('fl-edit-id').value;const nb=document.getElementById('fl-nb').value.trim();if(!nb){toast('Fleet No. required.');return}const vals={fleetNo:nb,ftype:document.getElementById('fl-type').value,category:document.getElementById('fl-cat').value,make:document.getElementById('fl-make').value,model:document.getElementById('fl-model').value,year:document.getElementById('fl-year').value,capacity:document.getElementById('fl-cap').value,tankCap:parseFloat(document.getElementById('fl-tcap').value)||0,meterType:document.getElementById('fl-mtype').value,owner:document.getElementById('fl-owner').value,status:document.getElementById('fl-stat').value};if(editId){const f=S.fleet.find(x=>x.id===editId);if(!f)return;Object.assign(f,vals);closeM('m-fleet');rFleet();try{await gsC({action:'saveFleet',...f,nb:f.fleetNo})}catch(e){}toast('Equipment updated.');}else{const r={id:uid(),...vals};S.fleet.push(r);closeM('m-fleet');rFleet();try{await gsC({action:'saveFleet',...r,nb:r.fleetNo})}catch(e){}toast('Equipment saved.');}}
-async function saveProject(){const name=document.getElementById('pj-nm').value.trim();if(!name){toast('Name required.');return}const r={id:uid(),name,status:document.getElementById('pj-stat').value};S.projects.push(r);closeM('m-project');document.getElementById('pj-nm').value='';rProjects();try{await gsC({action:'saveProject',...r})}catch(e){}toast('Project saved.')}
-function openAddUser(){document.getElementById('u-edit-id').value='';document.getElementById('u-modal-title').textContent='Add user';document.getElementById('u-save-btn').textContent='Save user';document.getElementById('u-pw').placeholder='Set a password';['u-nm','u-eid','u-rid','u-pw'].forEach(x=>document.getElementById(x).value='');document.getElementById('u-role').value='storekeeper';updAssign();openM('m-user')}
-function editUser(id){const u=S.users.find(x=>x.id===id);if(!u)return;document.getElementById('u-edit-id').value=id;document.getElementById('u-modal-title').textContent='Edit user';document.getElementById('u-save-btn').textContent='Update user';document.getElementById('u-nm').value=u.name;document.getElementById('u-eid').value=u.empId||'';document.getElementById('u-rid').value=u.residencyId||'';document.getElementById('u-pw').value=u.password||'';document.getElementById('u-pw').placeholder='Leave unchanged';document.getElementById('u-role').value=u.role;updAssignEdit(u);openM('m-user')}
+async function saveStorage(){if(!isAdmin()){toast('Only Admin can manage fixed storage tanks.');return}const editId=document.getElementById('s-edit-id').value;const nb=document.getElementById('s-nb').value.trim();const loc=document.getElementById('s-loc').value;if(!nb||!loc){toast('Tank Nb. and Location required.');return}if(editId){const s=S.storage.find(x=>x.id===editId);if(!s)return;s.nb=nb;s.location=loc;s.status=document.getElementById('s-stat').value;closeM('m-storage');rStorage();try{await gsC({action:'saveStorage',...s})}catch(e){}toast('Tank updated.');}else{const r={id:uid(),nb,location:loc,capacity:0,current:0,status:document.getElementById('s-stat').value};S.storage.push(r);closeM('m-storage');rStorage();try{await gsC({action:'saveStorage',...r})}catch(e){}toast('Tank saved.');}}
+async function saveTanker(){if(!isAdmin()&&S.currentUser?.role!=='pmv_admin'){toast('Only Admin or PMV Admin can manage mobile tankers.');return}const editId=document.getElementById('tk-edit-id').value;const fleet=document.getElementById('tk-fleet').value.trim(),plate=document.getElementById('tk-plate').value.trim(),loc=document.getElementById('tk-loc').value;if(!fleet||!plate||!loc){toast('Fleet Nb., Plate Nb. and Location required.');return}const vals={fleetNb:fleet,plateNb:plate,owner:document.getElementById('tk-owner').value,location:loc,make:document.getElementById('tk-make').value,model:document.getElementById('tk-model').value,year:document.getElementById('tk-year').value,capacity:parseFloat(document.getElementById('tk-cap').value)||0,current:0,status:document.getElementById('tk-stat').value};if(editId){const t=S.tankers.find(x=>x.id===editId);if(!t)return;Object.assign(t,vals);closeM('m-tanker');rTankers();try{await gsC({action:'saveTanker',...t})}catch(e){}toast('Tanker updated.');}else{const r={id:uid(),...vals};S.tankers.push(r);closeM('m-tanker');rTankers();try{await gsC({action:'saveTanker',...r})}catch(e){}toast('Tanker saved.');}}
+async function saveSupplier(){if(!isAdmin()){toast('Only Admin can manage suppliers.');return}const editId=document.getElementById('sp-edit-id').value;const name=document.getElementById('sp-nm').value.trim();if(!name){toast('Name required.');return}const vals={name,contact:document.getElementById('sp-ct').value,phone:document.getElementById('sp-ph').value,email:document.getElementById('sp-em').value,orderPerMonth:parseFloat(document.getElementById('sp-ord').value)||0,status:document.getElementById('sp-stat').value};if(editId){const s=S.suppliers.find(x=>x.id===editId);if(!s)return;Object.assign(s,vals);closeM('m-supplier');rSuppliers();try{await gsC({action:'saveSupplier',...s})}catch(e){}toast('Supplier updated.');}else{const r={id:uid(),...vals};S.suppliers.push(r);closeM('m-supplier');rSuppliers();try{await gsC({action:'saveSupplier',...r})}catch(e){}toast('Supplier saved.');}}
+async function saveFleet(){if(!isAdmin()&&S.currentUser?.role!=='pmv_admin'){toast('Only Admin or PMV Admin can manage equipment.');return}const editId=document.getElementById('fl-edit-id').value;const nb=document.getElementById('fl-nb').value.trim();if(!nb){toast('Fleet No. required.');return}const vals={fleetNo:nb,ftype:document.getElementById('fl-type').value,category:document.getElementById('fl-cat').value,make:document.getElementById('fl-make').value,model:document.getElementById('fl-model').value,year:document.getElementById('fl-year').value,capacity:document.getElementById('fl-cap').value,tankCap:parseFloat(document.getElementById('fl-tcap').value)||0,meterType:document.getElementById('fl-mtype').value,owner:document.getElementById('fl-owner').value,status:document.getElementById('fl-stat').value};if(editId){const f=S.fleet.find(x=>x.id===editId);if(!f)return;Object.assign(f,vals);closeM('m-fleet');rFleet();try{await gsC({action:'saveFleet',...f,nb:f.fleetNo})}catch(e){}toast('Equipment updated.');}else{const r={id:uid(),...vals};S.fleet.push(r);closeM('m-fleet');rFleet();try{await gsC({action:'saveFleet',...r,nb:r.fleetNo})}catch(e){}toast('Equipment saved.');}}
+async function saveProject(){
+  if(!isAdmin()){toast('Only Admin can manage projects.');return}
+  const editId=document.getElementById('pj-edit-id').value;
+  const code=document.getElementById('pj-code')?.value.trim()||'';
+  const name=document.getElementById('pj-nm').value.trim();
+  if(!name){toast('Name required.');return}
+  const status=document.getElementById('pj-stat').value;
+  if(editId){
+    const p=S.projects.find(x=>x.id===editId);if(!p)return;
+    p.code=code;p.name=name;p.status=status;
+    closeM('m-project');rProjects();
+    try{await gsC({action:'saveProject',...p})}catch(e){}
+    toast('Project updated.');
+  }else{
+    const r={id:uid(),code,name,status};
+    S.projects.push(r);closeM('m-project');document.getElementById('pj-nm').value='';
+    rProjects();
+    try{await gsC({action:'saveProject',...r})}catch(e){}
+    toast('Project saved.');
+  }
+}
+function openAddUser(){if(S.currentUser?.role!=='admin'){toast('Only Admin can manage users.');return}document.getElementById('u-edit-id').value='';document.getElementById('u-modal-title').textContent='Add user';document.getElementById('u-save-btn').textContent='Save user';document.getElementById('u-pw').placeholder='Set a password';['u-nm','u-eid','u-rid','u-pw'].forEach(x=>document.getElementById(x).value='');document.getElementById('u-role').value='storekeeper';updAssign();openM('m-user')}
+function editUser(id){if(!isAdmin()){toast('Only Admin can manage users.');return}const u=S.users.find(x=>x.id===id);if(!u)return;document.getElementById('u-edit-id').value=id;document.getElementById('u-modal-title').textContent='Edit user';document.getElementById('u-save-btn').textContent='Update user';document.getElementById('u-nm').value=u.name;document.getElementById('u-eid').value=u.empId||'';document.getElementById('u-rid').value=u.residencyId||'';document.getElementById('u-pw').value=u.password||'';document.getElementById('u-pw').placeholder='Leave unchanged';document.getElementById('u-role').value=u.role;updAssignEdit(u);openM('m-user')}
 function updAssignEdit(u){const role=u.role,sel=document.getElementById('u-assign');if(role==='storekeeper'){const myIds=(u.assignedId||'').split(',').map(x=>x.trim()).filter(Boolean);const avail=S.storage.filter(s=>!S.users.find(x=>x.id!==u.id&&x.role==='storekeeper'&&(x.assignedId||'').split(',').map(y=>y.trim()).some(y=>y===s.id||y===s.nb)));sel.setAttribute('multiple','multiple');sel.style.height='100px';sel.innerHTML=avail.map(s=>'<option value="'+s.nb+'"'+(myIds.includes(s.nb)||myIds.includes(s.id)?' selected':'')+'>Tank '+s.nb+(s.location?' - '+s.location:'')+'</option>').join('')||'<option>-- None available --</option>'}else if(role==='tanker_driver'){const avail=S.tankers.filter(t=>!S.users.find(x=>x.id!==u.id&&x.role==='tanker_driver'&&(x.assignedId===t.id||x.assignedId===t.fleetNb)));sel.innerHTML=avail.map(t=>'<option value="'+t.fleetNb+'"'+(u.assignedId===t.fleetNb||u.assignedId===t.id?' selected':'')+'>'+t.fleetNb+' - '+t.plateNb+'</option>').join('')||'<option>-- None available --</option>'}else sel.innerHTML='<option>N/A</option>'}
 function updAssign(){const editId=document.getElementById('u-edit-id').value;if(editId){const u=S.users.find(x=>x.id===editId);if(u)return updAssignEdit(u)}const role=document.getElementById('u-role').value,sel=document.getElementById('u-assign');if(role==='storekeeper'){const av=S.storage.filter(s=>!S.users.find(u=>u.role==='storekeeper'&&(u.assignedId||'').split(',').map(y=>y.trim()).some(y=>y===s.id||y===s.nb)));sel.setAttribute('multiple','multiple');sel.style.height='100px';sel.innerHTML=av.map(s=>'<option value="'+s.nb+'">Tank '+s.nb+(s.location?' - '+s.location:'')+'</option>').join('')||'<option>-- No available tanks --</option>'}else if(role==='tanker_driver'){sel.removeAttribute('multiple');sel.style.height='';const av=S.tankers.filter(t=>!S.users.find(u=>u.role==='tanker_driver'&&(u.assignedId===t.id||u.assignedId===t.fleetNb)));sel.innerHTML=av.map(t=>'<option value="'+t.fleetNb+'">'+t.fleetNb+' - '+t.plateNb+'</option>').join('')||'<option>-- No available tankers --</option>'}else{sel.removeAttribute('multiple');sel.style.height='';sel.innerHTML='<option>N/A</option>'}}
-async function saveUser(){const editId=document.getElementById('u-edit-id').value;const name=document.getElementById('u-nm').value.trim(),pw=document.getElementById('u-pw').value,role=document.getElementById('u-role').value;const assignSel=document.getElementById('u-assign');const assignId=role==='storekeeper'?Array.from(assignSel.selectedOptions).map(o=>o.value).join(','):assignSel.value;if(!name){toast('Name is required.');return}if(editId){// EDIT MODE
+async function saveUser(){if(!isAdmin()){toast('Only Admin can manage users.');return}const editId=document.getElementById('u-edit-id').value;const name=document.getElementById('u-nm').value.trim(),pw=document.getElementById('u-pw').value,role=document.getElementById('u-role').value;const assignSel=document.getElementById('u-assign');const assignId=role==='storekeeper'?Array.from(assignSel.selectedOptions).map(o=>o.value).join(','):assignSel.value;if(!name){toast('Name is required.');return}if(editId){// EDIT MODE
 const u=S.users.find(x=>x.id===editId);if(!u)return;u.name=name;u.empId=document.getElementById('u-eid').value;u.residencyId=document.getElementById('u-rid').value;u.role=role;u.assignedId=assignId||null;if(pw)u.password=pw;closeM('m-user');rUsers();popSel();try{await gsC({action:'saveUser',...u})}catch(e){}toast('User updated.');}else{// ADD MODE
 if(!pw){toast('Password required.');return}if(allU().find(u=>u.name.toLowerCase()===name.toLowerCase())){toast('User already exists.');return}const r={id:uid(),name,empId:document.getElementById('u-eid').value,residencyId:document.getElementById('u-rid').value,role,password:pw,assignedId:assignId||null,status:'Active'};S.users.push(r);closeM('m-user');['u-nm','u-eid','u-rid','u-pw'].forEach(x=>document.getElementById(x).value='');rUsers();popSel();try{await gsC({action:'saveUser',...r})}catch(e){}toast('User saved.');}}
-async function saveDriver(){const editId=document.getElementById('dr-edit-id').value;const name=document.getElementById('dr-nm').value.trim();if(!name){toast('Name required.');return}const vals={name,empId:document.getElementById('dr-eid').value,residencyId:document.getElementById('dr-rid').value,phone:document.getElementById('dr-ph').value,license:document.getElementById('dr-lic').value,status:document.getElementById('dr-stat').value};if(editId){const d=S.drivers.find(x=>x.id===editId);if(!d)return;Object.assign(d,vals);closeM('m-driver');rDrivers();try{await gsC({action:'saveDriver',...d})}catch(e){}toast('Driver updated.');}else{const r={id:uid(),...vals};S.drivers.push(r);closeM('m-driver');['dr-nm','dr-eid','dr-rid','dr-ph','dr-lic'].forEach(x=>document.getElementById(x).value='');rDrivers();try{await gsC({action:'saveDriver',...r})}catch(e){}toast('Driver saved.');}}
+async function saveDriver(){if(!isAdmin()){toast('Only Admin can manage drivers.');return}const editId=document.getElementById('dr-edit-id').value;const name=document.getElementById('dr-nm').value.trim();if(!name){toast('Name required.');return}const vals={name,empId:document.getElementById('dr-eid').value,residencyId:document.getElementById('dr-rid').value,phone:document.getElementById('dr-ph').value,license:document.getElementById('dr-lic').value,status:document.getElementById('dr-stat').value};if(editId){const d=S.drivers.find(x=>x.id===editId);if(!d)return;Object.assign(d,vals);closeM('m-driver');rDrivers();try{await gsC({action:'saveDriver',...d})}catch(e){}toast('Driver updated.');}else{const r={id:uid(),...vals};S.drivers.push(r);closeM('m-driver');['dr-nm','dr-eid','dr-rid','dr-ph','dr-lic'].forEach(x=>document.getElementById(x).value='');rDrivers();try{await gsC({action:'saveDriver',...r})}catch(e){}toast('Driver saved.');}}
 
 function askDel(type,eid,nm){delCtx={type,id:eid};document.getElementById('del-nm').textContent=nm;openM('m-del')}
-async function confirmDel(){if(!delCtx.type)return;S[delCtx.type]=S[delCtx.type].filter(x=>x.id!==delCtx.id);closeM('m-del');({storage:rStorage,tankers:rTankers,suppliers:rSuppliers,fleet:rFleet,projects:rProjects,users:rUsers,drivers:rDrivers})[delCtx.type]?.();try{await gsC({action:'deleteRecord',sheet:delCtx.type,id:delCtx.id})}catch(e){}delCtx={type:null,id:null};toast('Deleted.')}
+async function confirmDel(){
+  if(!delCtx.type)return;
+  const role=S.currentUser?.role;
+  const pmvAllowed=['tankers','fleet']; // PMV Admin's legitimate scope
+  const allowed = role==='admin' || (role==='pmv_admin' && pmvAllowed.includes(delCtx.type));
+  if(!allowed){toast('You do not have permission to delete this record.');closeM('m-del');delCtx={type:null,id:null};return}
+  S[delCtx.type]=S[delCtx.type].filter(x=>x.id!==delCtx.id);closeM('m-del');({storage:rStorage,tankers:rTankers,suppliers:rSuppliers,fleet:rFleet,projects:rProjects,users:rUsers,drivers:rDrivers,locations:rLocations})[delCtx.type]?.();try{await gsC({action:'deleteRecord',sheet:delCtx.type,id:delCtx.id})}catch(e){}delCtx={type:null,id:null};toast('Deleted.')}
 
 function saveGS(){const url=document.getElementById('gs-url').value.trim();if(!url){toast('Enter the URL.');return}GS_URL=url;localStorage.setItem('fo_gs',GS_URL);closeM('m-gs');updGS();toast('Google Sheets URL saved.')}
 async function testGS(){const url=document.getElementById('gs-url').value.trim();if(!url){toast('Enter the URL first.');return}const old=GS_URL;GS_URL=url;showSpin('Testing connection...');try{await gsC({action:'getData',role:'admin',userId:'u_admin'});hideSpin();toast('Connection successful!')}catch(e){hideSpin();toast('Failed: '+e.message);GS_URL=old}}
